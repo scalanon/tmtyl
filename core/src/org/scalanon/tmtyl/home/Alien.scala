@@ -1,6 +1,7 @@
-package org.scalanon.tmtyl
+package org.scalanon.tmtyl.home
 
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
+import org.scalanon.tmtyl.Tmtyl
 
 class Alien {
   var animation: AlienAnimation = new AlienAnimation.Dead
