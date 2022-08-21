@@ -17,6 +17,7 @@ class GameControl(game: Game) extends InputAdapter {
       button: Int
   ): Boolean = {
     down.put(pointer, (screenX, screenY))
+    game.player.shoot()
     true
   }
 

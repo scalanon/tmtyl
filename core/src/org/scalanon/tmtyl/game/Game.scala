@@ -16,6 +16,7 @@ class Game extends Scene {
   val score: Score = new Score
   val matrix = new Matrix4()
   var alien: Alien = Alien(this)
+  var projectiles: List[Projectile] = List.empty
 
   var player: Player = Player(this)
   var tiles: List[Tile] = List(
@@ -44,6 +45,7 @@ class Game extends Scene {
     score.update(delta)
     player.update(delta)
     alien.update(delta)
+    projectiles.foreach(p => p.update(delta))
     PartialFunction.condOpt(state) { case QuitState =>
       Home(this)
     }
@@ -59,6 +61,8 @@ class Game extends Scene {
     tiles.foreach(t => t.draw(batch))
     player.draw(batch)
     alien.draw(batch)
+
+    projectiles.foreach(p => p.draw(batch))
 
     batch.setTransformMatrix(matrix.idt())
     score.draw(batch)

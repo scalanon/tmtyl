@@ -49,6 +49,16 @@ case class Player(game: Game) extends Entity {
   def jump(delta: Float): Unit = {
     vel.y = 14
   }
+  def shoot(): Unit = {
+    game.projectiles = Projectile(
+      game,
+      lookRot,
+      Vec2(
+        loc.x + .5f + (math.cos(lookRot).toFloat * .8f),
+        loc.y + (math.sin(lookRot).toFloat * .8f) + 1f
+      )
+    ) :: game.projectiles
+  }
   def update(delta: Float): Unit = {
     lookRot = (
       Math
@@ -64,6 +74,9 @@ case class Player(game: Game) extends Entity {
       moveRight(delta)
     } else {
       vel.x = 0
+    }
+    if (loc.y + 2 < 0) {
+      game.state = Game.QuitState
     }
 
     if (
