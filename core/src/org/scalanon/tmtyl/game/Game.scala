@@ -11,6 +11,8 @@ class Game extends Scene {
   var state: State = PlayingState
 
   val score: Score = new Score
+  var player: Player = Player(this)
+  var keysPressed = List.empty[Int]
 
   override def init(): GameControl = {
     state = PlayingState
@@ -19,6 +21,7 @@ class Game extends Scene {
 
   override def update(delta: Float): Option[Scene] = {
     score.update(delta)
+    player.update(delta)
     PartialFunction.condOpt(state) { case QuitState =>
       Home(this)
     }
@@ -26,6 +29,7 @@ class Game extends Scene {
 
   override def render(batch: PolygonSpriteBatch): Unit = {
     score.draw(batch)
+    player.draw(batch)
   }
 }
 

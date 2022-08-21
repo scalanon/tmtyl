@@ -34,10 +34,14 @@ class GameControl(game: Game) extends InputAdapter {
     if (keycode == Keys.ESCAPE || keycode == Keys.BACK) {
       game.state = Game.QuitState
     }
+    game.keysPressed = keycode :: game.keysPressed
+
     true
   }
 
   override def keyUp(keycode: Int): Boolean = {
+    game.keysPressed = game.keysPressed.filterNot(key => key == keycode)
+
     true
   }
 

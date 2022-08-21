@@ -47,6 +47,7 @@ class Tmtyl extends ApplicationAdapter {
     Tmtyl.checkOn = TextureWrapper.load("check-on.png")
     Tmtyl.checkOff = TextureWrapper.load("check-off.png")
     Tmtyl.trash = TextureWrapper.load("trash.png")
+    Tmtyl.square = TextureWrapper.load("Square.png")
 
     Tmtyl.pixture = Tmtyl.solidTexture(1f, 1f, 1f, 1f)
 
@@ -80,6 +81,7 @@ object Tmtyl {
 
   var version: String = _
   var key: String = _
+  var screenUnit = (Geometry.ScreenWidth min Geometry.ScreenHeight) / 20
 
   var logo: TextureWrapper = _
   var play: TextureWrapper = _
@@ -92,6 +94,7 @@ object Tmtyl {
   var checkOn: TextureWrapper = _
   var checkOff: TextureWrapper = _
   var trash: TextureWrapper = _
+  var square: TextureWrapper = _
 
   var pixture: Texture = _
 
