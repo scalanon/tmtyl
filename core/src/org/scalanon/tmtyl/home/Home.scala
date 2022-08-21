@@ -14,36 +14,34 @@ class Home(paused: Option[Game] = None) extends Scene {
   var state: State = HomeState
   var logoAlpha = 0f
   var playAlpha = 0f
+  var ufoPos = 0f
+  var alienPos = 0f
   var discard = false
+  var alien = new Alien
+  var ready = false
 
   // spring layout would make this easy
 
   private val IconSize = Dimension * 3 / 4
-  private val IconCount = 3
-  private val IconMargin =
-    ((Geometry.ScreenWidth - IconCount * IconSize) / (IconCount + 1)).floor
-  private val IconOffsetX = (IconMargin + IconSize / 2).floor
-  private val IconSpacing = IconMargin + IconSize
 
-  private val HighScoreSize =
-    Text.smallFont.getLineHeight * 2 + Text.tinyFont.getLineHeight
-  private val LogoWidth = (Geometry.ScreenWidth * 2 / 3).floor
-
-  private val FooterMargin =
-    ((Geometry.ScreenHeight - LogoWidth) / 4).floor
-  private val IconOffsetY =
-    (Geometry.ScreenHeight - (Geometry.ScreenHeight - LogoWidth) / 4).floor
+  private val HighScorePos =
+    Geometry.ScreenHeight - IconSize * 2
+  private val LogoPixel = (Geometry.ScreenWidth * 2 / 3 / Tmtyl.ufo.width).floor
+  private val UfoWidth = LogoPixel * Tmtyl.ufo.width
+  private val UfoHeight = LogoPixel * Tmtyl.ufo.height
+  private val AlienWidth = LogoPixel * Alien.width
+  private val AlienHeight = LogoPixel * Alien.height
 
   private val baseIcons: List[Icon] = List(
     new PlayIcon(
       Geometry.ScreenWidth / 2,
       Geometry.ScreenHeight / 2,
-      LogoWidth / 2,
+      UfoWidth / 2,
       this
     ),
     new PrefIcon(
-      IconOffsetX,
-      IconOffsetY,
+      Geometry.ScreenWidth - IconSize * 2,
+      Geometry.ScreenHeight - IconSize * 2,
       IconSize,
       Prefs.MuteAudio,
       Tmtyl.soundOff,
@@ -58,8 +56,8 @@ class Home(paused: Option[Game] = None) extends Scene {
 //      Tmtyl.musicOn
 //    ),
     new BasicIcon(
-      IconOffsetX + IconSpacing,
-      IconOffsetY,
+      Geometry.ScreenWidth - IconSize * 2,
+      Geometry.ScreenHeight - IconSize * 4,
       IconSize,
       Tmtyl.settings,
       () => {
@@ -67,8 +65,8 @@ class Home(paused: Option[Game] = None) extends Scene {
       }
     ),
     new BasicIcon(
-      IconOffsetX + IconSpacing * 2,
-      IconOffsetY,
+      Geometry.ScreenWidth - IconSize * 2,
+      Geometry.ScreenHeight - IconSize * 6,
       IconSize,
       Tmtyl.help,
       () => {
@@ -79,7 +77,7 @@ class Home(paused: Option[Game] = None) extends Scene {
 
   private val iconsWithDiscard = new BasicIcon(
     Geometry.ScreenWidth / 2 - Dimension * 9 / 4, // failure to get real dimensions
-    FooterMargin + HighScoreSize - Text.tinyFont.getLineHeight / 2 - Text.smallFont.getAscent,
+    HighScorePos - Text.smallFont.getAscent,
     IconSize / 2,
     Tmtyl.trash,
     () => {
@@ -98,10 +96,25 @@ class Home(paused: Option[Game] = None) extends Scene {
   }
 
   override def update(delta: Float): Option[Scene] = {
+    alien.update(delta)
     if (state == HomeState) {
       logoAlpha = logoAlpha.alphaUp(delta, LogoFadeInSeconds)
-      if (logoAlpha > PlayDelaySeconds)
-        playAlpha = playAlpha.alphaUp(delta, PlayFadeInSeconds)
+      ufoPos = ufoPos.alphaUp(delta, UfoMoveInSeconds)
+      if (ufoPos >= 1f)
+        alienPos = alienPos.alphaUp(delta, AlienMoveInSeconds)
+      if (alienPos >= 1f) {
+        alien.animation match {
+          case _: AlienAnimation.Dead =>
+            alien.animation = new AlienAnimation.Reanimate
+          case r: AlienAnimation.Reanimate if r.done =>
+            alien.animation = new AlienAnimation.Idle
+          case i: AlienAnimation.Idle if i.frame > 0 =>
+            ready = true
+          case _ =>
+        }
+        if (ready)
+          playAlpha = playAlpha.alphaUp(delta, PlayFadeInSeconds)
+      }
       None
     } else {
       logoAlpha = logoAlpha.alphaDown(delta, LogoFadeOutSeconds)
@@ -129,9 +142,9 @@ class Home(paused: Option[Game] = None) extends Scene {
     if (paused.isDefined && !discard) {
       drawPaused(batch)
     } else {
-      for {
-        score <- Prefs.HighScore.intValue
-      } drawHighScore(batch, score)
+//      for {
+//        score <- Prefs.HighScore.intValue
+//      } drawHighScore(batch, score)
     }
     Text.draw(
       batch,
@@ -144,27 +157,54 @@ class Home(paused: Option[Game] = None) extends Scene {
   }
 
   private def drawLogo(batch: PolygonSpriteBatch): Unit = {
-    val logoOffset = (Geometry.ScreenWidth - LogoWidth) / 2
     batch.setColor(1, 1, 1, logoAlpha * logoAlpha)
+    val ufoY =
+      Geometry.ScreenHeight * (4f - 2f * Math.sqrt(ufoPos).toFloat) / 3f
+    if (alienPos > 0f) {
+
+      alien.draw(
+        (Geometry.ScreenWidth - AlienWidth) / 2,
+        ufoY - AlienHeight / 2 - Math
+          .sqrt(alienPos)
+          .toFloat * AlienHeight * 3 / 2,
+        LogoPixel,
+        batch
+      )
+    }
     batch.draw(
-      Tmtyl.logo,
-      logoOffset,
-      Geometry.ScreenHeight / 2 - LogoWidth / 2,
-      LogoWidth,
-      LogoWidth
+      Tmtyl.ufo,
+      (Geometry.ScreenWidth - UfoWidth) / 2,
+      ufoY - UfoHeight / 2,
+      UfoWidth,
+      UfoHeight
     )
+    if (ready) {
+      val LogoWidth = Tmtyl.logo.width * LogoPixel
+      val LogoHeight = Tmtyl.logo.height * LogoPixel
+      val extra = alien.animation match {
+        case i: AlienAnimation.Idle if i.frame % 2 == 1 && !i.blink => 3
+        case _ => 2
+      }
+      batch.draw(
+        Tmtyl.logo,
+        (Geometry.ScreenWidth - LogoWidth + AlienWidth * 3 / 4) / 2,
+        (Geometry.ScreenHeight - LogoHeight) / 2 - extra * LogoPixel,
+        LogoWidth,
+        LogoHeight
+      )
+    }
   }
 
   private def drawPaused(
       batch: PolygonSpriteBatch
   ): Unit = {
-    val color = HighScoreColor ⍺ (logoAlpha * logoAlpha)
+    val color = HighScoreColor ⍺ (playAlpha * playAlpha)
     Text.draw(
       batch,
       Text.smallFont,
       color,
       "Game Paused",
-      FooterMargin + HighScoreSize - Text.tinyFont.getLineHeight / 2
+      HighScorePos
     )
   }
 
@@ -172,13 +212,13 @@ class Home(paused: Option[Game] = None) extends Scene {
       batch: PolygonSpriteBatch,
       score: Int
   ): Unit = {
-    val color = HighScoreColor ⍺ (logoAlpha * logoAlpha)
+    val color = HighScoreColor ⍺ (playAlpha * playAlpha)
     Text.draw(
       batch,
       Text.smallFont,
       color,
       f"High Score: $score%,d",
-      FooterMargin + HighScoreSize
+      HighScorePos
     )
   }
 
@@ -198,11 +238,13 @@ object Home {
   val LogoFadeInSeconds = 1f
   val PlayDelaySeconds = 0.3f
   val PlayFadeInSeconds = .3f
+  val UfoMoveInSeconds = 2.5f
+  val AlienMoveInSeconds = 1.5f
 
   val LogoFadeOutSeconds = .5f
   val PlayFadeOutSeconds = .3f
 
-  val Title = "Тэятис"
+  val Title = "TAKE ME TO YOUR LEADER!"
 
   val HighScoreColor = new Color(.7f, .7f, .7f, 1f)
 

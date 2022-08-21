@@ -22,8 +22,9 @@ class Game extends Scene {
   override def update(delta: Float): Option[Scene] = {
     score.update(delta)
     player.update(delta)
-    PartialFunction.condOpt(state) { case QuitState =>
-      Home(this)
+    PartialFunction.condOpt(state) {
+      case QuitState  => new Home
+      case PauseState => Home(this)
     }
   }
 
@@ -38,4 +39,5 @@ object Game {
   case object PlayingState extends State
   case object LostState extends State
   case object QuitState extends State
+  case object PauseState extends State
 }

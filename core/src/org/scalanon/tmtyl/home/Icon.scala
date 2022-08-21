@@ -180,7 +180,7 @@ class PlayIcon(val x: Float, val y: Float, val size: Float, home: Home)
     val playScale = alpha * alpha * (if (pressed) .95f else 1f)
     val playWidth = playScale * Geometry.ScreenWidth / 6
     val playHeight = Tmtyl.play.height * playWidth / Tmtyl.play.width
-    batch.setColor(1, 1, 1, alpha * alpha)
+    batch.setColor(1, 1, 1, alpha * alpha * .75f)
     val (dX, dY) = if (compassAvailable) compassShift else (0f, 0f)
     batch.draw(
       Tmtyl.play,

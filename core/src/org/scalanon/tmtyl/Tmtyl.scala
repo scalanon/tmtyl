@@ -36,8 +36,10 @@ class Tmtyl extends ApplicationAdapter {
     Tmtyl.version = properties.getProperty("version", "Unknown")
     Tmtyl.key = properties.getProperty("key", "unset")
 
-    Tmtyl.logo = TextureWrapper.load("logo.png")
+    Tmtyl.logo = TextureWrapper.load("tmtyl.png")
     Tmtyl.play = TextureWrapper.load("play.png")
+    Tmtyl.ufo = TextureWrapper.load("ufo.png")
+    Tmtyl.alien = TextureWrapper.load("alien.png")
 
     Tmtyl.soundOff = TextureWrapper.load("sound-off.png")
     Tmtyl.soundOn = TextureWrapper.load("sound-on.png")
@@ -85,6 +87,8 @@ object Tmtyl {
 
   var logo: TextureWrapper = _
   var play: TextureWrapper = _
+  var ufo: TextureWrapper = _
+  var alien: TextureWrapper = _
 
   var soundOff: TextureWrapper = _
   var soundOn: TextureWrapper = _

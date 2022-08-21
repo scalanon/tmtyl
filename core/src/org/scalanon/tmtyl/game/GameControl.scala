@@ -31,8 +31,10 @@ class GameControl(game: Game) extends InputAdapter {
   }
 
   override def keyDown(keycode: Int): Boolean = {
-    if (keycode == Keys.ESCAPE || keycode == Keys.BACK) {
+    if (keycode == Keys.ESCAPE) {
       game.state = Game.QuitState
+    } else if (keycode == Keys.BACK) {
+        game.state = Game.PauseState
     }
     game.keysPressed = keycode :: game.keysPressed
 
