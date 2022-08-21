@@ -50,6 +50,7 @@ class Tmtyl extends ApplicationAdapter {
     Tmtyl.checkOff = TextureWrapper.load("check-off.png")
     Tmtyl.trash = TextureWrapper.load("trash.png")
     Tmtyl.square = TextureWrapper.load("Square.png")
+    Tmtyl.walkPlayer = TextureWrapper.load("tiny_adventurer_sheet.png")
 
     Tmtyl.pixture = Tmtyl.solidTexture(1f, 1f, 1f, 1f)
 
@@ -99,6 +100,7 @@ object Tmtyl {
   var checkOff: TextureWrapper = _
   var trash: TextureWrapper = _
   var square: TextureWrapper = _
+  var walkPlayer: TextureWrapper = _
 
   var pixture: Texture = _
 

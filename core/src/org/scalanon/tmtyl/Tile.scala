@@ -2,20 +2,21 @@ package org.scalanon.tmtyl
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
+import org.scalanon.tmtyl.Tmtyl._
 
 case class Tile(loc: Vec2, state: tileState) {
   def draw(batch: PolygonSpriteBatch): Unit = {
     state.draw(batch, this)
   }
 
-  def xIn(entity: Entity): Boolean = {
+  def xIn(player: Player): Boolean = {
 
-    if (entity.loc.x + entity.size.x > loc.x && entity.loc.x < loc.x + 1) {
+    if (player.loc.x + player.size.x > loc.x && player.loc.x < loc.x + 1) {
       true
     } else false
   }
-  def yIn(entity: Entity): Boolean = {
-    if (entity.loc.y + entity.size.y > loc.y && entity.loc.y < loc.y + 1) {
+  def yIn(player: Player): Boolean = {
+    if (player.loc.y + player.size.y > loc.y && player.loc.y < loc.y + 1) {
       true
     } else false
 
@@ -26,19 +27,15 @@ case class Tile(loc: Vec2, state: tileState) {
 sealed trait tileState { def draw(batch: PolygonSpriteBatch, tile: Tile): Unit }
 object tileState {
   case object Metal extends tileState {
-    def draw(batch: PolygonSpriteBatch, tile: Tile): Unit = {}
-  }
-  case object Lava extends tileState {
-
-    def draw(batch: PolygonSpriteBatch, tile: Tile): Unit = {}
-  }
-
-  case object Hologram extends tileState {
-
-    def draw(batch: PolygonSpriteBatch, tile: Tile): Unit = {}
-  }
-  case object Jump extends tileState {
-
-    def draw(batch: PolygonSpriteBatch, tile: Tile): Unit = {}
+    def draw(batch: PolygonSpriteBatch, tile: Tile): Unit = {
+      batch.setColor(Color.YELLOW)
+      batch.draw(
+        square,
+        tile.loc.x * screenUnit,
+        tile.loc.y * screenUnit,
+        screenUnit,
+        screenUnit
+      )
+    }
   }
 }

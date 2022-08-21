@@ -2,6 +2,7 @@ package org.scalanon.tmtyl.game
 
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.InputAdapter
+import org.scalanon.tmtyl.{Geometry, Vec2}
 
 import scala.collection.mutable
 
@@ -16,6 +17,7 @@ class GameControl(game: Game) extends InputAdapter {
       button: Int
   ): Boolean = {
     down.put(pointer, (screenX, screenY))
+    game.player.shoot()
     true
   }
 
@@ -47,6 +49,10 @@ class GameControl(game: Game) extends InputAdapter {
     true
   }
 
+  override def mouseMoved(screenX: Int, screenY: Int): Boolean = {
+    game.mouseLoc = Vec2(screenX, Geometry.ScreenHeight - screenY)
+    true
+  }
 }
 
 object GameControl {}
