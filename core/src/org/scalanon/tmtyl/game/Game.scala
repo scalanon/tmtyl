@@ -11,6 +11,7 @@ class Game extends Scene {
   import Game._
 
   var state: State = PlayingState
+  var mouseLoc: Vec2 = Vec2(0, 0)
 
   val score: Score = new Score
   val matrix = new Matrix4()
