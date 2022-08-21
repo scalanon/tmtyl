@@ -11,16 +11,30 @@ case class Player(game: Game) extends Entity {
   var loc: Vec2 = Vec2(0, 3)
   var size: Vec2 = Vec2(1, 2)
   var vel: Vec2 = Vec2(0, 0)
+  var left = false
+  var stage = 0
+  var behavior = 2
   def draw(batch: PolygonSpriteBatch): Unit = {
     batch.setColor(Color.WHITE)
     batch.draw(
-      square,
+      walkPlayer,
       loc.x * screenUnit,
       loc.y * screenUnit,
+      0f,
+      0f,
       size.x * screenUnit,
-      size.y * screenUnit
+      size.y * screenUnit,
+      1f,
+      1f,
+      0,
+      stage * 22,
+      behavior * 17,
+      16,
+      16,
+      left,
+      false
     )
-    batch.setColor(Color.GRAY)
+    /* batch.setColor(Color.GRAY)
     batch.draw(
       square,
       (loc.x + .5f) * screenUnit,
@@ -38,16 +52,23 @@ case class Player(game: Game) extends Entity {
       1,
       false,
       false
-    )
+    )*/
   }
+  var wTick = 0f
   def moveLeft(delta: Float): Unit = {
     vel.x = -6
+    left = true
+    behavior = 2
   }
   def moveRight(delta: Float): Unit = {
+
+    behavior = 2
     vel.x = 6
+    left = false
   }
   def jump(delta: Float): Unit = {
     vel.y = 14
+    behavior = 3
   }
   def shoot(): Unit = {
     game.projectiles = Projectile(
@@ -60,6 +81,16 @@ case class Player(game: Game) extends Entity {
     ) :: game.projectiles
   }
   def update(delta: Float): Unit = {
+    wTick += delta
+
+    if (wTick >= .1f) {
+      stage += 1
+      if (stage == 5) {
+        stage = 0
+      }
+      wTick = 0f
+    }
+
     lookRot = (
       Math
         .atan2(
@@ -74,6 +105,7 @@ case class Player(game: Game) extends Entity {
       moveRight(delta)
     } else {
       vel.x = 0
+      behavior = 0
     }
     if (loc.y + 2 < 0) {
       game.state = Game.QuitState
@@ -87,6 +119,17 @@ case class Player(game: Game) extends Entity {
       jump(delta)
     }
     vel.y -= 1
+    if (
+      !game.tiles.exists(t => {
+        t.xIn(this) &&
+          loc.y + vel.y * delta <= t.loc.y + 1 && loc.y >= t.loc.y + 1
+      })
+    ) {
+      behavior = 3
+      if (stage == 4) {
+        stage = 0
+      }
+    }
 
     game.tiles.foreach(t => {
       if (
@@ -113,6 +156,7 @@ case class Player(game: Game) extends Entity {
         loc.y = t.loc.y + 1
       }
     })
+
     loc += (vel * delta)
 
   }
