@@ -14,6 +14,7 @@ class Game extends Scene {
 
   val score: Score = new Score
   val matrix = new Matrix4()
+  var alien: Alien = Alien(this)
 
   var player: Player = Player(this)
   var tiles: List[Tile] = List(
@@ -21,7 +22,15 @@ class Game extends Scene {
     Tile(Vec2(1, 0), tileState.Metal),
     Tile(Vec2(2, 0), tileState.Metal),
     Tile(Vec2(2, 1), tileState.Metal),
-    Tile(Vec2(3, 0), tileState.Metal)
+    Tile(Vec2(3, 0), tileState.Metal),
+    Tile(Vec2(4, 0), tileState.Metal),
+    Tile(Vec2(5, 0), tileState.Metal),
+    Tile(Vec2(6, 0), tileState.Metal),
+    Tile(Vec2(7, 0), tileState.Metal),
+    Tile(Vec2(8, 0), tileState.Metal),
+    Tile(Vec2(9, 0), tileState.Metal),
+    Tile(Vec2(10, 0), tileState.Metal),
+    Tile(Vec2(11, 0), tileState.Metal)
   )
   var keysPressed = List.empty[Int]
 
@@ -33,6 +42,7 @@ class Game extends Scene {
   override def update(delta: Float): Option[Scene] = {
     score.update(delta)
     player.update(delta)
+    alien.update(delta)
     PartialFunction.condOpt(state) { case QuitState =>
       Home(this)
     }
@@ -47,6 +57,7 @@ class Game extends Scene {
 
     tiles.foreach(t => t.draw(batch))
     player.draw(batch)
+    alien.draw(batch)
 
     batch.setTransformMatrix(matrix.idt())
     score.draw(batch)
