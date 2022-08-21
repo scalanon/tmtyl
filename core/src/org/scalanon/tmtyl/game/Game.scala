@@ -7,6 +7,8 @@ import org.scalanon.tmtyl.Scene
 import org.scalanon.tmtyl.Tmtyl._
 import org.scalanon.tmtyl.home.Home
 
+import scala.collection.mutable
+
 class Game extends Scene {
   import Game._
 
@@ -34,7 +36,10 @@ class Game extends Scene {
     Tile(Vec2(10, 0), tileState.Metal),
     Tile(Vec2(11, 0), tileState.Metal)
   )
-  var keysPressed = List.empty[Int]
+
+  val keysPressed = mutable.Set.empty[Int]
+
+  def keyPressed(as: Int*): Boolean = as.exists(keysPressed.contains)
 
   override def init(): GameControl = {
     state = PlayingState

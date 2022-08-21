@@ -3,8 +3,7 @@ package org.scalanon.tmtyl.home
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import org.scalanon.tmtyl.Tmtyl
 
-class Alien {
-  var animation: AlienAnimation = new AlienAnimation.Dead
+class Alien(var animation: AlienAnimation) {
 
   def update(delta: Float): Unit = {
     animation.update(delta)

@@ -17,7 +17,7 @@ class Home(paused: Option[Game] = None) extends Scene {
   var ufoPos = 0f
   var alienPos = 0f
   var discard = false
-  var alien = new Alien
+  var alien = new Alien(new AlienAnimation.Dead)
   var ready = false
 
   // spring layout would make this easy
@@ -183,7 +183,7 @@ class Home(paused: Option[Game] = None) extends Scene {
       val LogoHeight = Tmtyl.logo.height * LogoPixel
       val extra = alien.animation match {
         case i: AlienAnimation.Idle if i.frame % 2 == 1 && !i.blink => 3
-        case _ => 2
+        case _                                                      => 2
       }
       batch.draw(
         Tmtyl.logo,

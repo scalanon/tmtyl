@@ -9,7 +9,7 @@ import org.scalanon.tmtyl.game.Game
 case class Player(game: Game) extends Entity {
   var lookRot: Float = 0f
   var loc: Vec2 = Vec2(0, 3)
-  var size: Vec2 = Vec2(1, 2)
+  var size: Vec2 = Vec2(1, 22f / 17)
   var vel: Vec2 = Vec2(0, 0)
   var left = false
   var stage = 0
@@ -99,9 +99,9 @@ case class Player(game: Game) extends Entity {
         )
         .toFloat
     )
-    if (game.keysPressed.contains(Keys.A)) {
+    if (game.keyPressed(Keys.A, Keys.LEFT)) {
       moveLeft(delta)
-    } else if (game.keysPressed.contains(Keys.D)) {
+    } else if (game.keyPressed(Keys.D, Keys.RIGHT)) {
       moveRight(delta)
     } else {
       vel.x = 0
@@ -112,7 +112,7 @@ case class Player(game: Game) extends Entity {
     }
 
     if (
-      game.keysPressed.contains(Keys.W) && game.tiles.exists(t => {
+      game.keyPressed(Keys.W, Keys.UP) && game.tiles.exists(t => {
         t.xIn(this) && loc.y == t.loc.y + 1
       })
     ) {
