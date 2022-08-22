@@ -5,9 +5,6 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import org.scalanon.tmtyl.Tmtyl._
 
 case class Tile(loc: Vec2, state: tileState) {
-  def draw(batch: PolygonSpriteBatch): Unit = {
-    state.draw(batch, this)
-  }
 
   def xIn(player: Player): Boolean = {
 
@@ -24,18 +21,10 @@ case class Tile(loc: Vec2, state: tileState) {
 
 }
 
-sealed trait tileState { def draw(batch: PolygonSpriteBatch, tile: Tile): Unit }
+sealed trait tileState {}
 object tileState {
-  case object Metal extends tileState {
-    def draw(batch: PolygonSpriteBatch, tile: Tile): Unit = {
-      batch.setColor(Color.YELLOW)
-      batch.draw(
-        square,
-        tile.loc.x * screenUnit,
-        tile.loc.y * screenUnit,
-        screenUnit,
-        screenUnit
-      )
-    }
-  }
+  case object Floor extends tileState {}
+  case object Wall extends tileState {}
+  case object Ladder extends tileState {}
+
 }

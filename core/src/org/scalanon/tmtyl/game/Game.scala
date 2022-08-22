@@ -20,26 +20,28 @@ class Game extends Scene {
   val score: Score = new Score
   val matrix = new Matrix4()
   var alien: Alien = Alien(this)
-  var projectiles: List[Projectile] = List.empty
 
   val fighter = new Fighter
   val level = Levels.level1
 
   var player: Player = Player(this)
   var tiles: List[Tile] = List(
-    Tile(Vec2(0, 0), tileState.Metal),
-    Tile(Vec2(1, 0), tileState.Metal),
-    Tile(Vec2(2, 0), tileState.Metal),
-    Tile(Vec2(2, 1), tileState.Metal),
-    Tile(Vec2(3, 0), tileState.Metal),
-    Tile(Vec2(4, 0), tileState.Metal),
-    Tile(Vec2(5, 0), tileState.Metal),
-    Tile(Vec2(6, 0), tileState.Metal),
-    Tile(Vec2(7, 0), tileState.Metal),
-    Tile(Vec2(8, 0), tileState.Metal),
-    Tile(Vec2(9, 0), tileState.Metal),
-    Tile(Vec2(10, 0), tileState.Metal),
-    Tile(Vec2(11, 0), tileState.Metal)
+    Tile(Vec2(0, 0), tileState.Floor),
+    Tile(Vec2(1, 0), tileState.Floor),
+    Tile(Vec2(2, 0), tileState.Floor),
+    Tile(Vec2(2, 1), tileState.Ladder),
+    Tile(Vec2(2, 2), tileState.Ladder),
+    Tile(Vec2(2, 3), tileState.Ladder),
+    Tile(Vec2(2, 4), tileState.Ladder),
+    Tile(Vec2(3, 0), tileState.Floor),
+    Tile(Vec2(4, 0), tileState.Floor),
+    Tile(Vec2(5, 0), tileState.Floor),
+    Tile(Vec2(6, 0), tileState.Floor),
+    Tile(Vec2(7, 0), tileState.Floor),
+    Tile(Vec2(8, 0), tileState.Floor),
+    Tile(Vec2(9, 0), tileState.Floor),
+    Tile(Vec2(10, 0), tileState.Floor),
+    Tile(Vec2(11, 0), tileState.Floor)
   )
 
   val keysPressed = mutable.Set.empty[Int]
@@ -56,7 +58,6 @@ class Game extends Scene {
     player.update(delta)
     alien.update(delta)
     fighter.update(delta)
-    projectiles.foreach(p => p.update(delta))
     PartialFunction.condOpt(state) {
       case QuitState  => new Home
       case PauseState => Home(this)
@@ -70,16 +71,12 @@ class Game extends Scene {
       matrix.setToTranslation(translationX, 0, 0)
     )
 
-    tiles.foreach(t => t.draw(batch))
-
     drawLevel(batch)
 
     player.draw(batch)
     alien.draw(batch)
 
     fighter.draw(screenUnit * 7, screenUnit, screenUnit / 16, batch)
-
-    projectiles.foreach(p => p.draw(batch))
 
     batch.setTransformMatrix(matrix.idt())
     score.draw(batch)
@@ -97,7 +94,8 @@ class Game extends Scene {
       x <- 0 until layer.gridCellsX
       tile <- tileset.tile(row(x))
     } {
-      batch.draw(tileset.texture,
+      batch.draw(
+        tileset.texture,
         (x - 4) * screenUnit,
         (layer.gridCellsY - y - 1) * screenUnit,
         screenUnit,
