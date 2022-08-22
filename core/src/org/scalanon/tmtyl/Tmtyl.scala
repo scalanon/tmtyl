@@ -8,8 +8,7 @@ import com.badlogic.gdx.graphics.glutils.PixmapTextureData
 import com.badlogic.gdx.graphics.{Pixmap, Texture}
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input}
-import org.scalanon.tmtyl.game.Game
-import org.scalanon.tmtyl.home.Home
+import org.scalanon.tmtyl.game.{Game, Tilesets}
 import org.scalanon.tmtyl.util.{GarbageCan, TextureWrapper}
 
 import java.util.Properties
@@ -57,9 +56,11 @@ class Tmtyl extends ApplicationAdapter {
 
     Tmtyl.pixture = Tmtyl.solidTexture(1f, 1f, 1f, 1f)
 
+    Tmtyl.tilesets = Tilesets.load()
+
     Text.loadFonts()
 
-    setScene(new Game)//setScene(new Home)
+    setScene(new Game) //setScene(new Home)
   }
 
   override def render(): Unit = {
@@ -106,6 +107,8 @@ object Tmtyl {
   var trash: TextureWrapper = _
   var square: TextureWrapper = _
   var walkPlayer: TextureWrapper = _
+
+  var tilesets: Tilesets = _
 
   var pixture: Texture = _
 

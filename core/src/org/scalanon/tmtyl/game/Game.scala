@@ -1,6 +1,7 @@
 package org.scalanon.tmtyl
 package game
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.math.Matrix4
 import org.scalanon.tmtyl.Scene
@@ -21,6 +22,7 @@ class Game extends Scene {
   var projectiles: List[Projectile] = List.empty
 
   val fighter = new Fighter
+  val level = Levels.level1
 
   var player: Player = Player(this)
   var tiles: List[Tile] = List(
@@ -68,6 +70,9 @@ class Game extends Scene {
     )
 
     tiles.foreach(t => t.draw(batch))
+
+    drawLevel(batch)
+
     player.draw(batch)
     alien.draw(batch)
 
@@ -78,6 +83,31 @@ class Game extends Scene {
     batch.setTransformMatrix(matrix.idt())
     score.draw(batch)
 
+  }
+
+  private def drawLevel(batch: PolygonSpriteBatch): Unit = {
+    batch.setColor(Color.WHITE)
+    for {
+      layer <- level.layers
+      tileset = Tmtyl.tilesets(layer.tileset)
+      y <- 0 until layer.gridCellsY
+      row = layer.data2D(y)
+      x <- 0 until layer.gridCellsX
+      tile <- tileset.tile(row(x))
+    } {
+      batch.draw(tileset.texture,
+        (x - 4) * screenUnit,
+        (layer.gridCellsY - y - 1) * screenUnit,
+        screenUnit,
+        screenUnit,
+        tile.x,
+        tile.y,
+        tile.w,
+        tile.h,
+        false,
+        false
+      )
+    }
   }
 }
 

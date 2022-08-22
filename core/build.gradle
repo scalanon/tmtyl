@@ -22,6 +22,9 @@ eclipse.project.name = appName + "-core"
 
 dependencies {
     implementation 'org.scala-lang:scala-library:2.13.8'
+    implementation 'io.circe:circe-core_2.13:0.15.0-M1'
+    implementation 'io.circe:circe-generic_2.13:0.15.0-M1'
+    implementation 'io.circe:circe-parser_2.13:0.15.0-M1'
 }
 
 def postKey
