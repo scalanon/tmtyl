@@ -19,6 +19,15 @@
   "layers": [
     {
       "definition": "tile",
+      "name": "Second Layer",
+      "gridSize": {"x": 16, "y": 16},
+      "exportID": "18521969",
+      "exportMode": 0,
+      "arrayMode": 1,
+      "defaultTileset": "Nature Tileset"
+    },
+    {
+      "definition": "tile",
       "name": "First Layer",
       "gridSize": {"x": 16, "y": 16},
       "exportID": "12290113",
