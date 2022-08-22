@@ -61,7 +61,7 @@ class Game extends Scene {
     player.draw(batch)
     alien.draw(batch)
 
-    fighter.draw(screenPixel * 7 * 16, screenPixel * 16, screenPixel, batch)
+    fighter.draw(screenPixel * 64 * 16, screenPixel * 3 * 16, screenPixel, batch)
 
     batch.setTransformMatrix(matrix.idt())
     score.draw(batch)
