@@ -88,7 +88,8 @@ object Tmtyl {
 
   var version: String = _
   var key: String = _
-  var screenUnit = (Geometry.ScreenWidth min Geometry.ScreenHeight) / 20
+
+  val screenPixel = (Geometry.ScreenWidth min Geometry.ScreenHeight) / 320
 
   var logo: TextureWrapper = _
   var play: TextureWrapper = _

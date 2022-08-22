@@ -1,9 +1,5 @@
 package org.scalanon.tmtyl
 
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
-import org.scalanon.tmtyl.Tmtyl._
-
 case class Tile(loc: Vec2, state: tileState) {
 
   def xIn(player: Player): Boolean = {

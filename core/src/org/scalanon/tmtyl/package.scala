@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color
 
 import java.util.concurrent.TimeUnit
 import scala.concurrent.duration.FiniteDuration
+import scala.reflect.ClassTag
 
 // Things kinda stolen from scaloi
 package object tmtyl {
@@ -64,9 +65,19 @@ package object tmtyl {
     }
   }
 
+  implicit class ListOps[A](val self: List[A]) extends AnyVal {
+    def collectType[B <: A: ClassTag]: List[B] =
+      self.flatMap(implicitly[ClassTag[B]].unapply)
+  }
+
   implicit class OptionOps[A](val self: Option[A]) extends AnyVal {
+    def cata[B](t: A => B, f: => B): B = self.map(t).getOrElse(f)
+
+    def |[B >: A](b: B): B = self.getOrElse(b)
+
     def isTrue(implicit Booleate: Booleate[A]): Boolean =
       self.fold(false)(Booleate.value)
+
     def isFalse(implicit Booleate: Booleate[A]): Boolean =
       self.fold(false)(Booleate.unvalue)
   }
