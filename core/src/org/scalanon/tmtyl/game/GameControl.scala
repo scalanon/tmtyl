@@ -17,7 +17,6 @@ class GameControl(game: Game) extends InputAdapter {
       button: Int
   ): Boolean = {
     down.put(pointer, (screenX, screenY))
-    game.player.shoot()
     true
   }
 
@@ -36,7 +35,7 @@ class GameControl(game: Game) extends InputAdapter {
     if (keycode == Keys.ESCAPE) {
       game.state = Game.QuitState
     } else if (keycode == Keys.BACK) {
-        game.state = Game.PauseState
+      game.state = Game.PauseState
     }
     game.keysPressed.add(keycode)
 

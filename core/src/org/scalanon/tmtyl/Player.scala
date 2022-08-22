@@ -70,16 +70,6 @@ case class Player(game: Game) extends Entity {
     vel.y = 14
     behavior = 3
   }
-  def shoot(): Unit = {
-    game.projectiles = Projectile(
-      game,
-      lookRot,
-      Vec2(
-        loc.x + .5f + (math.cos(lookRot).toFloat * .8f),
-        loc.y + (math.sin(lookRot).toFloat * .8f) + 1f
-      )
-    ) :: game.projectiles
-  }
   def update(delta: Float): Unit = {
     wTick += delta
 
@@ -135,7 +125,7 @@ case class Player(game: Game) extends Entity {
       if (
         t.yIn(
           this
-        ) && loc.x + size.x + vel.x * delta > t.loc.x && loc.x <= t.loc.x
+        ) && loc.x + size.x + vel.x * delta > t.loc.x && loc.x <= t.loc.x && t.state == tileState.Wall
       ) {
         loc.x = t.loc.x - size.x
         vel.x = 0
@@ -143,14 +133,14 @@ case class Player(game: Game) extends Entity {
       if (
         t.yIn(
           this
-        ) && loc.x + vel.x * delta < t.loc.x + 1 && loc.x >= t.loc.x + 1
+        ) && loc.x + vel.x * delta < t.loc.x + 1 && loc.x >= t.loc.x + 1 && t.state == tileState.Wall
       ) {
         loc.x = t.loc.x + 1
         vel.x = 0
       }
       if (
         t.xIn(this) &&
-        loc.y + vel.y * delta <= t.loc.y + 1 && loc.y >= t.loc.y + 1
+        loc.y + vel.y * delta <= t.loc.y + 1 && loc.y >= t.loc.y + 1 && t.state == tileState.Floor
       ) {
         vel.y = 0
         loc.y = t.loc.y + 1
