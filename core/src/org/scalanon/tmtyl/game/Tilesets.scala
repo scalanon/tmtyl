@@ -1,4 +1,5 @@
-package org.scalanon.tmtyl.game
+package org.scalanon.tmtyl
+package game
 
 import com.badlogic.gdx.graphics.Pixmap
 import io.circe.generic.auto._
@@ -31,25 +32,34 @@ final case class Tileset(
   private val columns =
     (texture.width - 2 * tileMarginX + tileSeparationX) / (tileWidth + tileSeparationX)
 
-  def tile(index: Int): Option[IntRect] = {
-    if (index < 0) {
-      None
-    } else {
+  def tile(index: Int): Option[Rect] =
+    (index >= 0) option {
       val col = index % columns
       val row = index / columns
-      Some(
-        IntRect(
-          tileMarginX + col * (tileWidth + tileSeparationX),
-          tileMarginY + row * (tileHeight + tileSeparationY),
-          tileWidth,
-          tileHeight
-        )
+      Rect(
+        tileMarginX + col * (tileWidth + tileSeparationX),
+        tileMarginY + row * (tileHeight + tileSeparationY),
+        tileWidth,
+        tileHeight
       )
     }
-  }
+
 }
 
-final case class IntRect(x: Int, y: Int, w: Int, h: Int)
+final case class Rect(x: Int, y: Int, width: Int, height: Int) {
+  // horizontally
+  def isWithinX(ent: Ent): Boolean =
+    x + width >= ent.x && x < ent.x + ent.width
+
+  def isOnTop(ent: Ent): Boolean =
+    x + width >= ent.x && x < ent.x + ent.width && y == ent.y + ent.height
+
+  def isOnTopOrIn(ent: Ent): Boolean =
+    x + width >= ent.x && x < ent.x + ent.width && y >= ent.y && y <= ent.y + ent.height
+
+  def isOnBottom(ent: Ent): Boolean =
+    x + width >= ent.x && x < ent.x + ent.width && y == ent.y
+}
 
 final case class JsonTileset(
     label: String,
@@ -64,7 +74,7 @@ final case class JsonTileset(
 ) {
   def load(): Tileset = {
     val base64 = image.stripPrefix("data:image/png;base64,")
-    val png = Base64.getDecoder.decode(base64)
+    val png    = Base64.getDecoder.decode(base64)
     val pixmap = new Pixmap(png, 0, png.length)
     Tileset(
       tileWidth,

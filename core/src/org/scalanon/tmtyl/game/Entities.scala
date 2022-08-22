@@ -1,20 +1,21 @@
 package org.scalanon.tmtyl
 package game
 
-class Entities(entities: List[Ent]) {
-  val floors: List[Floor] = entities.collectType
-  val waters: List[Water] = entities.collectType
-  val ladders: List[Ladder] = entities.collectType
-  val doors: List[Door] = entities.collectType
+class Entities(val entities: List[Ent]) {
+  val start                 = entities.collectType[Start].headOption
+  val floors: List[Floor]   = entities.collectType[Floor]
+  val waters: List[Water]   = entities.collectType[Water]
+  val ladders: List[Ladder] = entities.collectType[Ladder]
+  val doors: List[Door]     = entities.collectType[Door]
 }
 
 object Entities {
   def fromLevel(level: JsonLevel): Entities = {
     val entities = for {
       jsonLayer <- level.layers
-      layer <- jsonLayer.list[JsonEntityLayer]
-      entity <- layer.entities
-    } yield Ent(entity)
+      layer     <- jsonLayer.list[JsonEntityLayer]
+      entity    <- layer.entities
+    } yield Ent.fromJson(entity, layer)
     new Entities(entities)
   }
 }
@@ -27,40 +28,59 @@ sealed trait Ent {
 }
 
 object Ent {
-  val DefaultSize = 16
 
-  def apply(entity: JsonEntity): Ent = entity.name match {
-    case "Floor" =>
-      Floor(
-        entity.x,
-        entity.y,
-        entity.width | DefaultSize,
-        entity.height | DefaultSize
-      )
-    case "Water" =>
-      Water(
-        entity.x,
-        entity.y,
-        entity.width | DefaultSize,
-        entity.height | DefaultSize
-      )
-    case "Ladder" =>
-      Ladder(
-        entity.x,
-        entity.y,
-        entity.width | DefaultSize,
-        entity.height | DefaultSize
-      )
-    case "Door" =>
-      Door(
-        entity.x,
-        entity.y,
-        entity.width | DefaultSize,
-        entity.height | DefaultSize,
-        entity.value("Doorway") | ""
-      )
+  def fromJson(entity: JsonEntity, layer: JsonEntityLayer): Ent = {
+    val width  = entity.width | layer.gridCellWidth
+    val height = entity.height | layer.gridCellHeight
+    val x      = entity.x
+    val y      = layer.gridCellsY * layer.gridCellHeight - entity.y - height
+    entity.name match {
+      case "Start"  =>
+        Start(
+          x,
+          y,
+          width,
+          height
+        )
+      case "Floor"  =>
+        Floor(
+          x,
+          y,
+          width,
+          height
+        )
+      case "Water"  =>
+        Water(
+          x,
+          y,
+          width,
+          height
+        )
+      case "Ladder" =>
+        Ladder(
+          x,
+          y,
+          width,
+          height
+        )
+      case "Door"   =>
+        Door(
+          x,
+          y,
+          width,
+          height,
+          entity.value("Doorway") | ""
+        )
+    }
   }
 }
+
+final case class Start(
+    x: Int,
+    y: Int,
+    width: Int,
+    height: Int
+) extends Ent
 
 final case class Floor(
     x: Int,

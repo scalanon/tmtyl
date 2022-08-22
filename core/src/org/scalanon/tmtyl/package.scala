@@ -71,6 +71,8 @@ package object tmtyl {
   }
 
   implicit class OptionOps[A](val self: Option[A]) extends AnyVal {
+    def cata[B](t: A => B, f: => B): B = self.map(t).getOrElse(f)
+
     def |[B >: A](b: B): B = self.getOrElse(b)
 
     def isTrue(implicit Booleate: Booleate[A]): Boolean =

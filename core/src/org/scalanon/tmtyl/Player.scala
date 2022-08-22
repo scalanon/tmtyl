@@ -4,30 +4,37 @@ import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import org.scalanon.tmtyl.Tmtyl._
-import org.scalanon.tmtyl.game.Game
+import org.scalanon.tmtyl.game.{Game, Rect}
+
+import scala.util.Random
 
 case class Player(game: Game) extends Entity {
+  val XMargin = 8
+
   var lookRot: Float = 0f
-  var loc: Vec2 = Vec2(0, 3)
-  var size: Vec2 = Vec2(1, 22f / 17)
-  var vel: Vec2 = Vec2(0, 0)
-  var left = false
-  var stage = 0
-  var behavior = 2
+  var loc: Vec2      = game.entities.start.cata(s => Vec2(s.x, s.y), Vec2(0, 0))
+  var size: Vec2     = Vec2(22, 17)
+  var vel: Vec2      = Vec2(0, 0)
+  var left           = false
+  var stage          = 0
+  var behavior       = 2
+
   def draw(batch: PolygonSpriteBatch): Unit = {
     batch.setColor(Color.WHITE)
+    val maxStage = Stages(behavior)
+    val st = if (stage < maxStage) stage else maxStage * 2 - stage - 1
     batch.draw(
       walkPlayer,
-      loc.x * screenUnit,
-      loc.y * screenUnit,
+      loc.x * screenPixel,
+      loc.y * screenPixel,
       0f,
       0f,
-      size.x * screenUnit,
-      size.y * screenUnit,
+      size.x * screenPixel,
+      size.y * screenPixel,
       1f,
       1f,
       0,
-      stage * 22,
+      st * 22,
       behavior * 17,
       16,
       16,
@@ -54,129 +61,138 @@ case class Player(game: Game) extends Entity {
       false
     )*/
   }
-  var wTick = 0f
-  def moveLeft(delta: Float): Unit = {
-    vel.x = -6
-    left = true
-    behavior = 2
-  }
-  def moveRight(delta: Float): Unit = {
 
-    behavior = 2
-    vel.x = 6
-    left = false
-  }
-  def jump(delta: Float): Unit = {
-    vel.y = 14
-    behavior = 3
-  }
-  def climb(): Unit = {
-    vel.y = 6
-    behavior = 0
-  }
+  var wTick = 0f
+
+  private val SpeedX       = 6 * 16
+  private val ClimbSpeed   = 6 * 16
+  private val JumpSpeed    = 14 * 16
+  private val Gravity      = 60 * 16
+  private val DeathlySpeed = 300
+
+  private val Stages = Map(
+    0 -> 5,
+    1 -> 6,
+    2 -> 6,
+    3 -> 4
+  )
+
   def update(delta: Float): Unit = {
     wTick += delta
 
     if (wTick >= .1f) {
       stage += 1
-      if (stage == 5) {
+      if (stage >= Stages(behavior) * 2 - 2) {
         stage = 0
       }
       wTick = 0f
     }
 
-    lookRot = (
-      Math
-        .atan2(
-          ((game.mouseLoc.y / screenUnit) - (loc.y + 1.5)),
-          ((game.mouseLoc.x / screenUnit) - (Geometry.ScreenWidth / 2 - ((loc.x + (size.x / 2)) * screenUnit)) / screenUnit - (loc.x + .5))
-        )
-        .toFloat
-    )
+    lookRot = Math
+      .atan2(
+        (game.mouseLoc.y / screenPixel) - (loc.y + size.y),
+        (loc.x + size.x / 2) - (game.mouseLoc.x / screenPixel)
+      )
+      .toFloat
+
     if (game.keyPressed(Keys.A, Keys.LEFT)) {
-      moveLeft(delta)
+      if (vel.x >= 0) stage = 0
+      vel.x = -SpeedX
+      left = true
+      behavior = 2
     } else if (game.keyPressed(Keys.D, Keys.RIGHT)) {
-      moveRight(delta)
+      if (vel.x < 0) stage = 0
+      behavior = 2
+      vel.x = SpeedX
+      left = false
     } else {
       vel.x = 0
-      behavior = 0
-    }
-    if (loc.y + 2 < 0) {
-      game.state = Game.QuitState
+      if (vel.y == 0) behavior = 0
     }
 
+    val playerRect = Rect(
+      loc.x.toInt + XMargin,
+      loc.y.toInt,
+      size.x.toInt - 2 * XMargin,
+      size.y.toInt
+    )
+
+    val onLadder = game.entities.ladders.find(playerRect.isOnTopOrIn)
+    val onFloor  = game.entities.floors.find(playerRect.isOnTop)
+
+    var warpLoc = Option.empty[Vec2]
+
+    if (onLadder.isDefined) {
+      vel.y = 0
+    } else {
+      vel.y -= Gravity * delta
+    }
     if (game.keyPressed(Keys.W, Keys.UP)) {
-      if (
-        game.tiles.exists(t => {
-          t.xIn(
-            this
-          ) && loc.y == t.loc.y + 1 && (t.state == tileState.Floor || t.state == tileState.Ladder)
-        })
-      ) {
-        jump(delta)
-      }
-      if (
-        game.tiles.exists(t => {
-          t.xIn(
-            this
-          ) && loc.y >= t.loc.y && t.state == tileState.Ladder && loc.y < t.loc.y + 1
-
-        })
-      ) {
-        climb()
-      }
-    }
-    vel.y -= 1
-    if (
-      !game.tiles.exists(t => {
-        t.xIn(this) &&
-          loc.y + vel.y * delta <= t.loc.y + 1 && loc.y >= t.loc.y + 1
-      })
-    ) {
-      behavior = 3
-      if (stage == 4) {
+      if (onLadder.isDefined) {
+        vel.y = ClimbSpeed
+        behavior = 0
+      } else if (onFloor.isDefined) {
+        vel.y = JumpSpeed
+        behavior = 3
         stage = 0
       }
+    } else if (game.keyPressed(Keys.S, Keys.DOWN)) {
+      if (onLadder.isDefined) {
+        vel.y = -ClimbSpeed
+        behavior = 0
+      } else if (game.newKeyPressed(Keys.S, Keys.DOWN)) {
+        val onDoor = game.entities.doors.find(playerRect.isOnBottom)
+        onDoor foreach { from =>
+          val toDoors = game.entities.doors.filter(door =>
+            door.doorway == from.doorway && (door ne from)
+          )
+          Random.shuffle(toDoors).headOption foreach { to =>
+            warpLoc = Some(
+              Vec2(
+                loc.x + to.x - from.x,
+                loc.y + to.y - from.y
+              )
+            )
+          }
+        }
+      }
     }
 
-    game.tiles.foreach(t => {
-      if (
-        t.yIn(
-          this
-        ) && loc.x + size.x + vel.x * delta > t.loc.x && loc.x <= t.loc.x && t.state == tileState.Wall
-      ) {
-        loc.x = t.loc.x - size.x
-        vel.x = 0
-      }
-      if (
-        t.yIn(
-          this
-        ) && loc.x + vel.x * delta < t.loc.x + 1 && loc.x >= t.loc.x + 1 && t.state == tileState.Wall
-      ) {
-        loc.x = t.loc.x + 1
-        vel.x = 0
-      }
-      if (
-        t.xIn(this) &&
-        loc.y + vel.y * delta <= t.loc.y + 1 && loc.y >= t.loc.y + 1 && ((t.state == tileState.Floor) || (t.state == tileState.Ladder && !game.tiles
-          .exists(ti => {
-            loc.y == ti.loc.y && ti.xIn(this)
-          })))
-      ) {
-        vel.y = vel.y max 0
-        loc.y = t.loc.y + 1
-      }
-      if ({
-        t.xIn(
-          this
-        ) && loc.y >= t.loc.y && t.state == tileState.Ladder && loc.y <= t.loc.y + 1
+    loc = warpLoc getOrElse {
+      val newLoc = loc + (vel * delta)
 
-      }) {
-        vel.y = vel.y max 0
-      }
-    })
+      val newRect = Rect(
+        newLoc.x.toInt + XMargin,
+        newLoc.y.toInt,
+        size.x.toInt - 2 * XMargin,
+        size.y.toInt
+      )
 
-    loc += (vel * delta)
+      if (vel.y >= 0) { // no climbing off the top of a ladder
+        onLadder foreach { ladder =>
+          newLoc.y = newLoc.y min (ladder.y + ladder.height)
+        }
+      } else { // no falling through floor unless climbing down a ladder...
+        val hitFloor = game.entities.floors.find(floor =>
+          newRect.isWithinX(floor) &&
+            newRect.y < floor.y + floor.height &&
+            playerRect.y >= floor.y + floor.height &&
+            !onLadder.exists(ladder => ladder.y < floor.y)
+        )
+        hitFloor foreach { floor =>
+          if (vel.y < -DeathlySpeed) {
+            game.state = Game.QuitState
+          }
+          newLoc.y = floor.y + floor.height
+          vel.y = 0
+        }
+      }
+      newLoc
+    }
+
+    if (loc.y + size.y < 0) {
+      game.state = Game.QuitState
+    }
 
   }
 }

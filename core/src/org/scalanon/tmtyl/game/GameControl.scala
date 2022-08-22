@@ -38,6 +38,7 @@ class GameControl(game: Game) extends InputAdapter {
       game.state = Game.PauseState
     }
     game.keysPressed.add(keycode)
+    game.newKeysPressed.add(keycode)
 
     true
   }
