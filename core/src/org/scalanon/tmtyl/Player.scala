@@ -70,6 +70,10 @@ case class Player(game: Game) extends Entity {
     vel.y = 14
     behavior = 3
   }
+  def climb(): Unit = {
+    vel.y = 6
+    behavior = 0
+  }
   def update(delta: Float): Unit = {
     wTick += delta
 
@@ -101,12 +105,26 @@ case class Player(game: Game) extends Entity {
       game.state = Game.QuitState
     }
 
-    if (
-      game.keyPressed(Keys.W, Keys.UP) && game.tiles.exists(t => {
-        t.xIn(this) && loc.y == t.loc.y + 1
-      })
-    ) {
-      jump(delta)
+    if (game.keyPressed(Keys.W, Keys.UP)) {
+      if (
+        game.tiles.exists(t => {
+          t.xIn(
+            this
+          ) && loc.y == t.loc.y + 1 && (t.state == tileState.Floor || t.state == tileState.Ladder)
+        })
+      ) {
+        jump(delta)
+      }
+      if (
+        game.tiles.exists(t => {
+          t.xIn(
+            this
+          ) && loc.y >= t.loc.y && t.state == tileState.Ladder && loc.y < t.loc.y + 1
+
+        })
+      ) {
+        climb()
+      }
     }
     vel.y -= 1
     if (
@@ -140,10 +158,21 @@ case class Player(game: Game) extends Entity {
       }
       if (
         t.xIn(this) &&
-        loc.y + vel.y * delta <= t.loc.y + 1 && loc.y >= t.loc.y + 1 && t.state == tileState.Floor
+        loc.y + vel.y * delta <= t.loc.y + 1 && loc.y >= t.loc.y + 1 && ((t.state == tileState.Floor) || (t.state == tileState.Ladder && !game.tiles
+          .exists(ti => {
+            loc.y == ti.loc.y && ti.xIn(this)
+          })))
       ) {
-        vel.y = 0
+        vel.y = vel.y max 0
         loc.y = t.loc.y + 1
+      }
+      if ({
+        t.xIn(
+          this
+        ) && loc.y >= t.loc.y && t.state == tileState.Ladder && loc.y <= t.loc.y + 1
+
+      }) {
+        vel.y = vel.y max 0
       }
     })
 
