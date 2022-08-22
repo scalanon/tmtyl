@@ -85,7 +85,7 @@ class Game extends Scene {
   private def drawLevel(batch: PolygonSpriteBatch): Unit = {
     batch.setColor(Color.WHITE)
     for {
-      layer <- level.layers
+      layer <- level.layers.reverse
       tileset = Tmtyl.tilesets(layer.tileset)
       y <- 0 until layer.gridCellsY
       row = layer.data2D(y)
