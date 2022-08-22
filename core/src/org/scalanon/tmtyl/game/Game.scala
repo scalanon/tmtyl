@@ -9,6 +9,7 @@ import org.scalanon.tmtyl.Tmtyl._
 import org.scalanon.tmtyl.home.Home
 
 import scala.collection.mutable
+import scala.reflect.ClassTag
 
 class Game extends Scene {
   import Game._
@@ -88,7 +89,8 @@ class Game extends Scene {
   private def drawLevel(batch: PolygonSpriteBatch): Unit = {
     batch.setColor(Color.WHITE)
     for {
-      layer <- level.layers.reverse
+      jsonLayer <- level.layers.reverse
+      layer <- jsonLayer.option[JsonTileLayer]
       tileset = Tmtyl.tilesets(layer.tileset)
       y <- 0 until layer.gridCellsY
       row = layer.data2D(y)
