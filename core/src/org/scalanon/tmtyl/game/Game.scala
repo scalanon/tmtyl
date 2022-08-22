@@ -20,6 +20,8 @@ class Game extends Scene {
   var alien: Alien = Alien(this)
   var projectiles: List[Projectile] = List.empty
 
+  val fighter = new Fighter
+
   var player: Player = Player(this)
   var tiles: List[Tile] = List(
     Tile(Vec2(0, 0), tileState.Metal),
@@ -50,6 +52,7 @@ class Game extends Scene {
     score.update(delta)
     player.update(delta)
     alien.update(delta)
+    fighter.update(delta)
     projectiles.foreach(p => p.update(delta))
     PartialFunction.condOpt(state) {
       case QuitState  => new Home
@@ -67,6 +70,8 @@ class Game extends Scene {
     tiles.foreach(t => t.draw(batch))
     player.draw(batch)
     alien.draw(batch)
+
+    fighter.draw(screenUnit * 7, screenUnit, screenUnit / 16, batch)
 
     projectiles.foreach(p => p.draw(batch))
 

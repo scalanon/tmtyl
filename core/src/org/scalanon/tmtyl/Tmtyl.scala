@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.glutils.PixmapTextureData
 import com.badlogic.gdx.graphics.{Pixmap, Texture}
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input}
+import org.scalanon.tmtyl.game.Game
 import org.scalanon.tmtyl.home.Home
 import org.scalanon.tmtyl.util.{GarbageCan, TextureWrapper}
 
@@ -41,6 +42,8 @@ class Tmtyl extends ApplicationAdapter {
     Tmtyl.ufo = TextureWrapper.load("ufo.png")
     Tmtyl.alien = TextureWrapper.load("alien.png")
 
+    Tmtyl.alma = TextureWrapper.load("alma.png")
+
     Tmtyl.soundOff = TextureWrapper.load("sound-off.png")
     Tmtyl.soundOn = TextureWrapper.load("sound-on.png")
     Tmtyl.settings = TextureWrapper.load("settings.png")
@@ -56,7 +59,7 @@ class Tmtyl extends ApplicationAdapter {
 
     Text.loadFonts()
 
-    setScene(new Home)
+    setScene(new Game)//setScene(new Home)
   }
 
   override def render(): Unit = {
@@ -90,6 +93,8 @@ object Tmtyl {
   var play: TextureWrapper = _
   var ufo: TextureWrapper = _
   var alien: TextureWrapper = _
+
+  var alma: TextureWrapper = _
 
   var soundOff: TextureWrapper = _
   var soundOn: TextureWrapper = _
