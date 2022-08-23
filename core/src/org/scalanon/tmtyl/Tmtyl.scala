@@ -4,7 +4,7 @@ import com.badlogic.gdx.Application.ApplicationType
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input}
-import org.scalanon.tmtyl.game.{Game, Tilesets}
+import org.scalanon.tmtyl.game.{Game, Levels, Tilesets}
 import org.scalanon.tmtyl.util.{GarbageCan, TextureWrapper}
 
 import java.util.Properties
@@ -83,6 +83,9 @@ object Tmtyl {
 
   val screenPixel =
     ((Geometry.ScreenWidth min Geometry.ScreenHeight) / 320).floor
+
+  var levelList    = List(Levels.level1, Levels.level2, Levels.level3)
+  var currentLevel = 0
 
   var logo: TextureWrapper  = _
   var play: TextureWrapper  = _

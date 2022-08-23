@@ -61,7 +61,8 @@ case class Player(game: Game) {
     1             -> 6,
     2             -> 6,
     3             -> 4,
-    DeadBehaviour -> 6
+    DeadBehaviour -> 6,
+    7             -> 5
   )
 
   def update(delta: Float): Unit = {
@@ -119,7 +120,7 @@ case class Player(game: Game) {
     if (game.keyPressed(Keys.W, Keys.UP) && !dead) {
       if (onLadder.isDefined) {
         vel.y = ClimbSpeed
-        behavior = 0
+        behavior = 7
       } else if (onFloor.isDefined) {
         vel.y = JumpSpeed
         behavior = 3
@@ -128,7 +129,7 @@ case class Player(game: Game) {
     } else if (game.keyPressed(Keys.S, Keys.DOWN) && !dead) {
       if (onLadder.isDefined) {
         vel.y = -ClimbSpeed
-        behavior = 0
+        behavior = 7
       } else if (game.newKeyPressed(Keys.S, Keys.DOWN)) {
         val onDoor = game.entities.doors.find(playerRect.isOnBottom)
         onDoor foreach { from =>
