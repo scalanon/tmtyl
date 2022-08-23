@@ -17,10 +17,6 @@ object Levels {
     val json = Gdx.files.internal(s"ogmo/$level").readString("UTF-8")
     decode[JsonLevel](json).toTry.get
   }
-  lazy val level2 = {
-    val json = Gdx.files.internal("ogmo/Level2.json").readString("UTF-8")
-    decode[JsonLevel](json).toTry.get
-  }
 }
 
 final case class JsonLevel(
