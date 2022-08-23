@@ -13,6 +13,8 @@ object Levels {
 
   lazy val level2 = load("Level2.json")
 
+  lazy val level3 = load("Level3.json")
+
   private def load(level: String): JsonLevel = {
     val json = Gdx.files.internal(s"ogmo/$level").readString("UTF-8")
     decode[JsonLevel](json).toTry.get
