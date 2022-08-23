@@ -2,7 +2,7 @@ package org.scalanon.tmtyl.game
 
 import cats.implicits.toFunctorOps
 import com.badlogic.gdx.Gdx
-import io.circe.Decoder
+import io.circe.{Decoder, Json}
 import io.circe.generic.auto._
 import io.circe.parser._
 
@@ -15,6 +15,10 @@ object Levels {
 
   private def load(level: String): JsonLevel = {
     val json = Gdx.files.internal(s"ogmo/$level").readString("UTF-8")
+    decode[JsonLevel](json).toTry.get
+  }
+  lazy val level2 = {
+    val json = Gdx.files.internal("ogmo/Level2.json").readString("UTF-8")
     decode[JsonLevel](json).toTry.get
   }
 }
@@ -81,8 +85,9 @@ final case class JsonEntity(
     originX: Int,
     originY: Int,
     values: Option[
-      Map[String, String]
+      Map[String, Json]
     ] // technically it is to String | Number | Boolean I think
 ) {
-  def value(name: String): Option[String] = values.flatMap(_.get(name))
+  def value(name: String): Option[Json] =
+    values.flatMap(_.get(name))
 }

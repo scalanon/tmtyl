@@ -6,8 +6,8 @@ import org.scalanon.tmtyl.AssetLoader
 class Fighter {
   import Fighter._
 
-  private val width  = image.width / Frames
-  private val height = image.height / Sheets
+  private val width  = idle.width / Frames
+  private val height = idle.height / Sheets
 
   var frame = 0
   var sheet = Sheet.Idle
@@ -27,7 +27,7 @@ class Fighter {
   ): Unit = {
     val fr = frame % Frames
     batch.draw(
-      image,
+      idle,
       x,
       y,
       pixel * width,
@@ -42,12 +42,13 @@ class Fighter {
 
   }
 
-  private def image = AssetLoader.image("alma.png")
+  private def idle = AssetLoader.image("Gunner_Blue_Idle.png")
+  private def run  = AssetLoader.image("Gunner_Blue_Run.png")
 }
 
 object Fighter {
   val Frames = 5
-  val Sheets = 18
+  val Sheets = 1
 
   val FrameRate = .1f
 

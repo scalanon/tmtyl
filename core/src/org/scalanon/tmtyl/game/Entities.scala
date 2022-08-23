@@ -47,7 +47,8 @@ object Ent {
           x,
           y,
           width,
-          height
+          height,
+          entity.value("Solid").flatMap(_.asBoolean).isTrue
         )
       case "Water"  =>
         Water(
@@ -69,7 +70,7 @@ object Ent {
           y,
           width,
           height,
-          entity.value("Doorway") | ""
+          entity.value("Doorway").flatMap(_.asString) | ""
         )
     }
   }
@@ -86,7 +87,8 @@ final case class Floor(
     x: Int,
     y: Int,
     width: Int,
-    height: Int
+    height: Int,
+    solid: Boolean
 ) extends Ent
 
 final case class Water(

@@ -107,5 +107,4 @@ object Tmtyl {
 
   private def isMobile(tpe: ApplicationType) =
     tpe == ApplicationType.Android || tpe == ApplicationType.iOS
-
 }

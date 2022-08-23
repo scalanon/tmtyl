@@ -21,8 +21,8 @@ class Game extends Scene {
   val matrix       = new Matrix4()
 
   val fighter  = new Fighter
-  val level    = Levels.level1
-  val entities = Entities.fromLevel(level)
+  var level    = Levels.level1
+  var entities = Entities.fromLevel(level)
 
   var player: Player = Player(this)
   var alien: Alien   = Alien(this)
@@ -106,19 +106,6 @@ class Game extends Scene {
         false
       )
     }
-    // Uncomment this to see the entity regions
-//    batch.setColor(Color.YELLOW .withAlpha(.5f))
-//    for {
-//      e <- entities.entities
-//    } {
-//      batch.draw(
-//        Tmtyl.pixture,
-//        e.x * screenPixel,
-//        e.y * screenPixel,
-//        e.width * screenPixel,
-//        e.height * screenPixel
-//      )
-//    }
   }
 }
 
