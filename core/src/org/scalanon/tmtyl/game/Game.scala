@@ -48,6 +48,7 @@ class Game extends Scene {
     fx = List.empty[Entity]
     player.loc =
       entities.start.cata(s => Vec2(s.x.toFloat, s.y.toFloat), Vec2(0, 0))
+    alien.loc = player.loc + Vec2(-80, 80)
   }
 
   override def update(delta: Float): Option[Scene] = {

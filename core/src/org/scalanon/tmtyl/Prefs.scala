@@ -49,6 +49,5 @@ object Prefs {
 
   final val UniqueIdentifier = new Pref("uuid")
   final val HighScore = new Pref("highScore")
-  final val Instructed = new Pref("instructed")
   final val MuteAudio = new Pref("muteAudio")
 }

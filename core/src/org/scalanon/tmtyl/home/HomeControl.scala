@@ -15,8 +15,6 @@ class HomeControl(home: Home) extends IconAdapter(home.icons) {
   override def keyUp(keycode: Int): Boolean = {
     if (keycode == Keys.SPACE || keycode == Keys.ENTER) {
       home.play()
-    } else if (keycode == Keys.SLASH) {
-      home.state = Home.HelpState
     }
     true
   }
