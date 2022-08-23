@@ -33,7 +33,7 @@ class Home(paused: Option[Game] = None) extends Scene {
   private val baseIcons: List[Icon] = List(
     new PlayIcon(
       LogoPixel * 8,
-      LogoPixel * 11,
+      LogoPixel * 12,
       LogoPixel,
       LogoPixel * 9,
       this
