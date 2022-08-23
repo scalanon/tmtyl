@@ -1,9 +1,13 @@
 package org.scalanon.tmtyl.home
 
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
-import org.scalanon.tmtyl.Tmtyl
+import org.scalanon.tmtyl.AssetLoader
 
 class Alien(var animation: AlienAnimation) {
+  import Alien._
+
+  val width  = image.width / Frames
+  val height = image.height / Stages
 
   def update(delta: Float): Unit = {
     animation.update(delta)
@@ -18,28 +22,30 @@ class Alien(var animation: AlienAnimation) {
     val frame = animation.frame
     val state = animation.state
     val frmod = frame % state.loopFrames
-    val fr = if (frmod < state.frames) frmod else (state.frames - 1) * 2 - frmod
+    val fr    = if (frmod < state.frames) frmod else (state.frames - 1) * 2 - frmod
     batch.draw(
-      Tmtyl.alien,
+      image,
       x,
       y,
-      pixel * Alien.width,
-      pixel * Alien.height,
-      fr * Alien.width,
-      state.position * Alien.height,
-      Alien.width,
-      Alien.height,
+      pixel * width,
+      pixel * height,
+      fr * width,
+      state.position * height,
+      width,
+      height,
       false,
       false
     )
 
   }
 
+  private def image = AssetLoader.image("alien.png")
 }
 
 object Alien {
-  val width = 16
-  val height = 16
+  // many are blank
+  val Frames = 6
+  val Stages = 6
 }
 
 sealed abstract class AlienState(val position: Int, val frames: Int) {
@@ -47,10 +53,10 @@ sealed abstract class AlienState(val position: Int, val frames: Int) {
 }
 
 object AlienState {
-  case object Idle extends AlienState(0, 2)
-  case object Walk extends AlienState(1, 3)
+  case object Idle  extends AlienState(0, 2)
+  case object Walk  extends AlienState(1, 3)
   case object Blink extends AlienState(2, 3)
-  case object Dead extends AlienState(3, 3)
+  case object Dead  extends AlienState(3, 3)
 }
 
 sealed trait AlienAnimation {
@@ -62,14 +68,14 @@ sealed trait AlienAnimation {
 object AlienAnimation {
   class Dead extends AlienAnimation {
     val state: AlienState = AlienState.Dead
-    val frame: Int = AlienState.Dead.frames - 1
+    val frame: Int        = AlienState.Dead.frames - 1
 
     override def update(delta: Float): Unit = {}
   }
 
   class Reanimate extends AlienAnimation {
     val state: AlienState = AlienState.Dead
-    var frame: Int = state.frames - 1
+    var frame: Int        = state.frames - 1
 
     var time: Float = 0f
 
@@ -88,9 +94,9 @@ object AlienAnimation {
 
   class Idle extends AlienAnimation {
     var state: AlienState = AlienState.Idle
-    var frame = 0
+    var frame             = 0
 
-    var time: Float = 0f
+    var time: Float    = 0f
     var blink: Boolean = false
 
     override def update(delta: Float): Unit = {
@@ -115,8 +121,8 @@ object AlienAnimation {
   }
 
   object Idle {
-    final val IdleRate = 1f
+    final val IdleRate    = 1f
     final val BlinkPeriod = 5f
-    final val BlinkRate = .1f
+    final val BlinkRate   = .1f
   }
 }

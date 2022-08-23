@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input}
 import org.scalanon.tmtyl.game.{Game, Tilesets}
+import org.scalanon.tmtyl.home.Home
 import org.scalanon.tmtyl.util.{GarbageCan, TextureWrapper}
 
 import java.util.Properties
@@ -32,15 +33,6 @@ class Tmtyl extends ApplicationAdapter {
     Tmtyl.version = properties.getProperty("version", "Unknown")
     Tmtyl.key = properties.getProperty("key", "unset")
 
-    Tmtyl.logo = TextureWrapper.load("tmtyl.png")
-    Tmtyl.play = TextureWrapper.load("play.png")
-    Tmtyl.ufo = TextureWrapper.load("ufo.png")
-    Tmtyl.alien = TextureWrapper.load("alien.png")
-
-    Tmtyl.soundOff = TextureWrapper.load("sound-off.png")
-    Tmtyl.soundOn = TextureWrapper.load("sound-on.png")
-    Tmtyl.settings = TextureWrapper.load("settings.png")
-    Tmtyl.help = TextureWrapper.load("help.png")
     Tmtyl.close = TextureWrapper.load("close.png")
     Tmtyl.checkOn = TextureWrapper.load("check-on.png")
     Tmtyl.checkOff = TextureWrapper.load("check-off.png")
@@ -51,7 +43,8 @@ class Tmtyl extends ApplicationAdapter {
 
     Text.loadFonts()
 
-    setScene(new Game) //setScene(new Home)
+    //setScene(new Game)
+    setScene(new Home)
   }
 
   override def render(): Unit = {
@@ -84,15 +77,6 @@ object Tmtyl {
   val screenPixel =
     ((Geometry.ScreenWidth min Geometry.ScreenHeight) / 320).floor
 
-  var logo: TextureWrapper  = _
-  var play: TextureWrapper  = _
-  var ufo: TextureWrapper   = _
-  var alien: TextureWrapper = _
-
-  var soundOff: TextureWrapper   = _
-  var soundOn: TextureWrapper    = _
-  var help: TextureWrapper       = _
-  var settings: TextureWrapper   = _
   var close: TextureWrapper      = _
   var checkOn: TextureWrapper    = _
   var checkOff: TextureWrapper   = _

@@ -12,65 +12,47 @@ class Home(paused: Option[Game] = None) extends Scene {
   import Home._
 
   var state: State = HomeState
-  var logoAlpha = 0f
-  var playAlpha = 0f
-  var ufoPos = 0f
-  var alienPos = 0f
-  var discard = false
-  var alien = new Alien(new AlienAnimation.Dead)
-  var ready = false
+  var logoAlpha    = 0f
+  var playAlpha    = 0f
+  var ufoPos       = 0f
+  var alienPos     = 0f
+  var discard      = false
+  var alien        = new Alien(new AlienAnimation.Dead)
+  var ready        = false
 
-  // spring layout would make this easy
+  private val LogoPixel   = (Geometry.ScreenWidth * 2 / 3 / ufo.width).floor
+  private val UfoWidth    = LogoPixel * ufo.width
+  private val UfoHeight   = LogoPixel * ufo.height
+  private val AlienWidth  = LogoPixel * alien.width
+  private val AlienHeight = LogoPixel * alien.height
 
-  private val IconSize = Dimension * 3 / 4
-
+  private val IconSize     = LogoPixel * 11 / 2
   private val HighScorePos =
     Geometry.ScreenHeight - IconSize * 2
-  private val LogoPixel = (Geometry.ScreenWidth * 2 / 3 / Tmtyl.ufo.width).floor
-  private val UfoWidth = LogoPixel * Tmtyl.ufo.width
-  private val UfoHeight = LogoPixel * Tmtyl.ufo.height
-  private val AlienWidth = LogoPixel * Alien.width
-  private val AlienHeight = LogoPixel * Alien.height
 
   private val baseIcons: List[Icon] = List(
     new PlayIcon(
-      Geometry.ScreenWidth / 2,
-      Geometry.ScreenHeight / 2,
-      UfoWidth / 2,
+      LogoPixel * 8,
+      LogoPixel * 11,
+      LogoPixel,
+      LogoPixel * 9,
       this
     ),
     new PrefIcon(
-      Geometry.ScreenWidth - IconSize * 2,
-      Geometry.ScreenHeight - IconSize * 2,
+      IconSize,
+      Geometry.ScreenHeight - IconSize,
       IconSize,
       Prefs.MuteAudio,
-      Tmtyl.soundOff,
-      Tmtyl.soundOn
+      soundOff,
+      soundOn
     ),
-//    new PrefIcon(
-//      IconOffsetX + IconSpacing,
-//      IconOffsetY,
-//      IconSize,
-//      Prefs.MuteMusic,
-//      Tmtyl.musicOff,
-//      Tmtyl.musicOn
-//    ),
     new BasicIcon(
-      Geometry.ScreenWidth - IconSize * 2,
-      Geometry.ScreenHeight - IconSize * 4,
+      Geometry.ScreenWidth - IconSize,
+      Geometry.ScreenHeight - IconSize,
       IconSize,
-      Tmtyl.settings,
+      settings,
       () => {
         state = SettingsState
-      }
-    ),
-    new BasicIcon(
-      Geometry.ScreenWidth - IconSize * 2,
-      Geometry.ScreenHeight - IconSize * 6,
-      IconSize,
-      Tmtyl.help,
-      () => {
-        state = HelpState
       }
     )
   )
@@ -104,13 +86,13 @@ class Home(paused: Option[Game] = None) extends Scene {
         alienPos = alienPos.alphaUp(delta, AlienMoveInSeconds)
       if (alienPos >= 1f) {
         alien.animation match {
-          case _: AlienAnimation.Dead =>
+          case _: AlienAnimation.Dead                =>
             alien.animation = new AlienAnimation.Reanimate
           case r: AlienAnimation.Reanimate if r.done =>
             alien.animation = new AlienAnimation.Idle
           case i: AlienAnimation.Idle if i.frame > 0 =>
             ready = true
-          case _ =>
+          case _                                     =>
         }
         if (ready)
           playAlpha = playAlpha.alphaUp(delta, PlayFadeInSeconds)
@@ -122,14 +104,11 @@ class Home(paused: Option[Game] = None) extends Scene {
       if (state == SettingsState) {
         (logoAlpha + playAlpha == 0f)
           .option(new Settings(this))
-      } else if (state == PlayState) {
-        (logoAlpha + playAlpha == 0f)
-          .option(nextGame)
-      } else {
-        (logoAlpha + playAlpha == 0f).option(
-          new Help(this, (state == HelpPlayState).option(nextGame))
-        )
-      }
+      } else /*if (state == PlayState)*/
+        {
+          (logoAlpha + playAlpha == 0f)
+            .option(nextGame)
+        }
     }
   }
 
@@ -159,9 +138,8 @@ class Home(paused: Option[Game] = None) extends Scene {
   private def drawLogo(batch: PolygonSpriteBatch): Unit = {
     batch.setColor(1, 1, 1, logoAlpha * logoAlpha)
     val ufoY =
-      Geometry.ScreenHeight * (4f - 2f * Math.sqrt(ufoPos).toFloat) / 3f
+      Geometry.ScreenHeight * (8f - 3f * Math.sqrt(ufoPos).toFloat) / 7f
     if (alienPos > 0f) {
-
       alien.draw(
         (Geometry.ScreenWidth - AlienWidth) / 2,
         ufoY - AlienHeight / 2 - Math
@@ -172,21 +150,21 @@ class Home(paused: Option[Game] = None) extends Scene {
       )
     }
     batch.draw(
-      Tmtyl.ufo,
+      ufo,
       (Geometry.ScreenWidth - UfoWidth) / 2,
       ufoY - UfoHeight / 2,
       UfoWidth,
       UfoHeight
     )
     if (ready) {
-      val LogoWidth = Tmtyl.logo.width * LogoPixel
-      val LogoHeight = Tmtyl.logo.height * LogoPixel
-      val extra = alien.animation match {
+      val LogoWidth  = logo.width * LogoPixel
+      val LogoHeight = logo.height * LogoPixel
+      val extra      = alien.animation match {
         case i: AlienAnimation.Idle if i.frame % 2 == 1 && !i.blink => 3
-        case _                                                      => 2
+        case _ => 2
       }
       batch.draw(
-        Tmtyl.logo,
+        logo,
         (Geometry.ScreenWidth - LogoWidth + AlienWidth * 3 / 4) / 2,
         (Geometry.ScreenHeight - LogoHeight) / 2 - extra * LogoPixel,
         LogoWidth,
@@ -223,23 +201,26 @@ class Home(paused: Option[Game] = None) extends Scene {
   }
 
   def play(): Unit = {
-    if (Prefs.Instructed.booleanValue.contains(true)) {
-      state = PlayState
-    } else {
-      state = HelpPlayState
-      Prefs.Instructed.set(true)
-    }
+    state = PlayState
   }
+
+  private def logo = AssetLoader.image("tmtyl.png")
+  private def ufo  = AssetLoader.image("ufo.png")
+
+  private def soundOff = AssetLoader.image("sound-off.png")
+  private def soundOn  = AssetLoader.image("sound-on.png")
+  private def settings = AssetLoader.image("settings.png")
+
 }
 
 object Home {
   def apply(game: Game): Home = new Home(Some(game))
 
-  val LogoFadeInSeconds = 1f
-  val PlayDelaySeconds = 0.3f
-  val PlayFadeInSeconds = .3f
-  val UfoMoveInSeconds = 2.5f
-  val AlienMoveInSeconds = 1.5f
+  val LogoFadeInSeconds  = 1f / 5
+  val PlayDelaySeconds   = 0.3f
+  val PlayFadeInSeconds  = .3f
+  val UfoMoveInSeconds   = 2.5f / 5
+  val AlienMoveInSeconds = 1.5f / 5
 
   val LogoFadeOutSeconds = .5f
   val PlayFadeOutSeconds = .3f
@@ -250,9 +231,7 @@ object Home {
 
   sealed trait State
 
-  case object HomeState extends State
-  case object HelpState extends State
-  case object HelpPlayState extends State
+  case object HomeState     extends State
   case object SettingsState extends State
-  case object PlayState extends State
+  case object PlayState     extends State
 }

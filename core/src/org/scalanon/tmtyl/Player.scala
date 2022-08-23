@@ -178,10 +178,7 @@ case class Player(game: Game) {
       newLoc
     }
 
-    if (loc.y + size.y < 0 && !dead) {
-      dead = true
-      wilhelm.play()
-    }
+    if (loc.y + size.y < 0) die(wilhelm)
   }
 
   def die(sound: SoundWrapper): Unit = {
