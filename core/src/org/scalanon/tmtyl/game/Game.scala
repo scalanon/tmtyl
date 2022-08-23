@@ -19,9 +19,11 @@ class Game extends Scene {
   val score: Score = new Score
   val matrix       = new Matrix4()
 
-  val fighter  = new Fighter
-  var level    = Levels.level1
-  var entities = Entities.fromLevel(level)
+  val fighter      = new Fighter
+  var LevelList    = List(Levels.level1, Levels.level2)
+  var currentLevel = 0
+  var level        = LevelList(0)
+  var entities     = Entities.fromLevel(level)
 
   var player: Player = Player(this)
   var alien: Alien   = Alien(this)
@@ -38,6 +40,9 @@ class Game extends Scene {
   }
 
   override def update(delta: Float): Option[Scene] = {
+    level = LevelList(currentLevel)
+    entities = Entities.fromLevel(level)
+    player.loc = entities.start.cata(s => Vec2(s.x, s.y), Vec2(0, 0))
 
     score.update(delta)
     player.update(delta)
