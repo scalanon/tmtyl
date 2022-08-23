@@ -4,7 +4,7 @@ import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import org.scalanon.tmtyl.Tmtyl._
-import org.scalanon.tmtyl.game.{Game, Rect}
+import org.scalanon.tmtyl.game.{Entities, Game, Levels, Rect}
 
 import scala.util.Random
 
@@ -22,7 +22,7 @@ case class Player(game: Game) extends Entity {
   def draw(batch: PolygonSpriteBatch): Unit = {
     batch.setColor(Color.WHITE)
     val maxStage = Stages(behavior)
-    val st = if (stage < maxStage) stage else maxStage * 2 - stage - 1
+    val st       = if (stage < maxStage) stage else maxStage * 2 - stage - 1
     batch.draw(
       walkPlayer,
       loc.x * screenPixel,
@@ -41,25 +41,6 @@ case class Player(game: Game) extends Entity {
       left,
       false
     )
-    /* batch.setColor(Color.GRAY)
-    batch.draw(
-      square,
-      (loc.x + .5f) * screenUnit,
-      (loc.y + 1f) * screenUnit,
-      .1f * screenUnit,
-      0f * screenUnit,
-      .2f * screenUnit,
-      .8f * screenUnit,
-      1f,
-      1f,
-      lookRot.toDegrees - 90,
-      0,
-      0,
-      1,
-      1,
-      false,
-      false
-    )*/
   }
 
   var wTick = 0f
@@ -143,16 +124,22 @@ case class Player(game: Game) extends Entity {
       } else if (game.newKeyPressed(Keys.S, Keys.DOWN)) {
         val onDoor = game.entities.doors.find(playerRect.isOnBottom)
         onDoor foreach { from =>
-          val toDoors = game.entities.doors.filter(door =>
-            door.doorway == from.doorway && (door ne from)
-          )
-          Random.shuffle(toDoors).headOption foreach { to =>
-            warpLoc = Some(
-              Vec2(
-                loc.x + to.x - from.x,
-                loc.y + to.y - from.y
-              )
+          if (from.doorway == "exit") {
+            game.level = Levels.level2
+            game.entities = Entities.fromLevel(game.level)
+            loc = game.entities.start.cata(s => Vec2(s.x, s.y), Vec2(0, 0))
+          } else {
+            val toDoors = game.entities.doors.filter(door =>
+              door.doorway == from.doorway && (door ne from)
             )
+            Random.shuffle(toDoors).headOption foreach { to =>
+              warpLoc = Some(
+                Vec2(
+                  loc.x + to.x - from.x,
+                  loc.y + to.y - from.y
+                )
+              )
+            }
           }
         }
       }
