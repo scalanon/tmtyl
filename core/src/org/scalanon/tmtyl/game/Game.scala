@@ -20,9 +20,11 @@ class Game extends Scene {
   val score: Score = new Score
   val matrix       = new Matrix4()
 
-  val fighter  = new Fighter
-  var level    = levelList.head
-  var entities = Entities.fromLevel(level)
+  val fighter      = new Fighter
+  var levelList    = List(Levels.level1, Levels.level2, Levels.level3)
+  var currentLevel = 0
+  var level        = levelList.head
+  var entities     = Entities.fromLevel(level)
 
   var player: Player = Player(this)
   var alien: Alien   = Alien(this)
