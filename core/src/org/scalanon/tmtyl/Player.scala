@@ -133,9 +133,7 @@ case class Player(game: Game) {
         val onDoor = game.entities.doors.find(playerRect.isOnBottom)
         onDoor foreach { from =>
           if (from.doorway == "exit") {
-            game.level = Levels.level2
-            game.entities = Entities.fromLevel(game.level)
-            loc = game.entities.start.cata(s => Vec2(s.x, s.y), Vec2(0, 0))
+            game.nextLevel()
           } else {
             val toDoors = game.entities.doors.filter(door =>
               door.doorway == from.doorway && (door ne from)
