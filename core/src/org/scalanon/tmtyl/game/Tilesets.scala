@@ -59,6 +59,10 @@ final case class Rect(x: Int, y: Int, width: Int, height: Int) {
 
   def isOnBottom(ent: Ent): Boolean =
     x + width >= ent.x && x < ent.x + ent.width && y == ent.y
+
+
+  def isOnOrAbove(ent: Ent): Boolean =
+    x + width >= ent.x && x < ent.x + ent.width && y >= ent.y + ent.height
 }
 
 final case class JsonTileset(

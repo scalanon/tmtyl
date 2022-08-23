@@ -3,9 +3,10 @@ package game
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
-import com.badlogic.gdx.math.Matrix4
+import com.badlogic.gdx.math.{MathUtils, Matrix4}
 import org.scalanon.tmtyl.Scene
 import org.scalanon.tmtyl.Tmtyl._
+import org.scalanon.tmtyl.game.entities.Missile
 import org.scalanon.tmtyl.home.Home
 
 import scala.collection.mutable
@@ -24,12 +25,13 @@ class Game extends Scene {
   val entities = Entities.fromLevel(level)
 
   var player: Player = Player(this)
-  var alien: Alien = Alien(this)
+  var alien: Alien   = Alien(this)
+  var fx             = List.empty[Entity]
 
-  val keysPressed = mutable.Set.empty[Int]
+  val keysPressed    = mutable.Set.empty[Int]
   val newKeysPressed = mutable.Set.empty[Int]
 
-  def keyPressed(as: Int*): Boolean = as.exists(keysPressed.contains)
+  def keyPressed(as: Int*): Boolean    = as.exists(keysPressed.contains)
   def newKeyPressed(as: Int*): Boolean = as.exists(newKeysPressed.contains)
 
   override def init(): GameControl = {
@@ -42,6 +44,9 @@ class Game extends Scene {
     player.update(delta)
     alien.update(delta)
     fighter.update(delta)
+    fx = fx.flatMap(_.update(delta))
+    if (MathUtils.randomBoolean(.01f))
+      fx = Missile.launch(this).cata(_ :: fx, fx)
     newKeysPressed.clear()
     PartialFunction.condOpt(state) {
       case QuitState  => new Home
@@ -51,7 +56,7 @@ class Game extends Scene {
 
   override def render(batch: PolygonSpriteBatch): Unit = {
     val translationX =
-      Geometry.ScreenWidth / 2 - ((player.loc.x + (player.size.x / 2)) * screenPixel)
+      (Geometry.ScreenWidth / 2 - ((player.loc.x + (player.size.x / 2)) * screenPixel)).floor
     batch.setTransformMatrix(
       matrix.setToTranslation(translationX, 0, 0)
     )
@@ -61,7 +66,13 @@ class Game extends Scene {
     player.draw(batch)
     alien.draw(batch)
 
-    fighter.draw(screenPixel * 64 * 16, screenPixel * 3 * 16, screenPixel, batch)
+    fighter.draw(
+      screenPixel * 64 * 16,
+      screenPixel * 3 * 16,
+      screenPixel,
+      batch
+    )
+    fx.foreach(_.draw(batch))
 
     batch.setTransformMatrix(matrix.idt())
     score.draw(batch)

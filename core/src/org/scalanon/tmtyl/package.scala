@@ -3,6 +3,7 @@ package org.scalanon
 import com.badlogic.gdx.Gdx.input
 import com.badlogic.gdx.Input.Peripheral
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.math.MathUtils
 
 import java.util.concurrent.TimeUnit
 import scala.concurrent.duration.FiniteDuration
@@ -29,6 +30,10 @@ package object tmtyl {
     def clamp(max: Float): Float =
       if (self < 0f) 0f else if (self > max) max else self
 
+    /** Clamp this value between [min] and [max] inclusive. */
+    def clamp(min: Float, max: Float): Float =
+      if (self < min) min else if (self > max) max else self
+
     /** Increases an alpha by [delta] time interval spread over [seconds] seconds limited to 1f. */
     def alphaUp(delta: Float, seconds: Float): Float =
       (self + delta / seconds) min 1f
@@ -36,6 +41,13 @@ package object tmtyl {
     /** Decreases an alpha by [delta] time interval spread over [seconds] seconds limited to 0f. */
     def alphaDown(delta: Float, seconds: Float): Float =
       (self - delta / seconds) max 0f
+
+    def degrees: Float = self * MathUtils.radiansToDegrees
+
+    def within180: Float =
+      if (self < -180f) self + 360f * ((180f - self) / 360f).floor
+      else if (self > 180f) self - 360f * ((self + 180f) / 360f).floor
+      else self
   }
 
   implicit class BooleanOps(val self: Boolean) extends AnyVal {

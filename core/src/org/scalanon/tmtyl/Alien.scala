@@ -15,7 +15,7 @@ case class Alien(game: Game) extends Entity {
   val Speed = 64
   val MaxDist = 16
 
-  def update(delta: Float): Unit = {
+  def update(delta: Float): List[Entity] = {
     alien.update(delta)
     if (loc.x + size.x < game.player.loc.x - MaxDist) {
       loc.x = (loc.x + delta * Speed) min game.player.loc.x - MaxDist
@@ -28,6 +28,7 @@ case class Alien(game: Game) extends Entity {
     } else if (loc.y > game.player.loc.y + MaxDist) {
       loc.y = (loc.y - delta * Speed) max game.player.loc.y + MaxDist
     }
+    List(this)
   }
 
   def draw(batch: PolygonSpriteBatch): Unit = {

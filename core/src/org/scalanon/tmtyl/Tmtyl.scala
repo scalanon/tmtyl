@@ -1,11 +1,7 @@
 package org.scalanon.tmtyl
 
 import com.badlogic.gdx.Application.ApplicationType
-import com.badlogic.gdx.audio.Sound
-import com.badlogic.gdx.graphics.Pixmap.Format
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
-import com.badlogic.gdx.graphics.glutils.PixmapTextureData
-import com.badlogic.gdx.graphics.{Pixmap, Texture}
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input}
 import org.scalanon.tmtyl.game.{Game, Tilesets}
@@ -17,7 +13,7 @@ class Tmtyl extends ApplicationAdapter {
   import Tmtyl.garbage
 
   private var batch: PolygonSpriteBatch = _
-  private var scene: Scene = _
+  private var scene: Scene              = _
 
   override def create(): Unit = {
 
@@ -28,7 +24,7 @@ class Tmtyl extends ApplicationAdapter {
     batch = garbage.add(new PolygonSpriteBatch())
 
     val properties = new Properties
-    val is = Tmtyl.getClass.getResourceAsStream("/app.properties")
+    val is         = Tmtyl.getClass.getResourceAsStream("/app.properties")
     if (is ne null) {
       properties.load(is)
       is.close()
@@ -41,8 +37,6 @@ class Tmtyl extends ApplicationAdapter {
     Tmtyl.ufo = TextureWrapper.load("ufo.png")
     Tmtyl.alien = TextureWrapper.load("alien.png")
 
-    Tmtyl.alma = TextureWrapper.load("alma.png")
-
     Tmtyl.soundOff = TextureWrapper.load("sound-off.png")
     Tmtyl.soundOn = TextureWrapper.load("sound-on.png")
     Tmtyl.settings = TextureWrapper.load("settings.png")
@@ -51,10 +45,7 @@ class Tmtyl extends ApplicationAdapter {
     Tmtyl.checkOn = TextureWrapper.load("check-on.png")
     Tmtyl.checkOff = TextureWrapper.load("check-off.png")
     Tmtyl.trash = TextureWrapper.load("trash.png")
-    Tmtyl.square = TextureWrapper.load("Square.png")
     Tmtyl.walkPlayer = TextureWrapper.load("tiny_adventurer_sheet.png")
-
-    Tmtyl.pixture = Tmtyl.solidTexture(1f, 1f, 1f, 1f)
 
     Tmtyl.tilesets = Tilesets.load()
 
@@ -74,6 +65,7 @@ class Tmtyl extends ApplicationAdapter {
 
   override def dispose(): Unit = {
     garbage.dispose()
+    AssetLoader.clear()
   }
 
   private def setScene(newScene: Scene): Unit = {
@@ -87,31 +79,27 @@ object Tmtyl {
   implicit val garbage: GarbageCan = new GarbageCan
 
   var version: String = _
-  var key: String = _
+  var key: String     = _
 
-  val screenPixel = (Geometry.ScreenWidth min Geometry.ScreenHeight) / 320
+  val screenPixel =
+    ((Geometry.ScreenWidth min Geometry.ScreenHeight) / 320).floor
 
-  var logo: TextureWrapper = _
-  var play: TextureWrapper = _
-  var ufo: TextureWrapper = _
+  var logo: TextureWrapper  = _
+  var play: TextureWrapper  = _
+  var ufo: TextureWrapper   = _
   var alien: TextureWrapper = _
 
-  var alma: TextureWrapper = _
-
-  var soundOff: TextureWrapper = _
-  var soundOn: TextureWrapper = _
-  var help: TextureWrapper = _
-  var settings: TextureWrapper = _
-  var close: TextureWrapper = _
-  var checkOn: TextureWrapper = _
-  var checkOff: TextureWrapper = _
-  var trash: TextureWrapper = _
-  var square: TextureWrapper = _
+  var soundOff: TextureWrapper   = _
+  var soundOn: TextureWrapper    = _
+  var help: TextureWrapper       = _
+  var settings: TextureWrapper   = _
+  var close: TextureWrapper      = _
+  var checkOn: TextureWrapper    = _
+  var checkOff: TextureWrapper   = _
+  var trash: TextureWrapper      = _
   var walkPlayer: TextureWrapper = _
 
   var tilesets: Tilesets = _
-
-  var pixture: Texture = _
 
   var globalHigh: Int = _
 
@@ -120,16 +108,4 @@ object Tmtyl {
   private def isMobile(tpe: ApplicationType) =
     tpe == ApplicationType.Android || tpe == ApplicationType.iOS
 
-  private def loadSound(path: String)(implicit garbage: GarbageCan): Sound =
-    garbage.add(Gdx.audio.newSound(Gdx.files.internal(path)))
-
-  private def solidTexture(r: Float, g: Float, b: Float, a: Float)(implicit
-      garbage: GarbageCan
-  ): Texture = {
-    val pixel = new Pixmap(1, 1, Format.RGBA8888)
-    pixel.setColor(r, g, b, a)
-    pixel.fill()
-    val td = new PixmapTextureData(pixel, null, false, true)
-    garbage.add(new Texture(td))
-  }
 }

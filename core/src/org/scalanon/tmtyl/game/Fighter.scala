@@ -1,18 +1,22 @@
 package org.scalanon.tmtyl.game
 
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
-import org.scalanon.tmtyl.Tmtyl
+import org.scalanon.tmtyl.AssetLoader
 
 class Fighter {
-  var frame = 0
-  var sheet = Fighter.Sheet.Idle
+  import Fighter._
 
-  var time = 0f
+  private val width  = image.width / Frames
+  private val height = image.height / Sheets
+
+  var frame = 0
+  var sheet = Sheet.Idle
+  var time  = 0f
 
   def update(delta: Float): Unit = {
     time = time + delta
-    frame = (time / Fighter.Rate).toInt
-    sheet = (time / Fighter.Rate / 5).toInt % Fighter.Sheets
+    frame = (time / FrameRate).toInt
+    sheet = (time / FrameRate / 5).toInt % Fighter.Sheets
   }
 
   def draw(
@@ -21,35 +25,34 @@ class Fighter {
       pixel: Float,
       batch: PolygonSpriteBatch
   ): Unit = {
-    val fr = frame % Fighter.Frames
+    val fr = frame % Frames
     batch.draw(
-      Tmtyl.alma,
+      image,
       x,
       y,
-      pixel * Fighter.Width,
-      pixel * Fighter.Height,
-      fr * Fighter.Width,
-      sheet * Fighter.Height,
-      Fighter.Width,
-      Fighter.Height,
+      pixel * width,
+      pixel * height,
+      fr * width,
+      sheet * height,
+      width,
+      height,
       false,
       false
     )
 
   }
 
+  private def image = AssetLoader.image("alma.png")
 }
 
 object Fighter {
-  val Width = 48
-  val Height = 48
   val Frames = 5
-  val Sheets = 17
+  val Sheets = 18
 
-  val Rate = .1f
+  val FrameRate = .1f
 
   object Sheet {
-    val Idle = 0
+    val Idle  = 0
     val Shoot = 8
   }
 }

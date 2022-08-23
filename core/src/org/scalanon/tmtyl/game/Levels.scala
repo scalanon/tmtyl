@@ -9,8 +9,12 @@ import io.circe.parser._
 import scala.reflect.ClassTag
 
 object Levels {
-  lazy val level1 = {
-    val json = Gdx.files.internal("ogmo/Level1.json").readString("UTF-8")
+  lazy val level1 = load("Level1.json")
+
+  lazy val level2 = load("Level2.json")
+
+  private def load(level: String): JsonLevel = {
+    val json = Gdx.files.internal(s"ogmo/$level").readString("UTF-8")
     decode[JsonLevel](json).toTry.get
   }
 }
