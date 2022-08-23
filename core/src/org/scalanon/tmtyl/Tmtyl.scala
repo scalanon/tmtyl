@@ -32,15 +32,6 @@ class Tmtyl extends ApplicationAdapter {
     Tmtyl.version = properties.getProperty("version", "Unknown")
     Tmtyl.key = properties.getProperty("key", "unset")
 
-    Tmtyl.logo = TextureWrapper.load("tmtyl.png")
-    Tmtyl.play = TextureWrapper.load("play.png")
-    Tmtyl.ufo = TextureWrapper.load("ufo.png")
-    Tmtyl.alien = TextureWrapper.load("alien.png")
-
-    Tmtyl.soundOff = TextureWrapper.load("sound-off.png")
-    Tmtyl.soundOn = TextureWrapper.load("sound-on.png")
-    Tmtyl.settings = TextureWrapper.load("settings.png")
-    Tmtyl.help = TextureWrapper.load("help.png")
     Tmtyl.close = TextureWrapper.load("close.png")
     Tmtyl.checkOn = TextureWrapper.load("check-on.png")
     Tmtyl.checkOff = TextureWrapper.load("check-off.png")
@@ -87,15 +78,6 @@ object Tmtyl {
   var levelList    = List(Levels.level1, Levels.level2, Levels.level3)
   var currentLevel = 0
 
-  var logo: TextureWrapper  = _
-  var play: TextureWrapper  = _
-  var ufo: TextureWrapper   = _
-  var alien: TextureWrapper = _
-
-  var soundOff: TextureWrapper   = _
-  var soundOn: TextureWrapper    = _
-  var help: TextureWrapper       = _
-  var settings: TextureWrapper   = _
   var close: TextureWrapper      = _
   var checkOn: TextureWrapper    = _
   var checkOff: TextureWrapper   = _
