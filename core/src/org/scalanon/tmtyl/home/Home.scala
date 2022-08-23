@@ -216,11 +216,11 @@ class Home(paused: Option[Game] = None) extends Scene {
 object Home {
   def apply(game: Game): Home = new Home(Some(game))
 
-  val LogoFadeInSeconds  = 1f / 5
+  val LogoFadeInSeconds  = 1f
   val PlayDelaySeconds   = 0.3f
   val PlayFadeInSeconds  = .3f
-  val UfoMoveInSeconds   = 2.5f / 5
-  val AlienMoveInSeconds = 1.5f / 5
+  val UfoMoveInSeconds   = 1.5f
+  val AlienMoveInSeconds = 1.5f
 
   val LogoFadeOutSeconds = .5f
   val PlayFadeOutSeconds = .3f
