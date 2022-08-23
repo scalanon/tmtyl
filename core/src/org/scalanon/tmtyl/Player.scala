@@ -110,7 +110,12 @@ case class Player(game: Game) {
     val onLadder = game.entities.ladders.find(playerRect.isOnTopOrIn)
     val onFloor  = game.entities.floors.find(playerRect.isOnTop)
 
-    var warpLoc = Option.empty[Vec2]
+    if (onLadder.isDefined) {
+      behavior = 7
+    }
+
+    var warpLoc  = Option.empty[Vec2]
+    var climbing = false
 
     if (onLadder.isDefined) {
       vel.y = 0
@@ -121,6 +126,7 @@ case class Player(game: Game) {
       if (onLadder.isDefined) {
         vel.y = ClimbSpeed
         behavior = 7
+        climbing = true
       } else if (onFloor.isDefined) {
         vel.y = JumpSpeed
         behavior = 3
@@ -130,6 +136,7 @@ case class Player(game: Game) {
       if (onLadder.isDefined) {
         vel.y = -ClimbSpeed
         behavior = 7
+        climbing = true
       } else if (game.newKeyPressed(Keys.S, Keys.DOWN)) {
         val onDoor = game.entities.doors.find(playerRect.isOnBottom)
         onDoor foreach { from =>
@@ -150,6 +157,10 @@ case class Player(game: Game) {
           }
         }
       }
+    }
+
+    if (!climbing && onLadder.isDefined) {
+      stage = 0
     }
 
     loc = warpLoc getOrElse {
