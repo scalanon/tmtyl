@@ -17,7 +17,7 @@ class Tmtyl extends ApplicationAdapter {
   import Tmtyl.garbage
 
   private var batch: PolygonSpriteBatch = _
-  private var scene: Scene = _
+  private var scene: Scene              = _
 
   override def create(): Unit = {
 
@@ -28,7 +28,7 @@ class Tmtyl extends ApplicationAdapter {
     batch = garbage.add(new PolygonSpriteBatch())
 
     val properties = new Properties
-    val is = Tmtyl.getClass.getResourceAsStream("/app.properties")
+    val is         = Tmtyl.getClass.getResourceAsStream("/app.properties")
     if (is ne null) {
       properties.load(is)
       is.close()
@@ -42,6 +42,8 @@ class Tmtyl extends ApplicationAdapter {
     Tmtyl.alien = TextureWrapper.load("alien.png")
 
     Tmtyl.alma = TextureWrapper.load("alma.png")
+    Tmtyl.blueSoldierWalk = TextureWrapper.load("Gunner_Blue_Run.png")
+    Tmtyl.blueSoldierIdle = TextureWrapper.load("Gunner_Blue_Idle.png")
 
     Tmtyl.soundOff = TextureWrapper.load("sound-off.png")
     Tmtyl.soundOn = TextureWrapper.load("sound-on.png")
@@ -87,26 +89,28 @@ object Tmtyl {
   implicit val garbage: GarbageCan = new GarbageCan
 
   var version: String = _
-  var key: String = _
+  var key: String     = _
 
   val screenPixel = (Geometry.ScreenWidth min Geometry.ScreenHeight) / 320
 
-  var logo: TextureWrapper = _
-  var play: TextureWrapper = _
-  var ufo: TextureWrapper = _
+  var logo: TextureWrapper  = _
+  var play: TextureWrapper  = _
+  var ufo: TextureWrapper   = _
   var alien: TextureWrapper = _
 
-  var alma: TextureWrapper = _
+  var alma: TextureWrapper            = _
+  var blueSoldierWalk: TextureWrapper = _
+  var blueSoldierIdle: TextureWrapper = _
 
-  var soundOff: TextureWrapper = _
-  var soundOn: TextureWrapper = _
-  var help: TextureWrapper = _
-  var settings: TextureWrapper = _
-  var close: TextureWrapper = _
-  var checkOn: TextureWrapper = _
-  var checkOff: TextureWrapper = _
-  var trash: TextureWrapper = _
-  var square: TextureWrapper = _
+  var soundOff: TextureWrapper   = _
+  var soundOn: TextureWrapper    = _
+  var help: TextureWrapper       = _
+  var settings: TextureWrapper   = _
+  var close: TextureWrapper      = _
+  var checkOn: TextureWrapper    = _
+  var checkOff: TextureWrapper   = _
+  var trash: TextureWrapper      = _
+  var square: TextureWrapper     = _
   var walkPlayer: TextureWrapper = _
 
   var tilesets: Tilesets = _
@@ -129,7 +133,7 @@ object Tmtyl {
     val pixel = new Pixmap(1, 1, Format.RGBA8888)
     pixel.setColor(r, g, b, a)
     pixel.fill()
-    val td = new PixmapTextureData(pixel, null, false, true)
+    val td    = new PixmapTextureData(pixel, null, false, true)
     garbage.add(new Texture(td))
   }
 }

@@ -24,12 +24,12 @@ class Game extends Scene {
   val entities = Entities.fromLevel(level)
 
   var player: Player = Player(this)
-  var alien: Alien = Alien(this)
+  var alien: Alien   = Alien(this)
 
-  val keysPressed = mutable.Set.empty[Int]
+  val keysPressed    = mutable.Set.empty[Int]
   val newKeysPressed = mutable.Set.empty[Int]
 
-  def keyPressed(as: Int*): Boolean = as.exists(keysPressed.contains)
+  def keyPressed(as: Int*): Boolean    = as.exists(keysPressed.contains)
   def newKeyPressed(as: Int*): Boolean = as.exists(newKeysPressed.contains)
 
   override def init(): GameControl = {
@@ -61,7 +61,12 @@ class Game extends Scene {
     player.draw(batch)
     alien.draw(batch)
 
-    fighter.draw(screenPixel * 64 * 16, screenPixel * 3 * 16, screenPixel, batch)
+    fighter.draw(
+      screenPixel * 64 * 16,
+      screenPixel * 3 * 16,
+      screenPixel,
+      batch
+    )
 
     batch.setTransformMatrix(matrix.idt())
     score.draw(batch)

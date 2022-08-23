@@ -23,7 +23,7 @@ class Fighter {
   ): Unit = {
     val fr = frame % Fighter.Frames
     batch.draw(
-      Tmtyl.alma,
+      Tmtyl.blueSoldierIdle,
       x,
       y,
       pixel * Fighter.Width,
@@ -41,15 +41,15 @@ class Fighter {
 }
 
 object Fighter {
-  val Width = 48
-  val Height = 48
+  val Width  = 33
+  val Height = 33
   val Frames = 5
-  val Sheets = 17
+  val Sheets = 1
 
   val Rate = .1f
 
   object Sheet {
-    val Idle = 0
+    val Idle  = 0
     val Shoot = 8
   }
 }
