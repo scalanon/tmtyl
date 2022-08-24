@@ -38,7 +38,7 @@ class Tmtyl extends ApplicationAdapter {
     Tmtyl.trash = TextureWrapper.load("trash.png")
     Tmtyl.walkPlayer = TextureWrapper.load("tiny_adventurer_sheet.png")
     Tmtyl.worldMap = TextureWrapper.load("worldmap.png")
-    Tmtyl.worldmapPlayer = TextureWrapper.load("ufo.png")
+    Tmtyl.worldmapPlayer = TextureWrapper.load("globalUFO.png")
 
     Tmtyl.tilesets = Tilesets.load()
 
