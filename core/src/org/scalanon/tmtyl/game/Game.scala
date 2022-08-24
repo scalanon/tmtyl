@@ -20,7 +20,8 @@ class Game extends Scene {
   val score: Score = new Score
   val matrix       = new Matrix4()
 
-  var levelList    = List(Levels.level1, Levels.level2, Levels.level3)
+  var levelList    =
+    List(Levels.newMexico, Levels.level1, Levels.level2, Levels.level3)
   var currentLevel = 0
   var level        = levelList.head
   var entities     = Entities.fromLevel(level)

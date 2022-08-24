@@ -11,6 +11,8 @@ import scala.reflect.ClassTag
 object Levels {
   lazy val level1 = load("Level1.json")
 
+  lazy val newMexico = load("NewMexico.json")
+
   lazy val level2 = load("Level2.json")
 
   lazy val level3 = load("Level3.json")
@@ -87,8 +89,8 @@ final case class JsonEntity(
     ]
 ) {
   def boolean(name: String): Option[Boolean] = value[Boolean](name)
-  def string(name: String): Option[String] = value[String](name)
-  def int(name: String): Option[Int] = value[Int](name)
+  def string(name: String): Option[String]   = value[String](name)
+  def int(name: String): Option[Int]         = value[Int](name)
 
   def value[A: JsonValue](name: String): Option[A] =
     values.flatMap(_.get(name)).flatMap(JsonValue[A].value)
