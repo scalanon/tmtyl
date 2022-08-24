@@ -23,9 +23,10 @@ class Game extends Scene {
   var levelList    =
     List(Levels.newMexico, Levels.level1, Levels.level2, Levels.level3)
   var currentLevel = 0
-  var level        = levelList.head
+  var level        = levelList(1)
   var entities     = Entities.fromLevel(level)
   var activated    = mutable.Set.empty[Int]
+  var timer        = 0f
 
   var player: Player = Player(this)
   var alien: Alien   = Alien(this)
@@ -44,6 +45,8 @@ class Game extends Scene {
   }
 
   def nextLevel(): Unit = {
+    score.score = ((100 / timer) + (10 / timer)).toInt
+    timer = 0f
     currentLevel = currentLevel + 1
     level = levelList(currentLevel)
     entities = Entities.fromLevel(level)
@@ -59,6 +62,7 @@ class Game extends Scene {
   }
 
   override def update(delta: Float): Option[Scene] = {
+    timer += delta
     score.update(delta)
     player.update(delta)
     alien.update(delta)
@@ -114,14 +118,19 @@ class Game extends Scene {
       maxX       =
         ((Geometry.ScreenWidth / screenPixel - translateX) / cellWidth).ceil.toInt min layer.gridCellsX
       y         <- 0 until layer.gridCellsY
+      yy         = layer.gridCellsY - y - 1
       row        = layer.data2D(y)
       x         <- minX until maxX
       tile      <- tileset.tile(row(x))
     } {
+      val switch = entities.switchMap.get(x * cellWidth -> yy * cellHeight)
+      if (switch.exists(s => !s.used) && layer.name == "Second Layer")
+        batch.setColor(0.5f, 0.5f, 0.5f, 0.5f)
+      else batch.setColor(Color.WHITE)
       batch.draw(
         tileset.texture,
         x * cellWidth * screenPixel,
-        (layer.gridCellsY - y - 1) * cellHeight * screenPixel,
+        yy * cellHeight * screenPixel,
         cellWidth * screenPixel,
         cellHeight * screenPixel,
         tile.x,

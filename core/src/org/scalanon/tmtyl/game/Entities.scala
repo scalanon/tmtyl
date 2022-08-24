@@ -3,14 +3,16 @@ package game
 
 // TODO: partition horizontally
 class Entities(val entities: List[Entity]) {
-  val start                  = entities.collectType[Start].headOption
-  val floors: List[Floor]    = entities.collectType[Floor]
-  val waters: List[Water]    = entities.collectType[Water]
-  val ladders: List[Ladder]  = entities.collectType[Ladder]
-  val doors: List[Door]      = entities.collectType[Door]
-  val enemies: List[Enemy]   = entities.collectType[Enemy]
-  val switches: List[Switch] = entities.collectType[Switch]
-
+  val start                              = entities.collectType[Start].headOption
+  val floors: List[Floor]                = entities.collectType[Floor]
+  val waters: List[Water]                = entities.collectType[Water]
+  val ladders: List[Ladder]              = entities.collectType[Ladder]
+  val doors: List[Door]                  = entities.collectType[Door]
+  val enemies: List[Enemy]               = entities.collectType[Enemy]
+  val switches: List[Switch]             = entities.collectType[Switch]
+  val switchMap: Map[(Int, Int), Switch] =
+    switches.map(s => (s.x, s.y) -> s).toMap
+  println(switches)
 }
 
 object Entities {
