@@ -3,12 +3,14 @@ package game
 
 // TODO: partition horizontally
 class Entities(val entities: List[Ent]) {
-  val start                 = entities.collectType[Start].headOption
-  val floors: List[Floor]   = entities.collectType[Floor]
-  val waters: List[Water]   = entities.collectType[Water]
-  val ladders: List[Ladder] = entities.collectType[Ladder]
-  val doors: List[Door]     = entities.collectType[Door]
-  val enemies: List[Enemy]  = entities.collectType[Enemy]
+  val start                  = entities.collectType[Start].headOption
+  val floors: List[Floor]    = entities.collectType[Floor]
+  val waters: List[Water]    = entities.collectType[Water]
+  val ladders: List[Ladder]  = entities.collectType[Ladder]
+  val doors: List[Door]      = entities.collectType[Door]
+  val enemies: List[Enemy]   = entities.collectType[Enemy]
+  val switches: List[Switch] = entities.collectType[Switch]
+
 }
 
 object Entities {
@@ -44,6 +46,15 @@ object Ent {
           width,
           height
         )
+      case "Switch" =>
+        Switch(
+          x,
+          y,
+          width,
+          height,
+          entity.string("Key") | "",
+          used = false
+        )
       case "Floor"  =>
         Floor(
           x,
@@ -72,7 +83,8 @@ object Ent {
           y,
           width,
           height,
-          entity.string("Doorway") | ""
+          entity.string("Doorway") | "",
+          entity.string("Key") | ""
         )
       case "Enemy"  =>
         Enemy(
@@ -115,12 +127,22 @@ final case class Ladder(
     height: Int
 ) extends Ent
 
+final case class Switch(
+    x: Int,
+    y: Int,
+    width: Int,
+    height: Int,
+    key: String,
+    var used: Boolean
+) extends Ent
+
 final case class Door(
     x: Int,
     y: Int,
     width: Int,
     height: Int,
-    doorway: String
+    doorway: String,
+    key: String
 ) extends Ent
 
 final case class Enemy(
