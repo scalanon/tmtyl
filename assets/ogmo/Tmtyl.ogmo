@@ -68,7 +68,7 @@
       "tileY": false,
       "tileSize": {"x": 16, "y": 16},
       "resizeableX": true,
-      "resizeableY": false,
+      "resizeableY": true,
       "rotatable": false,
       "rotationDegrees": 360,
       "canFlipX": false,
@@ -79,7 +79,9 @@
       "nodeDisplay": 0,
       "nodeGhost": true,
       "tags": [],
-      "values": []
+      "values": [
+        {"name": "Solid", "definition": "Boolean", "display": 2, "defaults": false}
+      ]
     },
     {
       "exportID": "18747894",

@@ -12,16 +12,16 @@ class SoundWrapper(val sound: Sound) extends Disposable {
     if (!Prefs.MuteAudio.isTrue) sound.play()
   }
 
-  /* offset is in virtual pixels, on screen being [0..ScreenWidth/screenPixel] */
+  /* offset is in virtual pixels, on screen being [0..ScreenWidth/screenPixel) */
   def play(offset: Float): Unit = {
     if (!Prefs.MuteAudio.isTrue) {
-      // -1 left, 1 right
-      val relative = (offset * screenPixel * 2) / Geometry.ScreenWidth - 1f
+      // normalized position on screen [-1..1)
+      val normalized = (offset * screenPixel * 2) / Geometry.ScreenWidth - 1f
       // on screen full volume, 1 screen away 2/3-volume
-      val vol      = ((3 - relative.abs) / 2f).clamp(.3f, 1f)
-      val pan      =
-        if (relative < 1) (relative + 1f).clamp(-1f, 0)
-        else if (relative > 1) (relative - 1f).clamp(0, 1f)
+      val vol        = ((3 - normalized.abs) / 2f).clamp(.3f, 1f)
+      val pan        =
+        if (normalized < 1) (normalized + 1f).clamp(-1f, 0)
+        else if (normalized > 1) (normalized - 1f).clamp(0, 1f)
         else 0f
       sound.play(vol, 1f, pan)
     }

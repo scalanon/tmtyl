@@ -92,10 +92,10 @@ final case class Player(game: Game) {
       if (vel.y == 0) behavior = 0
     }
 
-    val playerRect = hitRect()
+    val oldRect = hitRect()
 
-    val onLadder = game.entities.ladders.find(playerRect.isOnTopOrIn)
-    val onFloor  = game.entities.floors.find(playerRect.isOnTop)
+    val onLadder = game.entities.ladders.find(oldRect.isOnTopOrIn)
+    val onFloor  = game.entities.floors.find(oldRect.isOnTop)
 
     var warpLoc  = Option.empty[Vec2]
     var climbing = false
@@ -122,7 +122,7 @@ final case class Player(game: Game) {
         behavior = 7
         climbing = true
       } else if (game.newKeyPressed(Keys.S, Keys.DOWN)) {
-        val onDoor = game.entities.doors.find(playerRect.isOnBottom)
+        val onDoor = game.entities.doors.find(oldRect.isOnBottom)
         onDoor foreach { from =>
           if (from.doorway == "exit") {
             game.nextLevel()
@@ -146,7 +146,7 @@ final case class Player(game: Game) {
 
         }
         game.entities.switches
-          .find(playerRect.isOnBottom)
+          .find(oldRect.isOnBottom)
           .foreach(s => s.used = !s.used)
       }
     }
@@ -157,18 +157,27 @@ final case class Player(game: Game) {
 
     loc = warpLoc getOrElse {
       val newLoc = loc + (vel * delta)
-
-      val newRect = hitRect(newLoc)
+      if (vel.x != 0) {
+        val xRect   = hitRect(newLoc.x, loc.y)
+        val hitSide = game.entities.floors.find(floor =>
+          floor.solid && xRect.isWithin(floor) && !oldRect.isWithin(floor)
+        )
+        hitSide foreach { floor =>
+          newLoc.x += (vel.x > 0)
+            .fold(floor.left - xRect.right, floor.right - xRect.left)
+        }
+      }
 
       if (vel.y >= 0) { // no climbing off the top of a ladder
         onLadder foreach { ladder =>
           newLoc.y = newLoc.y min (ladder.y + ladder.height).toFloat
         }
       } else { // no falling through floor unless climbing down a ladder...
+        val newRect  = hitRect(newLoc)
         val hitFloor = game.entities.floors.find(floor =>
           newRect.isWithinX(floor) &&
             newRect.y < floor.y + floor.height &&
-            playerRect.y >= floor.y + floor.height &&
+            oldRect.y >= floor.y + floor.height &&
             !onLadder.exists(ladder => ladder.y < floor.y)
         )
         hitFloor foreach { floor =>
@@ -201,12 +210,10 @@ final case class Player(game: Game) {
     }
   }
 
-  def hitRect(location: Vec2 = loc): Rect = Rect(
-    location.x.toInt + XMargin,
-    location.y.toInt,
-    size.x.toInt - 2 * XMargin,
-    size.y.toInt
-  )
+  def hitRect(location: Vec2 = loc): Rect = hitRect(location.x, location.y)
+
+  def hitRect(x: Float, y: Float): Rect =
+    Rect(x + XMargin, y, size.x - 2 * XMargin, size.y)
 
   def centerX: Float = loc.x + size.x / 2f
   def left: Float    = loc.x

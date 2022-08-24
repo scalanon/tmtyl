@@ -56,7 +56,8 @@ final case class Missile(
     ) {
       boom.play(pos.x + game.translateX)
       // kinda where the tip is
-      val x       = pos.x - (width / 2f * MathUtils.sinDeg(velocityAngle))
+      val MagickOffsetButWhy = 3
+      val x       = pos.x - (width / 2f * MathUtils.sinDeg(velocityAngle)) - MagickOffsetButWhy
       val y       = targetY
       val hitRect = game.player.hitRect()
       // explosion range is about your height

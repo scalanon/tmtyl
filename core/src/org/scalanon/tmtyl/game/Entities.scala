@@ -2,7 +2,7 @@ package org.scalanon.tmtyl
 package game
 
 // TODO: partition horizontally
-class Entities(val entities: List[Ent]) {
+class Entities(val entities: List[Entity]) {
   val start                  = entities.collectType[Start].headOption
   val floors: List[Floor]    = entities.collectType[Floor]
   val waters: List[Water]    = entities.collectType[Water]
@@ -19,21 +19,26 @@ object Entities {
       jsonLayer <- level.layers
       layer     <- jsonLayer.list[JsonEntityLayer]
       entity    <- layer.entities
-    } yield Ent.fromJson(entity, layer)
+    } yield Entity.fromJson(entity, layer)
     new Entities(entities)
   }
 }
 
-sealed trait Ent {
+sealed trait Entity {
   val x: Int
   val y: Int
   val width: Int
   val height: Int
+
+  final def left   = x
+  final def right  = x + width
+  final def bottom = y
+  final def top    = y + height
 }
 
-object Ent {
+object Entity {
 
-  def fromJson(entity: JsonEntity, layer: JsonEntityLayer): Ent = {
+  def fromJson(entity: JsonEntity, layer: JsonEntityLayer): Entity = {
     val width  = entity.width | layer.gridCellWidth
     val height = entity.height | layer.gridCellHeight
     val x      = entity.x
@@ -103,7 +108,7 @@ final case class Start(
     y: Int,
     width: Int,
     height: Int
-) extends Ent
+) extends Entity
 
 final case class Floor(
     x: Int,
@@ -111,21 +116,21 @@ final case class Floor(
     width: Int,
     height: Int,
     solid: Boolean
-) extends Ent
+) extends Entity
 
 final case class Water(
     x: Int,
     y: Int,
     width: Int,
     height: Int
-) extends Ent
+) extends Entity
 
 final case class Ladder(
     x: Int,
     y: Int,
     width: Int,
     height: Int
-) extends Ent
+) extends Entity
 
 final case class Switch(
     x: Int,
@@ -134,7 +139,7 @@ final case class Switch(
     height: Int,
     key: String,
     var used: Boolean
-) extends Ent
+) extends Entity
 
 final case class Door(
     x: Int,
@@ -143,7 +148,7 @@ final case class Door(
     height: Int,
     doorway: String,
     key: String
-) extends Ent
+) extends Entity
 
 final case class Enemy(
     x: Int,
@@ -151,4 +156,4 @@ final case class Enemy(
     width: Int,
     height: Int,
     id: Int
-) extends Ent
+) extends Entity

@@ -32,11 +32,11 @@ final case class Tileset(
   private val columns =
     (texture.width - 2 * tileMarginX + tileSeparationX) / (tileWidth + tileSeparationX)
 
-  def tile(index: Int): Option[Rect] =
+  def tile(index: Int): Option[Tile] =
     (index >= 0) option {
       val col = index % columns
       val row = index / columns
-      Rect(
+      Tile(
         tileMarginX + col * (tileWidth + tileSeparationX),
         tileMarginY + row * (tileHeight + tileSeparationY),
         tileWidth,
@@ -46,25 +46,7 @@ final case class Tileset(
 
 }
 
-// TOD: unify all the rectangles and make them float based
-final case class Rect(x: Int, y: Int, width: Int, height: Int) {
-  // horizontally
-  def isWithinX(ent: Ent): Boolean =
-    x + width >= ent.x && x < ent.x + ent.width
-
-  def isOnTop(ent: Ent): Boolean =
-    x + width >= ent.x && x < ent.x + ent.width && y == ent.y + ent.height
-
-  def isOnTopOrIn(ent: Ent): Boolean =
-    x + width >= ent.x && x < ent.x + ent.width && y >= ent.y && y <= ent.y + ent.height
-
-  def isOnBottom(ent: Ent): Boolean =
-    x + width >= ent.x && x < ent.x + ent.width && y == ent.y
-
-
-  def isOnOrAbove(ent: Ent): Boolean =
-    x + width >= ent.x && x < ent.x + ent.width && y >= ent.y + ent.height
-}
+final case class Tile(x: Int, y: Int, width: Int, height: Int)
 
 final case class JsonTileset(
     label: String,
