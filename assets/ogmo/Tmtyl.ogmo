@@ -152,7 +152,8 @@
       "nodeGhost": true,
       "tags": [],
       "values": [
-        {"name": "Doorway", "definition": "String", "display": 1, "defaults": "", "maxLength": 0, "trimWhitespace": true}
+        {"name": "Doorway", "definition": "String", "display": 1, "defaults": "", "maxLength": 0, "trimWhitespace": true},
+        {"name": "Key", "definition": "String", "display": 0, "defaults": "", "maxLength": 0, "trimWhitespace": true}
       ]
     },
     {
@@ -262,6 +263,44 @@
       "nodeGhost": true,
       "tags": [],
       "values": []
+    },
+    {
+      "exportID": "35759211",
+      "name": "Switch",
+      "limit": -1,
+      "size": {"x": 16, "y": 16},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#218e33ff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 16, "y": 16},
+      "resizeableX": false,
+      "resizeableY": false,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": [
+        {"name": "Key", "definition": "String", "display": 0, "defaults": "", "maxLength": 0, "trimWhitespace": true}
+      ]
     }
   ],
   "tilesets": [

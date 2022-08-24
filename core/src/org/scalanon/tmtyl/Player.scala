@@ -126,7 +126,11 @@ final case class Player(game: Game) {
         onDoor foreach { from =>
           if (from.doorway == "exit") {
             game.nextLevel()
-          } else {
+          } else if (
+            !game.entities.switches
+              .exists(sw => sw.key == from.key) || game.entities.switches
+              .exists(sw => sw.key == from.key && sw.used)
+          ) {
             val toDoors = game.entities.doors.filter(door =>
               door.doorway == from.doorway && (door ne from)
             )
@@ -139,7 +143,11 @@ final case class Player(game: Game) {
               )
             }
           }
+
         }
+        game.entities.switches
+          .find(playerRect.isOnBottom)
+          .foreach(s => s.used = !s.used)
       }
     }
 
