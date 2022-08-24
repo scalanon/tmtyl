@@ -37,6 +37,8 @@ class Tmtyl extends ApplicationAdapter {
     Tmtyl.checkOff = TextureWrapper.load("check-off.png")
     Tmtyl.trash = TextureWrapper.load("trash.png")
     Tmtyl.walkPlayer = TextureWrapper.load("tiny_adventurer_sheet.png")
+    Tmtyl.worldMap = TextureWrapper.load("worldmap.png")
+    Tmtyl.worldmapPlayer = TextureWrapper.load("globalUFO.png")
 
     Tmtyl.tilesets = Tilesets.load()
 
@@ -78,11 +80,13 @@ object Tmtyl {
   var levelList    = List(Levels.level1, Levels.level2, Levels.level3)
   var currentLevel = 0
 
-  var close: TextureWrapper      = _
-  var checkOn: TextureWrapper    = _
-  var checkOff: TextureWrapper   = _
-  var trash: TextureWrapper      = _
-  var walkPlayer: TextureWrapper = _
+  var close: TextureWrapper          = _
+  var checkOn: TextureWrapper        = _
+  var checkOff: TextureWrapper       = _
+  var trash: TextureWrapper          = _
+  var walkPlayer: TextureWrapper     = _
+  var worldMap: TextureWrapper       = _
+  var worldmapPlayer: TextureWrapper = _
 
   var tilesets: Tilesets = _
 

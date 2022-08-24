@@ -20,7 +20,8 @@ class Game extends Scene {
   val score: Score = new Score
   val matrix       = new Matrix4()
 
-  var levelList    = List(Levels.level1, Levels.level2, Levels.level3)
+  var levelList    =
+    List(Levels.newMexico, Levels.level1, Levels.level2, Levels.level3)
   var currentLevel = 0
   var level        = levelList.head
   var entities     = Entities.fromLevel(level)
@@ -49,7 +50,10 @@ class Game extends Scene {
     activated.clear()
     player.loc =
       entities.start.cata(s => Vec2(s.x.toFloat, s.y.toFloat), Vec2(0, 0))
+    player.vel = Vec2(0, 0)
+    keysPressed.clear()
     alien.loc = player.loc + Vec2(-80, 80)
+    state = MapState
   }
 
   override def update(delta: Float): Option[Scene] = {
@@ -68,6 +72,7 @@ class Game extends Scene {
     PartialFunction.condOpt(state) {
       case QuitState  => new Home
       case PauseState => Home(this)
+      case MapState   => Worldmap(currentLevel, this)
     }
   }
 
@@ -131,4 +136,5 @@ object Game {
   case object LostState    extends State
   case object QuitState    extends State
   case object PauseState   extends State
+  case object MapState     extends State
 }
