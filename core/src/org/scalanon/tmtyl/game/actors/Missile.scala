@@ -54,7 +54,7 @@ final case class Missile(
     } else if (
       newY < targetY && oldY >= targetY && pos.x + height / 2 >= floor.x && pos.x - height / 2 < floor.x + floor.width
     ) {
-      boom.play(pos.x - game.player.centerX)
+      boom.play(pos.x + game.translateX)
       // kinda where the tip is
       val x       = pos.x - (width / 2f * MathUtils.sinDeg(velocityAngle))
       val y       = targetY

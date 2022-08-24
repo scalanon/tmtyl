@@ -171,14 +171,18 @@ final case class Player(game: Game) {
       newLoc
     }
 
-    if (loc.y + size.y < 0) die(wilhelm, permanent = true)
+    if (loc.y + size.y < 0) {
+      die(wilhelm)
+      if (Immortal) {
+        loc.y = Geometry.ScreenHeight / screenPixel
+        vel.y = 0
+      }
+    }
   }
 
-  def die(sound: SoundWrapper = scream, permanent: Boolean = false): Unit = {
+  def die(sound: SoundWrapper = scream): Unit = {
     if (!dead) {
-      if (permanent || !Immortal) {
-        dead = true
-      }
+      if (!Immortal) dead = true
       behavior = DeadBehaviour
       stage = 0
       vel.x = 0

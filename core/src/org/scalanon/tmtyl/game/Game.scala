@@ -30,6 +30,7 @@ class Game extends Scene {
   var player: Player = Player(this)
   var alien: Alien   = Alien(this)
   var actors         = List.empty[Actor]
+  var translateX     = Geometry.ScreenWidth / screenPixel / 2 - player.centerX
 
   val keysPressed    = mutable.Set.empty[Int]
   val newKeysPressed = mutable.Set.empty[Int]
@@ -53,6 +54,7 @@ class Game extends Scene {
     player.vel = Vec2(0, 0)
     keysPressed.clear()
     alien.loc = player.loc + Vec2(-80, 80)
+    translateX = Geometry.ScreenWidth / screenPixel / 2 - player.centerX
     state = MapState
   }
 
@@ -69,6 +71,12 @@ class Game extends Scene {
     if (MathUtils.randomBoolean(.01f))
       actors = Missile.launch(this).cata(_ :: actors, actors)
     newKeysPressed.clear()
+    val targetX =
+      Geometry.ScreenWidth / screenPixel / 2 - player.centerX
+    translateX =
+      if (targetX > translateX)
+        (translateX + TranslateSpeed * delta) min targetX
+      else (translateX - TranslateSpeed * delta) max targetX
     PartialFunction.condOpt(state) {
       case QuitState  => new Home
       case PauseState => Home(this)
@@ -77,13 +85,11 @@ class Game extends Scene {
   }
 
   override def render(batch: PolygonSpriteBatch): Unit = {
-    val translationX =
-      (Geometry.ScreenWidth / 2 - player.centerX * screenPixel).floor
     batch.setTransformMatrix(
-      matrix.setToTranslation(translationX, 0, 0)
+      matrix.setToTranslation((translateX * screenPixel).floor, 0, 0)
     )
 
-    drawLevel(batch, translationX)
+    drawLevel(batch)
 
     player.draw(batch)
     alien.draw(batch)
@@ -95,19 +101,18 @@ class Game extends Scene {
   }
 
   private def drawLevel(
-      batch: PolygonSpriteBatch,
-      translationX: Float
+      batch: PolygonSpriteBatch
   ): Unit = {
     batch.setColor(Color.WHITE)
     for {
       jsonLayer <- level.layers.reverse
       layer     <- jsonLayer.option[JsonTileLayer]
       tileset    = Tmtyl.tilesets(layer.tileset)
-      xUnit      = layer.gridCellWidth * screenPixel
-      yUnit      = layer.gridCellHeight * screenPixel
-      minX       = ((0 - translationX) / xUnit).floor.toInt max 0
+      cellWidth  = layer.gridCellWidth
+      cellHeight = layer.gridCellHeight
+      minX       = ((0 - translateX) / cellWidth).floor.toInt max 0
       maxX       =
-        ((Geometry.ScreenWidth - translationX) / xUnit).ceil.toInt min layer.gridCellsX
+        ((Geometry.ScreenWidth / screenPixel - translateX) / cellWidth).ceil.toInt min layer.gridCellsX
       y         <- 0 until layer.gridCellsY
       row        = layer.data2D(y)
       x         <- minX until maxX
@@ -115,10 +120,10 @@ class Game extends Scene {
     } {
       batch.draw(
         tileset.texture,
-        x * xUnit,
-        (layer.gridCellsY - y - 1) * yUnit,
-        xUnit,
-        yUnit,
+        x * cellWidth * screenPixel,
+        (layer.gridCellsY - y - 1) * cellHeight * screenPixel,
+        cellWidth * screenPixel,
+        cellHeight * screenPixel,
         tile.x,
         tile.y,
         tile.width,
@@ -131,6 +136,8 @@ class Game extends Scene {
 }
 
 object Game {
+  val TranslateSpeed = 300f
+
   sealed trait State
   case object PlayingState extends State
   case object LostState    extends State

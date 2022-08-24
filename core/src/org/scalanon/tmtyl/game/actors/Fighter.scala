@@ -31,7 +31,7 @@ class Fighter(x: Float, y: Float, game: Game) extends Actor {
       firingDelay = MathUtils.random(FiringDelayMax, FiringDelayMax)
     }
     if (shoot) {
-      gunshot.play(x - game.player.centerX)
+      gunshot.play(x + game.translateX)
       List(
         this,
         new Bullet(
@@ -67,10 +67,10 @@ class Fighter(x: Float, y: Float, game: Game) extends Actor {
 }
 
 object Fighter {
-  val Frames        = 5
-  val Sheets        = 1
-  val BulletOffsetX = 4f
-  val BulletOffsetY = 10f
+  val Frames         = 5
+  val Sheets         = 1
+  val BulletOffsetX  = 4f
+  val BulletOffsetY  = 10f
   val FiringDelayMin = 1f
   val FiringDelayMax = 3f
 
@@ -84,5 +84,5 @@ object Fighter {
   private def idle = AssetLoader.image("Gunner_Blue_Idle.png")
   private def run  = AssetLoader.image("Gunner_Blue_Run.png")
 
-  private def gunshot  = AssetLoader.sound("gunshot.mp3")
+  private def gunshot = AssetLoader.sound("gunshot.mp3")
 }
