@@ -53,10 +53,10 @@ class Game extends Scene {
     new GameControl(this)
   }
 
-  def nextLevel(): Unit = {
+  def switchToLevel(nlev: Int): Unit = {
     score.score += ((100 / timer) + (50 / timer) + (10 / timer) - (timer / 100)).toInt
     timer = 0f
-    currentLevel = currentLevel + 1
+    currentLevel = nlev
     level = levelList(currentLevel)
     entities = Entities.fromLevel(level)
     actors = List.empty[Actor]
@@ -72,118 +72,33 @@ class Game extends Scene {
 
   override def update(delta: Float): Option[Scene] = {
 
-    if (keysPressed.contains(Keys.NUM_0)) {
-      currentLevel = 0
-      level = levelList.head
-      score.score += ((100 / timer) + (50 / timer) + (10 / timer) - (timer / 100)).toInt
-      timer = 0f
-      level = levelList(currentLevel)
-      entities = Entities.fromLevel(level)
-      actors = List.empty[Actor]
-      activated.clear()
-      player.loc =
-        entities.start.cata(s => Vec2(s.x.toFloat, s.y.toFloat), Vec2(0, 0))
-      player.vel = Vec2(0, 0)
-      keysPressed.clear()
-      alien.loc = player.loc + Vec2(-80, 80)
-      translateX = Geometry.ScreenWidth / screenPixel / 2 - player.centerX
+    if (keysPressed.contains(Keys.NUM_1)) {
+
+      switchToLevel(0)
 
     }
-    if (keysPressed.contains(Keys.NUM_1)) {
-      currentLevel = 1
-      level = levelList(1)
-      score.score += ((100 / timer) + (50 / timer) + (10 / timer) - (timer / 100)).toInt
-      timer = 0f
-      level = levelList(currentLevel)
-      entities = Entities.fromLevel(level)
-      actors = List.empty[Actor]
-      activated.clear()
-      player.loc =
-        entities.start.cata(s => Vec2(s.x.toFloat, s.y.toFloat), Vec2(0, 0))
-      player.vel = Vec2(0, 0)
-      keysPressed.clear()
-      alien.loc = player.loc + Vec2(-80, 80)
-      translateX = Geometry.ScreenWidth / screenPixel / 2 - player.centerX
-    }
     if (keysPressed.contains(Keys.NUM_2)) {
-      currentLevel = 2
-      level = levelList(2)
-      score.score += ((100 / timer) + (50 / timer) + (10 / timer) - (timer / 100)).toInt
-      timer = 0f
-      level = levelList(currentLevel)
-      entities = Entities.fromLevel(level)
-      actors = List.empty[Actor]
-      activated.clear()
-      player.loc =
-        entities.start.cata(s => Vec2(s.x.toFloat, s.y.toFloat), Vec2(0, 0))
-      player.vel = Vec2(0, 0)
-      keysPressed.clear()
-      alien.loc = player.loc + Vec2(-80, 80)
-      translateX = Geometry.ScreenWidth / screenPixel / 2 - player.centerX
+
+      switchToLevel(1)
     }
     if (keysPressed.contains(Keys.NUM_3)) {
-      currentLevel = 3
-      level = levelList(3)
-      score.score += ((100 / timer) + (50 / timer) + (10 / timer) - (timer / 100)).toInt
-      timer = 0f
-      level = levelList(currentLevel)
-      entities = Entities.fromLevel(level)
-      actors = List.empty[Actor]
-      activated.clear()
-      player.loc =
-        entities.start.cata(s => Vec2(s.x.toFloat, s.y.toFloat), Vec2(0, 0))
-      player.vel = Vec2(0, 0)
-      keysPressed.clear()
-      alien.loc = player.loc + Vec2(-80, 80)
-      translateX = Geometry.ScreenWidth / screenPixel / 2 - player.centerX
+
+      switchToLevel(2)
     }
     if (keysPressed.contains(Keys.NUM_4)) {
-      currentLevel = 4
-      level = levelList(4)
-      score.score += ((100 / timer) + (50 / timer) + (10 / timer) - (timer / 100)).toInt
-      timer = 0f
-      level = levelList(currentLevel)
-      entities = Entities.fromLevel(level)
-      actors = List.empty[Actor]
-      activated.clear()
-      player.loc =
-        entities.start.cata(s => Vec2(s.x.toFloat, s.y.toFloat), Vec2(0, 0))
-      player.vel = Vec2(0, 0)
-      keysPressed.clear()
-      alien.loc = player.loc + Vec2(-80, 80)
-      translateX = Geometry.ScreenWidth / screenPixel / 2 - player.centerX
+
+      switchToLevel(3)
     }
     if (keysPressed.contains(Keys.NUM_5)) {
-      currentLevel = 5
-      level = levelList(5)
-      score.score += ((100 / timer) + (50 / timer) + (10 / timer) - (timer / 100)).toInt
-      timer = 0f
-      level = levelList(currentLevel)
-      entities = Entities.fromLevel(level)
-      actors = List.empty[Actor]
-      activated.clear()
-      player.loc =
-        entities.start.cata(s => Vec2(s.x.toFloat, s.y.toFloat), Vec2(0, 0))
-      player.vel = Vec2(0, 0)
-      keysPressed.clear()
-      alien.loc = player.loc + Vec2(-80, 80)
-      translateX = Geometry.ScreenWidth / screenPixel / 2 - player.centerX
+      switchToLevel(4)
     }
     if (keysPressed.contains(Keys.NUM_6)) {
-      currentLevel = 6
-      level = levelList(6)
-      score.score += ((100 / timer) + (50 / timer) + (10 / timer) - (timer / 100)).toInt
-      timer = 0f
-      level = levelList(currentLevel)
-      entities = Entities.fromLevel(level)
-      actors = List.empty[Actor]
-      activated.clear()
-      player.loc =
-        entities.start.cata(s => Vec2(s.x.toFloat, s.y.toFloat), Vec2(0, 0))
-      player.vel = Vec2(0, 0)
-      keysPressed.clear()
-      alien.loc = player.loc + Vec2(-80, 80)
-      translateX = Geometry.ScreenWidth / screenPixel / 2 - player.centerX
+
+      switchToLevel(5)
+    }
+    if (keysPressed.contains(Keys.NUM_7)) {
+
+      switchToLevel(6)
     }
 
     timer += delta

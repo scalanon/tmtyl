@@ -125,7 +125,7 @@ final case class Player(game: Game) {
         val onDoor = game.entities.doors.find(oldRect.isOnBottom)
         onDoor foreach { from =>
           if (from.doorway == "exit") {
-            game.nextLevel()
+            game.switchToLevel()
           } else if (
             !game.entities.switches
               .exists(sw => sw.key == from.key) || game.entities.switches
