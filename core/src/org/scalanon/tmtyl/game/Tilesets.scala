@@ -46,6 +46,7 @@ final case class Tileset(
 
 }
 
+// TOD: unify all the rectangles and make them float based
 final case class Rect(x: Int, y: Int, width: Int, height: Int) {
   // horizontally
   def isWithinX(ent: Ent): Boolean =

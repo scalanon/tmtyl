@@ -1,14 +1,31 @@
-package org.scalanon.tmtyl.util
+package org.scalanon.tmtyl
+package util
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.utils.Disposable
 import org.scalanon.tmtyl.Prefs
+import org.scalanon.tmtyl.Tmtyl.screenPixel
 
 class SoundWrapper(val sound: Sound) extends Disposable {
-  // TODO: implicit to sound conversion that returns a dummy sound if muted, so no need to proxy all methods
-  def play(): Unit =
+  def play(): Unit = {
     if (!Prefs.MuteAudio.isTrue) sound.play()
+  }
+
+  def play(offset: Float): Unit = {
+    if (!Prefs.MuteAudio.isTrue) {
+      // -1 left, 1 right
+      val relative = (offset * screenPixel * 2) / Geometry.ScreenWidth
+      // on screen full volume, 1 screen away 2/3-volume
+      val vol      = ((3 - relative.abs) / 2f).clamp(.3f, 1f)
+      val pan      =
+        if (relative < 1) (relative + 1f).clamp(-1f, 0)
+        else if (relative > 1) (relative - 1f).clamp(0, 1f)
+        else 0f
+      println(pan)
+      sound.play(vol, 1f, pan)
+    }
+  }
 
   override def dispose(): Unit = {
     sound.dispose()

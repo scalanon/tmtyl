@@ -54,8 +54,7 @@ final case class Missile(
     } else if (
       newY < targetY && oldY >= targetY && pos.x + height / 2 >= floor.x && pos.x - height / 2 < floor.x + floor.width
     ) {
-      // TODO: volume fades and pans with distance
-      boom.play()
+      boom.play(pos.x - game.player.centerX)
       // kinda where the tip is
       val x       = pos.x - (width / 2f * MathUtils.sinDeg(velocityAngle))
       val y       = targetY
@@ -65,7 +64,7 @@ final case class Missile(
       if (
         hitRect.y >= y && hitRect.y < y + range && hitRect.x + hitRect.width >= x - range / 2 && hitRect.x < x + range / 2
       ) {
-        game.player.die(exploScream)
+        game.player.die()
       }
       List(Explosion(x, y))
     } else {
@@ -103,16 +102,15 @@ final case class Missile(
       target.height * screenPixel
     )
   }
-
-  private def image       = AssetLoader.image("missile.png")
-  private def target      = AssetLoader.image("target.png")
-  private def boom        = AssetLoader.sound("boom.mp3")
-  private def exploScream = AssetLoader.sound("exploScream.mp3")
 }
 
 object Missile {
   val Acceleration = 50f
   val Angeleration = 60f
+
+  private def image  = AssetLoader.image("missile.png")
+  private def target = AssetLoader.image("target.png")
+  private def boom   = AssetLoader.sound("boom.mp3")
 
   def launch(game: Game): Option[Missile] = {
     val playerRect = game.player.hitRect()

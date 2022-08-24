@@ -17,11 +17,20 @@ class Bullet(x: Float, y: Float, left: Boolean, game: Game) extends Actor {
 
   override def update(delta: Float): List[Actor] = {
     loc.mulAdd(vel, delta)
-    val scale = left.fold(-screenPixel, screenPixel)
-    val gone  =
+    val scale      = left.fold(-screenPixel, screenPixel)
+    val gone       =
       (loc.x + width / 2 - game.player.centerX) * scale > Geometry.ScreenWidth / 2
+    val playerRect = game.player.hitRect()
+    // fully within
+    val hit        =
+      loc.x - width < playerRect.x + playerRect.width && loc.x >= playerRect.x && loc.y + height < playerRect.y + playerRect.height && loc.y >= playerRect.y
+    if (hit) {
+      game.player.die()
+    }
     if (gone) {
       Nil
+    } else if (hit) {
+      List(Splatter(loc.x, loc.y))
     } else {
       List(this)
     }
@@ -33,7 +42,13 @@ class Bullet(x: Float, y: Float, left: Boolean, game: Game) extends Actor {
       loc.x * screenPixel,
       loc.y * screenPixel,
       width * screenPixel,
-      height * screenPixel
+      height * screenPixel,
+      0,
+      0,
+      width,
+      height,
+      left,
+      false
     )
   }
 }
@@ -41,5 +56,5 @@ class Bullet(x: Float, y: Float, left: Boolean, game: Game) extends Actor {
 object Bullet {
   val Speed = 60f
 
-  private def image = AssetLoader.image("target.png")
+  private def image = AssetLoader.image("bullet.png")
 }

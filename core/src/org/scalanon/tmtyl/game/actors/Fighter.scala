@@ -31,7 +31,7 @@ class Fighter(x: Float, y: Float, game: Game) extends Actor {
       firingDelay = MathUtils.random(FiringDelayMax, FiringDelayMax)
     }
     if (shoot) {
-      gunshot.play()
+      gunshot.play(x - game.player.centerX)
       List(
         this,
         new Bullet(

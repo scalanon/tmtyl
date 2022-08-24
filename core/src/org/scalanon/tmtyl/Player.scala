@@ -171,12 +171,14 @@ final case class Player(game: Game) {
       newLoc
     }
 
-    if (loc.y + size.y < 0) die(wilhelm)
+    if (loc.y + size.y < 0) die(wilhelm, permanent = true)
   }
 
-  def die(sound: SoundWrapper): Unit = {
+  def die(sound: SoundWrapper = scream, permanent: Boolean = false): Unit = {
     if (!dead) {
-      dead = true
+      if (permanent || !Immortal) {
+        dead = true
+      }
       behavior = DeadBehaviour
       stage = 0
       vel.x = 0
@@ -199,6 +201,8 @@ final case class Player(game: Game) {
 }
 
 object Player {
+  val Immortal = true
+
   private val XMargin = 8
 
   private val SpeedX       = 6 * 16f
@@ -219,4 +223,5 @@ object Player {
 
   private def wilhelm = AssetLoader.sound("scream.mp3")
   private def splat   = AssetLoader.sound("splat.mp3")
+  private def scream  = AssetLoader.sound("screamQuick.mp3")
 }
