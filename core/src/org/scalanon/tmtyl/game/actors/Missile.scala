@@ -1,5 +1,5 @@
 package org.scalanon.tmtyl
-package game.entities
+package game.actors
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
@@ -13,7 +13,7 @@ final case class Missile(
     targetY: Float,
     floor: Floor,
     game: Game
-) extends Entity {
+) extends Actor {
   import Missile._
   import Tmtyl.screenPixel
 
@@ -26,7 +26,7 @@ final case class Missile(
   private val vel   = Vec2(0, 0)
   private var oldY  = y
 
-  def update(delta: Float): List[Entity] = {
+  def update(delta: Float): List[Actor] = {
     // the angle I'm moving, -180 to 180
     val velocityAngle         = MathUtils.atan2(vel.y, vel.x).degrees
     // the angle to my target, -180 to 180
@@ -54,6 +54,7 @@ final case class Missile(
     } else if (
       newY < targetY && oldY >= targetY && pos.x + height / 2 >= floor.x && pos.x - height / 2 < floor.x + floor.width
     ) {
+      // TODO: volume fades and pans with distance
       boom.play()
       // kinda where the tip is
       val x       = pos.x - (width / 2f * MathUtils.sinDeg(velocityAngle))
@@ -122,7 +123,7 @@ object Missile {
         playerRect.x - MathUtils.random(200f, 300f),
         MathUtils.random(400f, 500f),
         (playerRect.x + playerRect.width / 2f)
-          .clamp(floor.x, floor.x + floor.width - 1),
+          .clamp(floor.x.toFloat, floor.x.toFloat + floor.width.toFloat - 1),
         floor.y + floor.height,
         floor,
         game

@@ -1,9 +1,9 @@
 package org.scalanon.tmtyl
-package game.entities
+package game.actors
 
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 
-final case class Explosion(x: Float, y: Float) extends Entity {
+final case class Explosion(x: Float, y: Float) extends Actor {
   import Explosion._
   import Tmtyl.screenPixel
 
@@ -11,7 +11,7 @@ final case class Explosion(x: Float, y: Float) extends Entity {
   private val height = image.height
   private var age    = 0f
 
-  def update(delta: Float): List[Entity] = {
+  def update(delta: Float): List[Actor] = {
     age += delta
     if (age < Frames * FrameRate) List(this) else Nil
   }

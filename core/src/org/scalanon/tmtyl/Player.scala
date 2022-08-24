@@ -4,13 +4,13 @@ import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import org.scalanon.tmtyl.Tmtyl._
-import org.scalanon.tmtyl.game.{Entities, Game, Levels, Rect}
+import org.scalanon.tmtyl.game.{Game, Rect}
 import org.scalanon.tmtyl.util.SoundWrapper
 
 import scala.util.Random
 
-case class Player(game: Game) {
-  val XMargin = 8
+final case class Player(game: Game) {
+  import Player._
 
   var lookRot: Float = 0f
   var loc: Vec2      =
@@ -18,7 +18,7 @@ case class Player(game: Game) {
   var size: Vec2     = Vec2(22, 17)
   var vel: Vec2      = Vec2(0, 0)
   var dead           = false
-  var left           = false
+  var facingLeft     = false
   var stage          = 0
   var behavior       = 2
 
@@ -41,29 +41,13 @@ case class Player(game: Game) {
       behavior * 17,
       16,
       16,
-      left,
+      facingLeft,
       false
     )
   }
 
   var wTick     = 0f
   var deadTimer = 0f
-
-  private val SpeedX       = 6 * 16f
-  private val ClimbSpeed   = 6 * 16f
-  private val JumpSpeed    = 14 * 16f
-  private val Gravity      = 60 * 16f
-  private val DeathlySpeed = 300f
-
-  private val DeadBehaviour = 6
-  private val Stages        = Map(
-    0             -> 5,
-    1             -> 6,
-    2             -> 6,
-    3             -> 4,
-    DeadBehaviour -> 6,
-    7             -> 5
-  )
 
   def update(delta: Float): Unit = {
     if (dead) {
@@ -93,13 +77,13 @@ case class Player(game: Game) {
     if (game.keyPressed(Keys.A, Keys.LEFT) && !dead) {
       if (vel.x >= 0) stage = 0
       vel.x = -SpeedX
-      left = true
+      facingLeft = true
       behavior = 2
     } else if (game.keyPressed(Keys.D, Keys.RIGHT) && !dead) {
       if (vel.x < 0) stage = 0
       behavior = 2
       vel.x = SpeedX
-      left = false
+      facingLeft = false
     } else if (!dead) {
       vel.x = 0
       if (vel.y == 0) behavior = 0
@@ -110,14 +94,11 @@ case class Player(game: Game) {
     val onLadder = game.entities.ladders.find(playerRect.isOnTopOrIn)
     val onFloor  = game.entities.floors.find(playerRect.isOnTop)
 
-    if (onLadder.isDefined) {
-      behavior = 7
-    }
-
     var warpLoc  = Option.empty[Vec2]
     var climbing = false
 
-    if (onLadder.isDefined) {
+    if (onLadder.isDefined && !dead) {
+      behavior = 7
       vel.y = 0
     } else {
       vel.y -= Gravity * delta
@@ -159,7 +140,7 @@ case class Player(game: Game) {
       }
     }
 
-    if (!climbing && onLadder.isDefined) {
+    if (!climbing && onLadder.isDefined && !dead) {
       stage = 0
     }
 
@@ -208,6 +189,32 @@ case class Player(game: Game) {
     location.y.toInt,
     size.x.toInt - 2 * XMargin,
     size.y.toInt
+  )
+
+  def centerX: Float = loc.x + size.x / 2f
+  def left: Float    = loc.x
+  def right: Float   = loc.x + size.x
+  def bottom: Float  = loc.y
+  def top: Float     = loc.y + size.y
+}
+
+object Player {
+  private val XMargin = 8
+
+  private val SpeedX       = 6 * 16f
+  private val ClimbSpeed   = 6 * 16f
+  private val JumpSpeed    = 14 * 16f
+  private val Gravity      = 60 * 16f
+  private val DeathlySpeed = 300f
+
+  private val DeadBehaviour = 6
+  private val Stages        = Map(
+    0             -> 5,
+    1             -> 6,
+    2             -> 6,
+    3             -> 4,
+    DeadBehaviour -> 6,
+    7             -> 5
   )
 
   private def wilhelm = AssetLoader.sound("scream.mp3")

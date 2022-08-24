@@ -2,9 +2,9 @@ package org.scalanon.tmtyl.game
 
 import cats.implicits.toFunctorOps
 import com.badlogic.gdx.Gdx
-import io.circe.{Decoder, Json}
 import io.circe.generic.auto._
 import io.circe.parser._
+import io.circe.{Decoder, Json}
 
 import scala.reflect.ClassTag
 
@@ -55,7 +55,7 @@ final case class JsonTileLayer(
     gridCellsX: Int,
     gridCellsY: Int,
     tileset: String,
-    data2D: List[List[Int]],
+    data2D: Array[Array[Int]],
     exportMode: Int,
     arrayMode: Int // 1 => 2D
 ) extends JsonLayer
@@ -84,8 +84,28 @@ final case class JsonEntity(
     originY: Int,
     values: Option[
       Map[String, Json]
-    ] // technically it is to String | Number | Boolean I think
+    ]
 ) {
-  def value(name: String): Option[Json] =
-    values.flatMap(_.get(name))
+  def boolean(name: String): Option[Boolean] = value[Boolean](name)
+  def string(name: String): Option[String] = value[String](name)
+  def int(name: String): Option[Int] = value[Int](name)
+
+  def value[A: JsonValue](name: String): Option[A] =
+    values.flatMap(_.get(name)).flatMap(JsonValue[A].value)
+}
+
+trait JsonValue[A] {
+  def value(json: Json): Option[A]
+}
+
+object JsonValue {
+  def apply[A: JsonValue]: JsonValue[A] = implicitly
+
+  implicit val JsonBooloanValue: JsonValue[Boolean] = (json: Json) =>
+    json.asBoolean
+  implicit val JsonStringValue: JsonValue[String]   = (json: Json) =>
+    json.asString
+  implicit val JsonIntValue: JsonValue[Int]         = (json: Json) =>
+    json.asNumber.flatMap(_.toInt)
+
 }

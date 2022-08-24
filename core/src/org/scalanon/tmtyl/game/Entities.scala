@@ -1,12 +1,14 @@
 package org.scalanon.tmtyl
 package game
 
+// TODO: partition horizontally
 class Entities(val entities: List[Ent]) {
   val start                 = entities.collectType[Start].headOption
   val floors: List[Floor]   = entities.collectType[Floor]
   val waters: List[Water]   = entities.collectType[Water]
   val ladders: List[Ladder] = entities.collectType[Ladder]
   val doors: List[Door]     = entities.collectType[Door]
+  val enemies: List[Enemy]  = entities.collectType[Enemy]
 }
 
 object Entities {
@@ -48,7 +50,7 @@ object Ent {
           y,
           width,
           height,
-          entity.value("Solid").flatMap(_.asBoolean).isTrue
+          entity.boolean("Solid").isTrue
         )
       case "Water"  =>
         Water(
@@ -70,7 +72,15 @@ object Ent {
           y,
           width,
           height,
-          entity.value("Doorway").flatMap(_.asString) | ""
+          entity.string("Doorway") | ""
+        )
+      case "Enemy"  =>
+        Enemy(
+          x,
+          y,
+          width,
+          height,
+          entity.id
         )
     }
   }
@@ -111,4 +121,12 @@ final case class Door(
     width: Int,
     height: Int,
     doorway: String
+) extends Ent
+
+final case class Enemy(
+    x: Int,
+    y: Int,
+    width: Int,
+    height: Int,
+    id: Int
 ) extends Ent
