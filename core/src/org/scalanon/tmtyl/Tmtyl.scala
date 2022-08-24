@@ -77,9 +77,6 @@ object Tmtyl {
   val screenPixel =
     ((Geometry.ScreenWidth min Geometry.ScreenHeight) / 320).floor
 
-  var levelList    = List(Levels.level1, Levels.level2, Levels.level3)
-  var currentLevel = 0
-
   var close: TextureWrapper          = _
   var checkOn: TextureWrapper        = _
   var checkOff: TextureWrapper       = _

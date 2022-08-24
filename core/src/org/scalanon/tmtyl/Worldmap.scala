@@ -13,7 +13,7 @@ case class Worldmap(currentLevel: Int, game: Game) extends Scene {
     Vec2(50, 37),
     Vec2(63, 43),
     Vec2(80, 50),
-    Vec2(88, 57)
+    Vec2(89, 46)
   )
   var playerLoc: Vec2  = locs(currentLevel - 1)
 

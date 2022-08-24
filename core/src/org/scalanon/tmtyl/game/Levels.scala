@@ -9,13 +9,19 @@ import io.circe.{Decoder, Json}
 import scala.reflect.ClassTag
 
 object Levels {
-  lazy val level1 = load("Level1.json")
 
   lazy val newMexico = load("NewMexico.json")
 
-  lazy val level2 = load("Level2.json")
+  lazy val texas = load("Texas.json")
 
-  lazy val level3 = load("Level3.json")
+  lazy val oklahoma = load("Oklahoma.json")
+
+  lazy val arkansas  = load("Arkansas.json")
+  lazy val tennessee = load("Tennessee.json")
+
+  lazy val virginia = load("Virginia.json")
+
+  lazy val dc = load("DC.json")
 
   private def load(level: String): JsonLevel = {
     val json = Gdx.files.internal(s"ogmo/$level").readString("UTF-8")
