@@ -52,6 +52,7 @@ package object tmtyl {
 
   implicit class BooleanOps(val self: Boolean) extends AnyVal {
     def option[A](a: => A): Option[A] = if (self) Some(a) else None
+    def flatOption[A](a: => Option[A]): Option[A] = if (self) a else None
     def fold[A](ifTrue: => A, ifFalse: => A): A = if (self) ifTrue else ifFalse
   }
 

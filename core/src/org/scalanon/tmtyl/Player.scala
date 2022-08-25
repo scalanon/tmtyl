@@ -4,7 +4,7 @@ import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import org.scalanon.tmtyl.Tmtyl._
-import org.scalanon.tmtyl.game.{Game, Rect}
+import org.scalanon.tmtyl.game.{Floor, Game, Rect}
 import org.scalanon.tmtyl.util.SoundWrapper
 
 import scala.util.Random
@@ -21,6 +21,7 @@ final case class Player(game: Game) {
   var facingLeft     = false
   var stage          = 0
   var behavior       = 2
+  var aboveFloor = Option.empty[Floor]
 
   def draw(batch: PolygonSpriteBatch): Unit = {
     batch.setColor(Color.WHITE)
@@ -94,8 +95,10 @@ final case class Player(game: Game) {
 
     val oldRect = hitRect()
 
+    aboveFloor = game.entities.floors.filter(oldRect.isOnOrAbove).maxByOption(_.y)
+
     val onLadder = game.entities.ladders.find(oldRect.isOnTopOrIn)
-    val onFloor  = game.entities.floors.find(oldRect.isOnTop)
+    val onFloor  = aboveFloor.filter(oldRect.isOnTop)
 
     var warpLoc  = Option.empty[Vec2]
     var climbing = false
@@ -160,7 +163,7 @@ final case class Player(game: Game) {
       if (vel.x != 0) {
         val xRect   = hitRect(newLoc.x, loc.y)
         val hitSide = game.entities.floors.find(floor =>
-          floor.solid && xRect.isWithin(floor) && !oldRect.isWithin(floor)
+          floor.solid && xRect.intersects(floor) && !oldRect.intersects(floor)
         )
         hitSide foreach { floor =>
           newLoc.x += (vel.x > 0)
@@ -201,7 +204,7 @@ final case class Player(game: Game) {
   }
 
   def die(sound: SoundWrapper = scream): Unit = {
-    if (!dead) {
+    if (!dead && behavior != DeadBehaviour) {
       if (!Immortal) dead = true
       behavior = DeadBehaviour
       stage = 0

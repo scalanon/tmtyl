@@ -47,29 +47,26 @@ final case class Missile(
       delta * Acceleration
     )
     pos.mulAdd(vel, delta)
-    // this is approximately the position of the bottom of the missile assuming verticalish orientation
-    val newY                  = pos.y - (width / 2f * MathUtils.cosDeg(velocityAngle)).abs
+    val tipX                  = pos.x + width / 2f * MathUtils.cosDeg(velocityAngle)
+    val tipY                  = pos.y + width / 2f * MathUtils.sinDeg(velocityAngle)
     if (pos.y + height < 0) {
       Nil
     } else if (
-      newY < targetY && oldY >= targetY && pos.x + height / 2 >= floor.x && pos.x - height / 2 < floor.x + floor.width
+      tipY < targetY && oldY >= targetY && tipX + MissileBreadth / 2 >= floor.x && tipX - MissileBreadth / 2 < floor.x + floor.width
     ) {
       boom.play(pos.x + game.translateX)
-      // kinda where the tip is
-      val MagickOffsetButWhy = 3
-      val x       = pos.x - (width / 2f * MathUtils.sinDeg(velocityAngle)) - MagickOffsetButWhy
       val y       = targetY
       val hitRect = game.player.hitRect()
       // explosion range is about your height
       val range   = hitRect.height
       if (
-        hitRect.y >= y && hitRect.y < y + range && hitRect.x + hitRect.width >= x - range / 2 && hitRect.x < x + range / 2
+        hitRect.y >= y && hitRect.y < y + range && hitRect.x + hitRect.width >= tipX - range / 2 && hitRect.x < tipX + range / 2
       ) {
         game.player.die()
       }
-      List(Explosion(x, y))
+      List(Explosion(tipX, y))
     } else {
-      oldY = newY
+      oldY = tipY
       List(this)
     }
   }
@@ -79,14 +76,14 @@ final case class Missile(
     val velocityAngle = MathUtils.atan2(vel.y, vel.x).degrees
     batch.draw(
       image,
-      pos.x * screenPixel,
-      pos.y * screenPixel,
-      width / 2f,
-      height / 2f,
-      width.toFloat,
-      height.toFloat,
-      screenPixel,
-      screenPixel,
+      (pos.x - width / 2f) * screenPixel,
+      (pos.y - width / 2f) * screenPixel,
+      width * screenPixel / 2f,
+      height * screenPixel / 2f,
+      width.toFloat * screenPixel,
+      height.toFloat * screenPixel,
+      1f,
+      1f,
       velocityAngle,
       0,
       0,
@@ -106,27 +103,29 @@ final case class Missile(
 }
 
 object Missile {
-  val Acceleration = 50f
-  val Angeleration = 60f
+  val Acceleration   = 50f
+  val Angeleration   = 60f
+  val MissileBreadth = 5f
 
   private def image  = AssetLoader.image("missile.png")
   private def target = AssetLoader.image("target.png")
   private def boom   = AssetLoader.sound("boom.mp3")
 
-  def launch(game: Game): Option[Missile] = {
-    val playerRect = game.player.hitRect()
-    val standingOn =
-      game.entities.floors.filter(playerRect.isOnOrAbove).maxByOption(_.y)
-    standingOn.map(floor =>
+  def launch(x: Float, game: Game): Option[Missile] = {
+    game.player.aboveFloor.map(floor =>
       Missile(
-        playerRect.x - MathUtils.random(200f, 300f),
+        x,
         MathUtils.random(400f, 500f),
-        (playerRect.x + playerRect.width / 2f)
-          .clamp(floor.x.toFloat, floor.x.toFloat + floor.width.toFloat - 1),
+        game.player.centerX
+          .clamp(
+            floor.x.toFloat,
+            floor.x.toFloat + floor.width.toFloat - 1
+          ),
         floor.y + floor.height,
         floor,
         game
       )
     )
   }
+
 }

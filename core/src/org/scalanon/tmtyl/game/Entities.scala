@@ -99,6 +99,7 @@ object Entity {
           y,
           width,
           height,
+          entity.string("Kind") | "Fighter",
           entity.id
         )
     }
@@ -157,5 +158,6 @@ final case class Enemy(
     y: Int,
     width: Int,
     height: Int,
-    id: Int
+    kind: String,
+    id: Int,
 ) extends Entity

@@ -61,7 +61,7 @@
           "y": 160,
           "originX": 0,
           "originY": 0,
-          "values": {"Doorway": "one", "Key": ""}
+          "values": {"Doorway": "one"}
         },
         {
           "name": "Door",
@@ -71,7 +71,7 @@
           "y": 64,
           "originX": 0,
           "originY": 0,
-          "values": {"Doorway": "one", "Key": ""}
+          "values": {"Doorway": "one"}
         },
         {"name": "Ladder", "id": 8, "_eid": "18769430", "x": 480, "y": 160, "height": 64, "originX": 0, "originY": 0},
         {"name": "Start", "id": 9, "_eid": "19960369", "x": 400, "y": 32, "originX": 0, "originY": 0},
@@ -132,10 +132,28 @@
           "y": 176,
           "originX": 0,
           "originY": 0,
-          "values": {"Doorway": "exit", "Key": ""}
+          "values": {"Doorway": "exit"}
         },
-        {"name": "Enemy", "id": 16, "_eid": "30419055", "x": 720, "y": 176, "originX": 0, "originY": 0},
-        {"name": "Enemy", "id": 20, "_eid": "30419055", "x": 544, "y": 128, "originX": 0, "originY": 0},
+        {
+          "name": "Enemy",
+          "id": 16,
+          "_eid": "30419055",
+          "x": 720,
+          "y": 176,
+          "originX": 0,
+          "originY": 0,
+          "values": {"Kind": "Fighter"}
+        },
+        {
+          "name": "Enemy",
+          "id": 20,
+          "_eid": "30419055",
+          "x": 544,
+          "y": 128,
+          "originX": 0,
+          "originY": 0,
+          "values": {"Kind": "Fighter"}
+        },
         {
           "name": "Floor",
           "id": 21,
@@ -185,16 +203,6 @@
           "values": {"Solid": false}
         },
         {
-          "name": "Switch",
-          "id": 25,
-          "_eid": "35759211",
-          "x": 256,
-          "y": 208,
-          "originX": 0,
-          "originY": 0,
-          "values": {"Key": "Door"}
-        },
-        {
           "name": "Door",
           "id": 26,
           "_eid": "18757670",
@@ -202,7 +210,7 @@
           "y": 176,
           "originX": 0,
           "originY": 0,
-          "values": {"Doorway": "ex", "Key": "Door"}
+          "values": {"Doorway": "ex"}
         },
         {
           "name": "Door",
@@ -212,7 +220,7 @@
           "y": 176,
           "originX": 0,
           "originY": 0,
-          "values": {"Doorway": "ex", "Key": ""}
+          "values": {"Doorway": "ex"}
         },
         {
           "name": "Floor",

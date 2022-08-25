@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import org.scalanon.tmtyl.Tmtyl._
 import org.scalanon.tmtyl.game.Game
 
-case class Worldmap(currentLevel: Int, game: Game) extends Scene {
+case class Worldmap(game: Game) extends Scene {
   var locs: List[Vec2] = List(
     Vec2(9, 34),
     Vec2(23, 42),
@@ -15,7 +15,7 @@ case class Worldmap(currentLevel: Int, game: Game) extends Scene {
     Vec2(80, 50),
     Vec2(89, 54)
   )
-  var playerLoc: Vec2  = locs(((currentLevel - 1) max 0))
+  var playerLoc: Vec2  = locs((game.currentLevel - 1) max 0)
 
   def init(): InputAdapter = {
     new WorldmapControl(this)
@@ -25,22 +25,18 @@ case class Worldmap(currentLevel: Int, game: Game) extends Scene {
   def update(delta: Float): Option[Scene] = {
     tick += delta
     if (tick >= .2f) {
-      if (playerLoc.x < locs(currentLevel).x) playerLoc.x += 1;
-      tick = 0f
-
-      if (playerLoc.x > locs(currentLevel).x) playerLoc.x -= 1;
-      tick = 0f
-
-      if (playerLoc.y < locs(currentLevel).y) playerLoc.y += 1;
-      tick = 0f
-
-      if (playerLoc.y > locs(currentLevel).y) playerLoc.y -= 1;
+      val targetX = locs(game.currentLevel).x
+      val targetY = locs(game.currentLevel).y
+      if (playerLoc.x < targetX) playerLoc.x = playerLoc.x + 1 min targetX;
+      if (playerLoc.x > targetX) playerLoc.x = playerLoc.x - 1 max targetX;
+      if (playerLoc.y < targetY) playerLoc.y = playerLoc.y + 1 min targetY;
+      if (playerLoc.y > targetY) playerLoc.y = playerLoc.y - 1 max targetY;
       tick = 0f
     }
-    if (playerLoc == locs(currentLevel)) {
+    if (playerLoc == locs(game.currentLevel)) {
       eTick += delta
     }
-    if (playerLoc == locs(currentLevel) && eTick >= .2f) {
+    if (playerLoc == locs(game.currentLevel) && eTick >= .2f) {
       Some(game)
     } else {
       None

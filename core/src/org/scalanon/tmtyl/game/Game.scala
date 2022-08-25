@@ -1,13 +1,12 @@
 package org.scalanon.tmtyl
 package game
 
-import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
-import com.badlogic.gdx.math.{MathUtils, Matrix4}
+import com.badlogic.gdx.math.Matrix4
 import org.scalanon.tmtyl.Scene
 import org.scalanon.tmtyl.Tmtyl._
-import org.scalanon.tmtyl.game.actors.{Fighter, Missile}
+import org.scalanon.tmtyl.game.actors.Enemies
 import org.scalanon.tmtyl.home.Home
 
 import scala.collection.mutable
@@ -71,36 +70,6 @@ class Game extends Scene {
   }
 
   override def update(delta: Float): Option[Scene] = {
-
-    if (keysPressed.contains(Keys.NUM_1)) {
-
-      switchToLevel(0)
-
-    }
-    if (keysPressed.contains(Keys.NUM_2)) {
-
-      switchToLevel(1)
-    }
-    if (keysPressed.contains(Keys.NUM_3)) {
-
-      switchToLevel(2)
-    }
-    if (keysPressed.contains(Keys.NUM_4)) {
-
-      switchToLevel(3)
-    }
-    if (keysPressed.contains(Keys.NUM_5)) {
-      switchToLevel(4)
-    }
-    if (keysPressed.contains(Keys.NUM_6)) {
-
-      switchToLevel(5)
-    }
-    if (keysPressed.contains(Keys.NUM_7)) {
-
-      switchToLevel(6)
-    }
-
     timer += delta
     score.update(delta)
     player.update(delta)
@@ -109,10 +78,8 @@ class Game extends Scene {
       player.loc.x + player.size.x / 2 + Geometry.ScreenWidth / 2 / screenPixel
     val enemies = entities.enemies
       .filter(enemy => enemy.x <= minX && activated.add(enemy.id))
-      .map(enemy => new Fighter(enemy.x.toFloat, enemy.y.toFloat, this))
+      .map(enemy => Enemies.spawn(enemy, this))
     actors = enemies ::: actors.flatMap(_.update(delta))
-    if (MathUtils.randomBoolean(.01f))
-      actors = Missile.launch(this).cata(_ :: actors, actors)
     newKeysPressed.clear()
     val targetX =
       Geometry.ScreenWidth / screenPixel / 2 - player.centerX
@@ -123,7 +90,7 @@ class Game extends Scene {
     PartialFunction.condOpt(state) {
       case QuitState  => new Home
       case PauseState => Home(this)
-      case MapState   => Worldmap(currentLevel, this)
+      case MapState   => Worldmap(this)
     }
   }
 
