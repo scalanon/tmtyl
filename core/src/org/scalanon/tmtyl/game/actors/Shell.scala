@@ -87,7 +87,7 @@ object Shell {
   private def boom  = AssetLoader.sound("boom.mp3")
   private def fire  = AssetLoader.sound("mortar.mp3")
 
-  def fire(x: Float, y: Float, game: Game): Option[Shell] = {
+  def fire(x: Float, y: Float, playerVelX: Float, game: Game): Option[Shell] = {
     game.player.aboveFloor.flatMap(floor => {
       val vY        = MathUtils.random(LaunchVelocity._1, LaunchVelocity._2)
       val targetY   = floor.top.toFloat - y
@@ -96,7 +96,7 @@ object Shell {
         // When will we hit the player's Y
         val t       = (vY + Math.sqrt(quadratic)).toFloat / Gravity
         // Where will the player be
-        val playerX = game.player.centerX + game.player.vel.x * t
+        val playerX = game.player.centerX + playerVelX * t
         // What horizontal velocity will get us there, within limits
         val vX      = ((playerX - x) / t).clamp(-vY / 2, vY / 2)
 

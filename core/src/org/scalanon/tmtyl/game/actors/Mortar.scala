@@ -11,18 +11,20 @@ class Mortar(x: Float, y: Float, game: Game) extends Actor {
   import Mortar._
 
   // TODO: the mortar should be a tube rendered at an angle that gradually rotates
-  // to target angle etc.
+  // to target angle etc?
 
   private val width = image.width
   private val height = image.height
+  private var velocity = 0f // player velocity smoothed over time
 
   override def update(delta: Float): List[Actor] = {
+    velocity = velocity * History + game.player.vel.x * (1f - History)
     val launchRange = 5 * Geometry.ScreenWidth / screenPixel
     val doLaunch    =
       game.player.right >= x - launchRange && game.player.left < x + launchRange && MathUtils
         .randomBoolean(FireChance * delta)
     doLaunch
-      .flatOption(Shell.fire(x + width / 2, y + height / 2, game))
+      .flatOption(Shell.fire(x + width / 2, y + height / 2, velocity, game))
       .cata(shell => List(shell, this), List(this))
   }
 
@@ -33,6 +35,7 @@ class Mortar(x: Float, y: Float, game: Game) extends Actor {
 
 object Mortar {
   val FireChance = 1f
+  val History = .9f
 
   private def image = AssetLoader.image("mortar.png")
 }
