@@ -1,7 +1,7 @@
-package org.scalanon.tmtyl.game.actors
+package org.scalanon.tmtyl
+package game.actors
 
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
-import com.badlogic.gdx.math.MathUtils
 import org.scalanon.tmtyl.Tmtyl.screenPixel
 import org.scalanon.tmtyl.game.Game
 import org.scalanon.tmtyl.{Actor, AssetLoader, Geometry}
@@ -16,19 +16,19 @@ class Fighter(x: Float, y: Float, game: Game) extends Actor {
   var sheet       = Sheet.Idle
   var time        = 0f
   var left        = false
-  var firingDelay = MathUtils.random(FiringDelayMax, FiringDelayMax)
+  var firingClock = random(FiringRate)
 
   def update(delta: Float): List[Actor] = {
     time = time + delta
     frame = (time / FrameRate).toInt
     sheet = (time / FrameRate / 5).toInt % Fighter.Sheets
     left = game.player.centerX <= x + width / 2
-    firingDelay = firingDelay - delta
+    firingClock = firingClock - delta
     var shoot = false
-    if (firingDelay < 0) {
+    if (firingClock < 0) {
       shoot = game.player.bottom < y + height && game.player.top >= y &&
         (x + width.toFloat / 2 - game.player.centerX).abs * screenPixel < Geometry.ScreenWidth * .625f
-      firingDelay = MathUtils.random(FiringDelayMax, FiringDelayMax)
+      firingClock = random(FiringRate)
     }
     if (shoot) {
       gunshot.play(x + game.translateX)
@@ -67,12 +67,11 @@ class Fighter(x: Float, y: Float, game: Game) extends Actor {
 }
 
 object Fighter {
-  val Frames         = 5
-  val Sheets         = 1
-  val BulletOffsetX  = 4f
-  val BulletOffsetY  = 10f
-  val FiringDelayMin = 1f
-  val FiringDelayMax = 3f
+  val Frames        = 5
+  val Sheets        = 1
+  val BulletOffsetX = 4f
+  val BulletOffsetY = 10f
+  val FiringRate    = (1f, 3f)
 
   val FrameRate = .1f
 

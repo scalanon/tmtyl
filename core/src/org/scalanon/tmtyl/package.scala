@@ -15,6 +15,8 @@ package object tmtyl {
   def compassAvailable: Boolean =
     input.isPeripheralAvailable(Peripheral.Compass)
 
+  def random(range: (Float, Float)): Float = MathUtils.random(range._1, range._2)
+
   implicit class AnyOps(val self: Any) extends AnyVal {
 
     /** Replace this value with [a]. */

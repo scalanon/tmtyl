@@ -16,13 +16,14 @@ class Mortar(x: Float, y: Float, game: Game) extends Actor {
   private val launchX = x + width / 2
   private val launchY = y + height / 2
 
-  private var playerVelocityX =
-    0f // player horizontal velocity smoothed over time
-  private var launchVelocityY =
-    MathUtils.random(LaunchVelocityY._1, Mortar.LaunchVelocityY._2)
+  // player horizontal velocity smoothed over time
+  private var playerVelocityX = 0f
+  private var launchVelocityY = random(Mortar.LaunchVelocityY)
+  private var firingClock     = random(FiringRate)
   private var angle           = 0f
 
   override def update(delta: Float): List[Actor] = {
+    firingClock -= delta
     playerVelocityX =
       playerVelocityX * History + game.player.vel.x * (1f - History)
     val shellOpt = for {
@@ -30,15 +31,19 @@ class Mortar(x: Float, y: Float, game: Game) extends Actor {
       if game.player.right >= x - LaunchRange && game.player.left < x + LaunchRange
       launchVelocityX <- computeVelocityX(floor.top.toFloat)
       _                = adjustAngle(launchVelocityX)
-      if MathUtils.randomBoolean(FireChance * delta)
-
-    } yield Shell.fire(
-      launchX,
-      launchY,
-      launchVelocityX,
-      launchVelocityY,
-      game
-    )
+      if firingClock < 0
+    } yield {
+      val shell = Shell.fire(
+        launchX,
+        launchY,
+        launchVelocityX,
+        launchVelocityY,
+        game
+      )
+      firingClock = random(FiringRate)
+      launchVelocityY = random(Mortar.LaunchVelocityY)
+      shell
+    }
     shellOpt.cata(shell => List(shell, this), List(this))
   }
 
@@ -92,8 +97,8 @@ class Mortar(x: Float, y: Float, game: Game) extends Actor {
 }
 
 object Mortar {
-  val FireChance      = 1f
   val History         = .9f
+  val FiringRate      = (.25f, .75f)
   val LaunchRange     = 5 * Geometry.ScreenWidth / screenPixel
   val LaunchVelocityY = (250f, 350f)
   val BarrelBreadth   = 8f

@@ -17,11 +17,15 @@ class Cannon(x: Float, y: Float, orientation: Orientation, game: Game)
   private val launchX = x + width / 2
   private val launchY = y + height / 2
 
-  private var angle = 0f
+  private var shotClock = random(ShotRate)
+  private var angle     = orientation.degrees.toFloat
 
   override def update(delta: Float): List[Actor] = {
-    val deltaX               = game.player.centerX - launchX
-    val deltaY               = game.player.headY - launchY
+    shotClock = shotClock - delta
+    val deltaX = game.player.centerX - launchX
+    val deltaY = game.player.headY - launchY
+
+    // figure out a target angle constrained by the rotation limit
     val targetAngle          = MathUtils.atan2(deltaY, deltaX).degrees
     val deltaFromOrientation =
       (targetAngle - orientation.degrees.toFloat).onCircle
@@ -31,26 +35,34 @@ class Cannon(x: Float, y: Float, orientation: Orientation, game: Game)
       else if (deltaFromOrientation > RotationLimit)
         RotationLimit - deltaFromOrientation
       else 0f
-    val desiredAngle         = targetAngle + clampCorrection
-    val a1 = (angle + orientation.degrees + 180).onCircle
-    val a2 = (desiredAngle + orientation.degrees + 180).onCircle
+    val clampedAngle         = targetAngle + clampCorrection
 
-    angle = angle + (desiredAngle - angle).clamp(
+    // Rotate to target angle without rotating through the base
+    val srcAngle   = (angle + orientation.degrees).onCircle
+    val dstAngle   =
+      (clampedAngle + orientation.degrees).onCircle
+    val deltaAngle =
+      if ((srcAngle < 0 && dstAngle > 0) || (srcAngle > 0 && dstAngle < 0))
+        srcAngle - dstAngle
+      else dstAngle - srcAngle
+    angle = angle + deltaAngle.clamp(
       -RotationSpeed * delta,
       RotationSpeed * delta
     )
-    val shotOpt              = MathUtils
-      .randomBoolean(delta * FireChance)
-      .option(
-        new Shot(
-          launchX,
-          launchY,
-          ShotSpeed * MathUtils.cosDeg(angle),
-          ShotSpeed * MathUtils.sinDeg(angle),
-          game
-        )
+
+    if (shotClock <= 0) {
+      val shot = new Shot(
+        launchX,
+        launchY,
+        ShotSpeed * MathUtils.cosDeg(angle),
+        ShotSpeed * MathUtils.sinDeg(angle),
+        game
       )
-    shotOpt.cata(shot => List(shot, this), List(this))
+      shotClock = random(ShotRate)
+      List(shot, this)
+    } else {
+      List(this)
+    }
   }
 
   override def draw(batch: PolygonSpriteBatch): Unit = {
@@ -94,11 +106,11 @@ class Cannon(x: Float, y: Float, orientation: Orientation, game: Game)
 }
 
 object Cannon {
-  val FireChance    = 1f
   val History       = .9f
   val RotationLimit = 105f
   val RotationSpeed = 100f
   val ShotSpeed     = 90f
+  val ShotRate      = (.3f, 1f)
 
   private def base   = AssetLoader.image("cannon.png")
   private def barrel = AssetLoader.image("cannonBarrel.png")
