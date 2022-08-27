@@ -25,8 +25,8 @@ class Game extends Scene {
     List(
       Levels.newMexico,
       Levels.texas,
-      Levels.arkansas,
       Levels.oklahoma,
+      Levels.arkansas,
       Levels.tennessee,
       Levels.virginia,
       Levels.dc

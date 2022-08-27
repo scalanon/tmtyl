@@ -111,7 +111,7 @@ object Cannon {
   val RotationLimit = 105f
   val RotationSpeed = 100f
   val ShotSpeed     = 90f
-  val ShotRate      = (.3f, 1f)
+  val ShotRate      = (1f, 2f)
 
   private def base    = AssetLoader.image("cannon.png")
   private def barrel  = AssetLoader.image("cannonBarrel.png")

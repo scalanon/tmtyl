@@ -16,7 +16,8 @@ object Levels {
 
   lazy val oklahoma = load("Oklahoma.json")
 
-  lazy val arkansas  = load("Arkansas.json")
+  lazy val arkansas = load("Arkansas.json")
+
   lazy val tennessee = load("Tennessee.json")
 
   lazy val virginia = load("Virginia.json")
