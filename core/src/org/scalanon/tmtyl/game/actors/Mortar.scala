@@ -85,7 +85,7 @@ class Mortar(x: Float, y: Float, alg: String, val game: Game) extends Actor {
 }
 
 object Mortar {
-  val LaunchRange    = 5 * Geometry.ScreenWidth / screenPixel
+  val LaunchRange    = 6 * Geometry.ScreenWidth / screenPixel
   val LaunchVelocity = (250f, 350f)
   val BarrelBreadth  = 8f
 
