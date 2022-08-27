@@ -26,7 +26,7 @@ case class EndScreen(game: Game) extends Scene {
   def render(batch: PolygonSpriteBatch): Unit = {
     batch.setColor(Color.WHITE)
     batch.draw(
-      endScreens(stage),
+      endScreens,
       0,
       0,
       Geometry.ScreenWidth,
@@ -39,11 +39,6 @@ case class EndScreen(game: Game) extends Scene {
 object EndScreen {
   var stage = 0
 
-  var endScreens: List[Texture] = List(
-    AssetLoader.image("endscreen1.png"),
-    AssetLoader.image("endscreen2.png"),
-    AssetLoader.image("endscreen3.png"),
-    AssetLoader.image("endscreen4.png")
-  )
+  var endScreens = AssetLoader.image("whic.png")
 
 }
