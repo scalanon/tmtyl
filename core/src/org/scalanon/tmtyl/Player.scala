@@ -214,6 +214,7 @@ final case class Player(game: Game) {
     }
   }
 
+  // TODO: store this on the player rather than creating a hit rect for every caller
   def hitRect(location: Vec2 = loc): Rect = hitRect(location.x, location.y)
 
   def hitRect(x: Float, y: Float): Rect =

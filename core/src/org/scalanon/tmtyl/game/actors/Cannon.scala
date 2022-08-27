@@ -51,6 +51,7 @@ class Cannon(x: Float, y: Float, orientation: Orientation, game: Game)
     )
 
     if (shotClock <= 0) {
+      gunshot.play(x + game.translateX)
       val shot = new Shot(
         launchX,
         launchY,
@@ -112,6 +113,7 @@ object Cannon {
   val ShotSpeed     = 90f
   val ShotRate      = (.3f, 1f)
 
-  private def base   = AssetLoader.image("cannon.png")
-  private def barrel = AssetLoader.image("cannonBarrel.png")
+  private def base    = AssetLoader.image("cannon.png")
+  private def barrel  = AssetLoader.image("cannonBarrel.png")
+  private def gunshot = AssetLoader.sound("gunshot.mp3")
 }

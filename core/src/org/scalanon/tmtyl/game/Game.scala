@@ -8,6 +8,7 @@ import org.scalanon.tmtyl.Scene
 import org.scalanon.tmtyl.Tmtyl._
 import org.scalanon.tmtyl.game.actors.Enemies
 import org.scalanon.tmtyl.home.Home
+import org.scalanon.tmtyl.map.Worldmap
 
 import scala.collection.mutable
 

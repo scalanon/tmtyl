@@ -4,7 +4,7 @@ import com.badlogic.gdx.Application.ApplicationType
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input}
-import org.scalanon.tmtyl.game.{Game, Levels, Tilesets}
+import org.scalanon.tmtyl.game.{Game, Tilesets}
 import org.scalanon.tmtyl.util.{GarbageCan, TextureWrapper}
 
 import java.util.Properties
@@ -37,8 +37,6 @@ class Tmtyl extends ApplicationAdapter {
     Tmtyl.checkOff = TextureWrapper.load("check-off.png")
     Tmtyl.trash = TextureWrapper.load("trash.png")
     Tmtyl.walkPlayer = TextureWrapper.load("tiny_adventurer_sheet.png")
-    Tmtyl.worldMap = TextureWrapper.load("worldmap.png")
-    Tmtyl.worldmapPlayer = TextureWrapper.load("globalUFO.png")
 
     Tmtyl.tilesets = Tilesets.load()
 
@@ -77,13 +75,11 @@ object Tmtyl {
   val screenPixel =
     ((Geometry.ScreenWidth min Geometry.ScreenHeight) / 320).floor
 
-  var close: TextureWrapper          = _
-  var checkOn: TextureWrapper        = _
-  var checkOff: TextureWrapper       = _
-  var trash: TextureWrapper          = _
-  var walkPlayer: TextureWrapper     = _
-  var worldMap: TextureWrapper       = _
-  var worldmapPlayer: TextureWrapper = _
+  var close: TextureWrapper      = _
+  var checkOn: TextureWrapper    = _
+  var checkOff: TextureWrapper   = _
+  var trash: TextureWrapper      = _
+  var walkPlayer: TextureWrapper = _
 
   var tilesets: Tilesets = _
 

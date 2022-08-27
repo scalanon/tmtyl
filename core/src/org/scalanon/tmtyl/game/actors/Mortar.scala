@@ -33,16 +33,17 @@ class Mortar(x: Float, y: Float, game: Game) extends Actor {
       _                = adjustAngle(launchVelocityX)
       if firingClock < 0
     } yield {
-      val shell = Shell.fire(
+      fire.play(launchX + game.translateX)
+      firingClock = random(FiringRate)
+      val velY = launchVelocityY
+      launchVelocityY = random(Mortar.LaunchVelocityY)
+      new Shell(
         launchX,
         launchY,
         launchVelocityX,
-        launchVelocityY,
+        velY,
         game
       )
-      firingClock = random(FiringRate)
-      launchVelocityY = random(Mortar.LaunchVelocityY)
-      shell
     }
     shellOpt.cata(shell => List(shell, this), List(this))
   }
@@ -105,4 +106,5 @@ object Mortar {
 
   private def base   = AssetLoader.image("mortar.png")
   private def barrel = AssetLoader.image("mortarBarrel.png")
+  private def fire   = AssetLoader.sound("mortar.mp3")
 }

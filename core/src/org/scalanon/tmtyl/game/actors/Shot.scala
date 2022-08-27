@@ -19,7 +19,7 @@ class Shot(x: Float, y: Float, vX: Float, vY: Float, game: Game) extends Actor {
     loc.mulAdd(vel, delta)
     val screenX = (loc.x + game.translateX) * screenPixel
     val screenY = loc.y * screenPixel
-    val gone =
+    val gone    =
       screenX < 0 || screenX > Geometry.ScreenWidth || screenY < 0 || screenY > Geometry.ScreenHeight
     if (gone) {
       Nil
@@ -32,7 +32,7 @@ class Shot(x: Float, y: Float, vX: Float, vY: Float, game: Game) extends Actor {
   }
 
   private def shotRect =
-    Rect(loc.x - width / 2, loc.y - height / 2, width, height)
+    Rect(loc.x - width / 2 + 1, loc.y - height / 2 + 1, width - 2, height - 2)
 
   override def draw(batch: PolygonSpriteBatch): Unit = {
     batch.draw(

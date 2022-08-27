@@ -85,14 +85,19 @@ class Home(paused: Option[Game] = None) extends Scene {
       if (ufoPos >= 1f)
         alienPos = alienPos.alphaUp(delta, AlienMoveInSeconds)
       if (alienPos >= 1f) {
-        alien.animation match {
-          case _: AlienAnimation.Dead                =>
-            alien.animation = new AlienAnimation.Reanimate
-          case r: AlienAnimation.Reanimate if r.done =>
-            alien.animation = new AlienAnimation.Idle
-          case i: AlienAnimation.Idle if i.frame > 0 =>
-            ready = true
-          case _                                     =>
+        if (delta >= 10f) {
+          alien.animation = new AlienAnimation.Idle
+          ready = true
+        } else {
+          alien.animation match {
+            case _: AlienAnimation.Dead                =>
+              alien.animation = new AlienAnimation.Reanimate
+            case r: AlienAnimation.Reanimate if r.done =>
+              alien.animation = new AlienAnimation.Idle
+            case i: AlienAnimation.Idle if i.frame > 0 =>
+              ready = true
+            case _                                     =>
+          }
         }
         if (ready)
           playAlpha = playAlpha.alphaUp(delta, PlayFadeInSeconds)

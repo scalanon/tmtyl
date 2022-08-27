@@ -1,37 +1,29 @@
-package org.scalanon.tmtyl.home
+package org.scalanon.tmtyl.map
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Keys
+import com.badlogic.gdx.InputAdapter
 
-class HomeControl(home: Home) extends IconAdapter(home.icons) {
+class WorldmapControl(worldmap: Worldmap) extends InputAdapter {
   override def touchDown(
       screenX: Int,
       screenY: Int,
       pointer: Int,
       button: Int
   ): Boolean = {
-    if (!home.ready) {
-      home.update(10f)
-      true
-    } else {
-      super.touchDown(screenX, screenY, pointer, button)
-    }
+    worldmap.done = true
+    true
   }
 
   override def keyDown(keycode: Int): Boolean = {
     if (keycode == Keys.ESCAPE || keycode == Keys.BACK) {
-      Gdx.app.exit()
+      worldmap.quit = true
     }
     true
   }
 
   override def keyUp(keycode: Int): Boolean = {
     if (keycode == Keys.SPACE || keycode == Keys.ENTER) {
-      if (!home.ready) {
-        home.update(10f)
-      } else {
-        home.play()
-      }
+      worldmap.done = true
     }
     true
   }

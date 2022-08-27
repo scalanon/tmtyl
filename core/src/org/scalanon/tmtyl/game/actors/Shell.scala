@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.MathUtils
 import org.scalanon.tmtyl.game.Game
 
 // TODO: unified projectile...
-final case class Shell(
+class Shell(
     x: Float,
     y: Float,
     vx: Float,
@@ -84,10 +84,4 @@ object Shell {
 
   private def image = AssetLoader.image("shell.png")
   private def boom  = AssetLoader.sound("boom.mp3")
-  private def fire  = AssetLoader.sound("mortar.mp3")
-
-  def fire(x: Float, y: Float, vX: Float, vY: Float, game: Game): Shell = {
-    fire.play(x + game.translateX)
-    Shell(x, y, vX, vY, game)
-  }
 }
