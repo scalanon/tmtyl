@@ -21,7 +21,7 @@ final case class Player(game: Game) {
   var facingLeft     = false
   var stage          = 0
   var behavior       = 2
-  var aboveFloor = Option.empty[Floor]
+  var aboveFloor     = Option.empty[Floor]
 
   def draw(batch: PolygonSpriteBatch): Unit = {
     batch.setColor(Color.WHITE)
@@ -95,7 +95,8 @@ final case class Player(game: Game) {
 
     val oldRect = hitRect()
 
-    aboveFloor = game.entities.floors.filter(oldRect.isOnOrAbove).maxByOption(_.y)
+    aboveFloor =
+      game.entities.floors.filter(oldRect.isOnOrAbove).maxByOption(_.y)
 
     val onLadder = game.entities.ladders.find(oldRect.isOnTopOrIn)
     val onFloor  = aboveFloor.filter(oldRect.isOnTop)
@@ -178,7 +179,7 @@ final case class Player(game: Game) {
       } else { // no falling through floor unless climbing down a ladder...
         val newRect  = hitRect(newLoc)
         val hitFloor = game.entities.floors.find(floor =>
-          newRect.isWithinX(floor) &&
+          newRect.intersectsX(floor) &&
             newRect.y < floor.y + floor.height &&
             oldRect.y >= floor.y + floor.height &&
             !onLadder.exists(ladder => ladder.y < floor.y)
@@ -218,7 +219,8 @@ final case class Player(game: Game) {
   def hitRect(x: Float, y: Float): Rect =
     Rect(x + XMargin, y, size.x - 2 * XMargin, size.y)
 
-  def centerX: Float = loc.x + size.x / 2f
+  def centerX: Float = loc.x + size.x * .5f
+  def headY: Float   = loc.y + size.y * .75f
   def left: Float    = loc.x
   def right: Float   = loc.x + size.x
   def bottom: Float  = loc.y

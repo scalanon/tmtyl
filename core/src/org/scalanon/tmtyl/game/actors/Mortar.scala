@@ -11,14 +11,16 @@ class Mortar(x: Float, y: Float, game: Game) extends Actor {
   import Mortar._
   import Shell.Gravity
 
-  private val width  = base.width
-  private val height = base.height
+  private val width   = base.width
+  private val height  = base.height
+  private val launchX = x + width / 2
+  private val launchY = y + height / 2
 
   private var playerVelocityX =
     0f // player horizontal velocity smoothed over time
   private var launchVelocityY =
     MathUtils.random(LaunchVelocityY._1, Mortar.LaunchVelocityY._2)
-  private var rotation        = 0f
+  private var angle           = 0f
 
   override def update(delta: Float): List[Actor] = {
     playerVelocityX =
@@ -27,27 +29,27 @@ class Mortar(x: Float, y: Float, game: Game) extends Actor {
       floor           <- game.player.aboveFloor
       if game.player.right >= x - LaunchRange && game.player.left < x + LaunchRange
       launchVelocityX <- computeVelocityX(floor.top.toFloat)
-      _                = adjustRotation(launchVelocityX)
+      _                = adjustAngle(launchVelocityX)
       if MathUtils.randomBoolean(FireChance * delta)
 
     } yield Shell.fire(
-      x + width / 2,
-      y + height / 2,
+      launchX,
+      launchY,
       launchVelocityX,
       launchVelocityY,
       game
     )
-    shellOpt.cata(shell => List(this, shell), List(this))
+    shellOpt.cata(shell => List(shell, this), List(this))
   }
 
-  private def adjustRotation(launchVelocityX: Float): Unit = {
-    rotation =
+  private def adjustAngle(launchVelocityX: Float): Unit = {
+    angle =
       MathUtils.atan2(launchVelocityY, launchVelocityX) * MathUtils.radDeg - 90f
   }
 
   // Compute X velocity to hit a target at specified Y position
   private def computeVelocityX(targetY: Float): Option[Float] = {
-    val deltaY    = targetY - y
+    val deltaY    = targetY - launchY
     val quadratic = launchVelocityY * launchVelocityY - 2f * Gravity * deltaY
     (quadratic > 0).option({
       // When will we hit the player's Y
@@ -55,12 +57,13 @@ class Mortar(x: Float, y: Float, game: Game) extends Actor {
       // Where will the player be
       val futurePlayerX = game.player.centerX + playerVelocityX * t
       // What horizontal velocity will get us there, within limits
-      ((futurePlayerX - x) / t).clamp(-launchVelocityY / 2, launchVelocityY / 2)
+      ((futurePlayerX - launchX) / t)
+        .clamp(-launchVelocityY / 2, launchVelocityY / 2)
     })
   }
 
   override def draw(batch: PolygonSpriteBatch): Unit = {
-    batch.draw( 
+    batch.draw(
       base,
       x * screenPixel,
       y * screenPixel,
@@ -77,7 +80,7 @@ class Mortar(x: Float, y: Float, game: Game) extends Actor {
       height * screenPixel,
       1f,
       1f,
-      rotation,
+      angle,
       0,
       0,
       width,

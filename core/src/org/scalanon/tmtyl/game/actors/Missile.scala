@@ -32,9 +32,9 @@ final case class Missile(
     // the angle to my target, -180 to 180
     val targetAngle           = MathUtils.atan2(targetY - pos.y, targetX - pos.x).degrees
     // delta from the angle i'm facing to the target angle
-    val angleToTarget         = (angle - targetAngle).within180
+    val angleToTarget         = (angle - targetAngle).onCircle
     // delta from the angle i'm moving to the target angle
-    val velocityAngleToTarget = (velocityAngle - targetAngle).within180
+    val velocityAngleToTarget = (velocityAngle - targetAngle).onCircle
     // if i'm way off, just aim for the target, else try to correct for velocity angle mismatch
     val deltaAngle            =
       if (angleToTarget.abs >= 45 || velocityAngleToTarget >= 45) angleToTarget

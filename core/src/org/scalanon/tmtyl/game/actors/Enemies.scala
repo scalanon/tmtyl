@@ -2,20 +2,29 @@ package org.scalanon.tmtyl
 package game.actors
 
 import org.scalanon.tmtyl.game.{Enemy, Game}
+import org.scalanon.tmtyl.util.Orientation
 
 object Enemies {
   def spawn(enemy: Enemy, game: Game): Actor = enemy.kind match {
-    case "Drone"     =>
+    case "Drone"                                                  =>
       new Drone(enemy.x.toFloat, game)
-    case "Fighter"   =>
+    case "Fighter"                                                =>
       new Fighter(enemy.x.toFloat, enemy.y.toFloat, game)
-    case "Flame"     =>
-      new Flame(enemy.x.toFloat, enemy.y.toFloat, Orientation.Up, game)
-    case "FlameLeft" =>
-      new Flame(enemy.x.toFloat, enemy.y.toFloat, Orientation.Left, game)
-    case "FlameRight" =>
-      new Flame(enemy.x.toFloat, enemy.y.toFloat, Orientation.Right, game)
-    case "Mortar"    =>
+    case "FlameUp" | "FlameLeft" | "FlameRight"                   =>
+      new Flame(
+        enemy.x.toFloat,
+        enemy.y.toFloat,
+        Orientation.forName(enemy.kind.stripPrefix("Flame")),
+        game
+      )
+    case "Mortar"                                                 =>
       new Mortar(enemy.x.toFloat, enemy.y.toFloat, game)
+    case "CannonUp" | "CannonDown" | "CannonLeft" | "CannonRight" =>
+      new Cannon(
+        enemy.x.toFloat,
+        enemy.y.toFloat,
+        Orientation.forName(enemy.kind.stripPrefix("Cannon")),
+        game
+      )
   }
 }

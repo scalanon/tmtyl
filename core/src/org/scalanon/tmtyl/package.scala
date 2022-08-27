@@ -44,7 +44,8 @@ package object tmtyl {
 
     def degrees: Float = self * MathUtils.radiansToDegrees
 
-    def within180: Float =
+    // clamp to [-180f,180f]
+    def onCircle: Float =
       if (self < -180f) self + 360f * ((180f - self) / 360f).floor
       else if (self > 180f) self - 360f * ((self + 180f) / 360f).floor
       else self

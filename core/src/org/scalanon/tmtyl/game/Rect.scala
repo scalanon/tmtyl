@@ -13,8 +13,11 @@ final case class Rect(x: Float, y: Float, width: Float, height: Float) {
   def intersects(rect: Rect): Boolean =
     right > rect.left && left < rect.right && top > rect.bottom && bottom < rect.top
 
-  def isWithinX(ent: Entity): Boolean =
+  def intersectsX(ent: Entity): Boolean =
     right > ent.left && left < ent.right
+
+  def within(rect: Rect): Boolean =
+    left >= rect.left && right <= rect.right && bottom >= rect.bottom && top <= rect.top
 
   def isOnTop(ent: Entity): Boolean =
     right > ent.left && left < ent.right && bottom == ent.top

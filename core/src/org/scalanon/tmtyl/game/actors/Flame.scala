@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import org.scalanon.tmtyl.Actor
 import org.scalanon.tmtyl.Tmtyl.screenPixel
 import org.scalanon.tmtyl.game.{Game, Rect}
+import org.scalanon.tmtyl.util.Orientation
 
 class Flame(x: Float, y: Float, orientation: Orientation, game: Game)
     extends Actor {
@@ -49,17 +50,18 @@ class Flame(x: Float, y: Float, orientation: Orientation, game: Game)
     List(this)
   }
 
-  val (flameX, flameY, fireX, fireY, rotation) = orientation match {
+  val (flameX, flameY, fireX, fireY) = orientation match {
     case Orientation.Up    =>
-      (x + flameOffset, y, x + fireOffset, y, 0)
+      (x + flameOffset, y, x + fireOffset, y)
     case Orientation.Left  =>
-      (x + 16, y + flameOffset, x + 16, y + fireOffset, 90)
+      (x + 16, y + flameOffset, x + 16, y + fireOffset)
     case Orientation.Right =>
-      (x, y + 16 - flameOffset, x, y + 16 - fireOffset, 270)
+      (x, y + 16 - flameOffset, x, y + 16 - fireOffset)
   }
+  val rotation                       = (orientation.degrees + 270) % 360
 
   override def draw(batch: PolygonSpriteBatch): Unit = {
-    val flameFrame                               = (age / FrameRate).toInt % FlameFrames
+    val flameFrame = (age / FrameRate).toInt % FlameFrames
     batch.draw(
       flame,
       flameX * screenPixel,
@@ -112,13 +114,4 @@ object Flame {
   private def flame = AssetLoader.image("flame.png")
   private def fire  = AssetLoader.image("fire.png")
   private val sound = AssetLoader.sound("flame.mp3")
-}
-
-sealed abstract class Orientation(val degrees: Int)
-
-object Orientation {
-  case object Up    extends Orientation(90)
-  case object Down  extends Orientation(270)
-  case object Left  extends Orientation(180)
-  case object Right extends Orientation(0)
 }
