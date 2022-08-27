@@ -57,17 +57,22 @@ class Game extends Scene {
     score.score += ((100 / timer) + (50 / timer) + (10 / timer) - (timer / 100)).toInt
     timer = 0f
     currentLevel = nlev
-    level = levelList(currentLevel)
-    entities = Entities.fromLevel(level)
-    actors = List.empty[Actor]
-    activated.clear()
-    player.loc =
-      entities.start.cata(s => Vec2(s.x.toFloat, s.y.toFloat), Vec2(0, 0))
-    player.vel = Vec2(0, 0)
-    keysPressed.clear()
-    alien.loc = player.loc + Vec2(-80, 80)
-    translateX = Geometry.ScreenWidth / screenPixel / 2 - player.centerX
-    state = MapState
+    if (currentLevel == 7) {
+      state = EndState
+    } else {
+      level = levelList(currentLevel)
+      entities = Entities.fromLevel(level)
+      actors = List.empty[Actor]
+      activated.clear()
+      player.loc =
+        entities.start.cata(s => Vec2(s.x.toFloat, s.y.toFloat), Vec2(0, 0))
+      player.vel = Vec2(0, 0)
+      keysPressed.clear()
+      alien.loc = player.loc + Vec2(-80, 80)
+      translateX = Geometry.ScreenWidth / screenPixel / 2 - player.centerX
+
+      state = MapState
+    }
   }
 
   override def update(delta: Float): Option[Scene] = {
@@ -92,6 +97,7 @@ class Game extends Scene {
       case QuitState  => new Home
       case PauseState => Home(this)
       case MapState   => Worldmap(this)
+      case EndState   => EndScreen(this)
     }
   }
 
@@ -160,4 +166,6 @@ object Game {
   case object QuitState    extends State
   case object PauseState   extends State
   case object MapState     extends State
+  case object EndState     extends State
+
 }

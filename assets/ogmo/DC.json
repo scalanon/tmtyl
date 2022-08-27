@@ -27,6 +27,16 @@
           "originX": 0,
           "originY": 0,
           "values": {"Solid": false}
+        },
+        {
+          "name": "Door",
+          "id": 2,
+          "_eid": "18757670",
+          "x": 112,
+          "y": 112,
+          "originX": 0,
+          "originY": 0,
+          "values": {"Doorway": "exit", "Key": ""}
         }
       ]
     },
