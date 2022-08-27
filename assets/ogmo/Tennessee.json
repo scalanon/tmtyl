@@ -142,7 +142,7 @@
           "y": 176,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "Fighter"}
+          "values": {"Kind": "Fighter", "Algorithm": ""}
         },
         {
           "name": "Enemy",
@@ -152,7 +152,7 @@
           "y": 128,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "Fighter"}
+          "values": {"Kind": "Fighter", "Algorithm": ""}
         },
         {
           "name": "Floor",

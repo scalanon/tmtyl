@@ -18,7 +18,7 @@ object Enemies {
         game
       )
     case "Mortar"                                                 =>
-      new Mortar(enemy.x.toFloat, enemy.y.toFloat, game)
+      new Mortar(enemy.x.toFloat, enemy.y.toFloat, enemy.algorithm, game)
     case "CannonUp" | "CannonDown" | "CannonLeft" | "CannonRight" =>
       new Cannon(
         enemy.x.toFloat,

@@ -271,6 +271,13 @@
           "display": 0,
           "choices": ["Fighter", "Drone", "FlameUp", "FlameLeft", "FlameRight", "Mortar", "CannonUp", "CannonDown", "CannonLeft", "CannonRight"],
           "defaults": 0
+        },
+        {
+          "name": "Algorithm",
+          "definition": "Enum",
+          "display": 0,
+          "choices": ["", "Predictive", "Spread"],
+          "defaults": 0
         }
       ]
     },

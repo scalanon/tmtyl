@@ -178,7 +178,7 @@
           "y": 256,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "FlameUp"}
+          "values": {"Kind": "FlameUp", "Algorithm": ""}
         },
         {
           "name": "Enemy",
@@ -188,7 +188,7 @@
           "y": 256,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "FlameUp"}
+          "values": {"Kind": "FlameUp", "Algorithm": ""}
         },
         {
           "name": "Enemy",
@@ -198,7 +198,7 @@
           "y": 256,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "FlameUp"}
+          "values": {"Kind": "FlameUp", "Algorithm": ""}
         },
         {
           "name": "Enemy",
@@ -208,7 +208,7 @@
           "y": 256,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "FlameUp"}
+          "values": {"Kind": "FlameUp", "Algorithm": ""}
         },
         {
           "name": "Door",
@@ -396,7 +396,7 @@
           "y": 176,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "FlameUp"}
+          "values": {"Kind": "FlameUp", "Algorithm": ""}
         },
         {
           "name": "Enemy",
@@ -406,7 +406,7 @@
           "y": 176,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "FlameUp"}
+          "values": {"Kind": "FlameUp", "Algorithm": ""}
         },
         {
           "name": "Floor",
@@ -474,7 +474,7 @@
           "y": 224,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "FlameRight"}
+          "values": {"Kind": "FlameRight", "Algorithm": ""}
         },
         {
           "name": "Floor",
