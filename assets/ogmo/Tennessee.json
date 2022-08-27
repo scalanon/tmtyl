@@ -61,7 +61,7 @@
           "y": 160,
           "originX": 0,
           "originY": 0,
-          "values": {"Doorway": "one"}
+          "values": {"Doorway": "one", "Key": ""}
         },
         {
           "name": "Door",
@@ -71,7 +71,7 @@
           "y": 64,
           "originX": 0,
           "originY": 0,
-          "values": {"Doorway": "one"}
+          "values": {"Doorway": "one", "Key": ""}
         },
         {"name": "Ladder", "id": 8, "_eid": "18769430", "x": 480, "y": 160, "height": 64, "originX": 0, "originY": 0},
         {"name": "Start", "id": 9, "_eid": "19960369", "x": 400, "y": 32, "originX": 0, "originY": 0},
@@ -132,7 +132,7 @@
           "y": 176,
           "originX": 0,
           "originY": 0,
-          "values": {"Doorway": "exit"}
+          "values": {"Doorway": "exit", "Key": ""}
         },
         {
           "name": "Enemy",
@@ -210,7 +210,7 @@
           "y": 176,
           "originX": 0,
           "originY": 0,
-          "values": {"Doorway": "ex"}
+          "values": {"Doorway": "ex", "Key": "ex"}
         },
         {
           "name": "Door",
@@ -220,7 +220,7 @@
           "y": 176,
           "originX": 0,
           "originY": 0,
-          "values": {"Doorway": "ex"}
+          "values": {"Doorway": "ex", "Key": "ex"}
         },
         {
           "name": "Floor",
@@ -233,6 +233,16 @@
           "originX": 0,
           "originY": 0,
           "values": {"Solid": true}
+        },
+        {
+          "name": "Switch",
+          "id": 29,
+          "_eid": "62240450",
+          "x": 256,
+          "y": 208,
+          "originX": 0,
+          "originY": 0,
+          "values": {"Key": "ex"}
         }
       ]
     },
