@@ -80,35 +80,14 @@ final case class Shell(
 
 object Shell {
   val Gravity        = 180f
-  val LaunchVelocity = (250f, 350f)
   val MissileBreadth = 4f
 
   private def image = AssetLoader.image("shell.png")
   private def boom  = AssetLoader.sound("boom.mp3")
   private def fire  = AssetLoader.sound("mortar.mp3")
 
-  def fire(x: Float, y: Float, playerVelX: Float, game: Game): Option[Shell] = {
-    game.player.aboveFloor.flatMap(floor => {
-      val vY        = MathUtils.random(LaunchVelocity._1, LaunchVelocity._2)
-      val targetY   = floor.top.toFloat - y
-      val quadratic = vY * vY - 2f * Gravity * targetY
-      (quadratic > 0).option({
-        // When will we hit the player's Y
-        val t       = (vY + Math.sqrt(quadratic)).toFloat / Gravity
-        // Where will the player be
-        val playerX = game.player.centerX + playerVelX * t
-        // What horizontal velocity will get us there, within limits
-        val vX      = ((playerX - x) / t).clamp(-vY / 2, vY / 2)
-
-        fire.play(x + game.translateX)
-        Shell(
-          x,
-          y,
-          vX,
-          vY,
-          game
-        )
-      })
-    })
+  def fire(x: Float, y: Float, vX: Float, vY: Float, game: Game): Shell = {
+    fire.play(x + game.translateX)
+    Shell(x, y, vX, vY, game)
   }
 }

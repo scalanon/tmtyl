@@ -345,6 +345,26 @@
           "originX": 0,
           "originY": 0,
           "values": {"Kind": "Flame"}
+        },
+        {
+          "name": "Enemy",
+          "id": 35,
+          "_eid": "30419055",
+          "x": 160,
+          "y": 208,
+          "originX": 0,
+          "originY": 0,
+          "values": {"Kind": "FlameLeft"}
+        },
+        {
+          "name": "Enemy",
+          "id": 36,
+          "_eid": "30419055",
+          "x": 80,
+          "y": 224,
+          "originX": 0,
+          "originY": 0,
+          "values": {"Kind": "FlameRight"}
         }
       ]
     },

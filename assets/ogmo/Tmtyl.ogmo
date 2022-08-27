@@ -268,7 +268,7 @@
           "name": "Kind",
           "definition": "Enum",
           "display": 0,
-          "choices": ["Fighter", "Drone", "Flame", "Mortar"],
+          "choices": ["Fighter", "Drone", "Flame", "FlameLeft", "FlameRight", "Mortar"],
           "defaults": 0
         }
       ]
