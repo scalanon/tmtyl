@@ -39,7 +39,7 @@ case class EndScreen(game: Game) extends Scene {
 object EndScreen {
   var stage = 0
 
-  var endScreens: List[Texture] = List(
+  def endScreens: List[Texture] = List(
     AssetLoader.image("endscreen1.png"),
     AssetLoader.image("endscreen2.png"),
     AssetLoader.image("endscreen3.png"),

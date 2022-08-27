@@ -51,6 +51,8 @@ class GameControl(game: Game) extends InputAdapter {
         game.switchToLevel(5)
       case Keys.NUM_7  =>
         game.switchToLevel(6)
+      case Keys.NUM_8  =>
+        game.switchToLevel(7)
       case o =>
         game.keysPressed.add(o)
         game.newKeysPressed.add(o)
