@@ -60,7 +60,7 @@
           "y": 192,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "Fighter", "Algorithm": "Predictive"}
+          "values": {"Kind": "Fighter", "Algorithm": ""}
         },
         {
           "name": "Floor",
@@ -141,7 +141,7 @@
           "y": 208,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "Fighter", "Algorithm": "Predictive"}
+          "values": {"Kind": "Fighter", "Algorithm": ""}
         },
         {
           "name": "Enemy",
@@ -151,7 +151,7 @@
           "y": 160,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "Fighter", "Algorithm": "Predictive"}
+          "values": {"Kind": "Fighter", "Algorithm": ""}
         },
         {
           "name": "Enemy",
@@ -161,7 +161,7 @@
           "y": 208,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "FlameUp", "Algorithm": "Predictive"}
+          "values": {"Kind": "FlameUp", "Algorithm": ""}
         },
         {"name": "Ladder", "id": 21, "_eid": "18769430", "x": 528, "y": 176, "height": 48, "originX": 0, "originY": 0},
         {"name": "Ladder", "id": 22, "_eid": "18769430", "x": 80, "y": 160, "height": 48, "originX": 0, "originY": 0}

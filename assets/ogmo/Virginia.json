@@ -140,7 +140,7 @@
           "y": 48,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "CannonLeft", "Algorithm": "Predictive"}
+          "values": {"Kind": "CannonLeft", "Algorithm": ""}
         },
         {
           "name": "Floor",
@@ -174,7 +174,7 @@
           "y": 208,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "CannonUp", "Algorithm": "Predictive"}
+          "values": {"Kind": "CannonUp", "Algorithm": ""}
         },
         {
           "name": "Floor",
@@ -254,7 +254,7 @@
           "y": 160,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "Fighter", "Algorithm": "Predictive"}
+          "values": {"Kind": "Fighter", "Algorithm": ""}
         }
       ]
     },
