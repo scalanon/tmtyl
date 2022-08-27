@@ -27,30 +27,31 @@ class Shell(
   def update(delta: Float): List[Actor] = {
     vel.y -= Gravity * delta
     pos.mulAdd(vel, delta)
-    val velocityAngle = MathUtils.atan2(vel.y, vel.x).degrees
-    val tipX          = pos.x + width / 2f * MathUtils.cosDeg(velocityAngle)
-    val tipY          = pos.y + width / 2f * MathUtils.sinDeg(velocityAngle)
     if (pos.y + height < 0) {
       Nil
-    } else if (
-      game.player.aboveFloor.exists(floor =>
-        tipY < floor.top && oldY >= floor.top && tipX + MissileBreadth / 2 >= floor.left && tipX - MissileBreadth / 2 < floor.right
-      )
-    ) {
-      boom.play(pos.x + game.translateX)
-      val y       = game.player.aboveFloor.cata(_.top, 0)
-      val hitRect = game.player.hitRect()
-      // explosion range is about your height
-      val range   = hitRect.height
-      if (
-        hitRect.y >= y && hitRect.y < y + range && hitRect.x + hitRect.width >= tipX - range / 2 && hitRect.x < tipX + range / 2
-      ) {
-        game.player.die()
-      }
-      List(Explosion(tipX, y))
     } else {
-      oldY = tipY
-      List(this)
+      val velAngle = MathUtils.atan2(vel.y, vel.x).degrees
+      val tipX     = pos.x + width / 2f * MathUtils.cosDeg(velAngle)
+      val tipY     = pos.y + width / 2f * MathUtils.sinDeg(velAngle)
+      game.entities.floors.find(floor =>
+        floor.top <= game.player.bottom && tipY < floor.top && oldY >= floor.top && tipX + MissileBreadth / 2 >= floor.left && tipX - MissileBreadth / 2 < floor.right
+      ) match {
+        case Some(floor) =>
+          boom.play(pos.x + game.translateX)
+          val y       = floor.top
+          val hitRect = game.player.hitRect()
+          // explosion range is about your height
+          val range   = hitRect.height
+          if (
+            hitRect.y >= y && hitRect.y < y + range && hitRect.x + hitRect.width >= tipX - range / 2 && hitRect.x < tipX + range / 2
+          ) {
+            game.player.die()
+          }
+          List(Explosion(tipX, y))
+        case _           =>
+          oldY = tipY
+          List(this)
+      }
     }
   }
 

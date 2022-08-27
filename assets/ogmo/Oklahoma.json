@@ -36,7 +36,7 @@
           "y": 0,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "Drone"}
+          "values": {"Kind": "Drone", "Algorithm": "Predictive"}
         },
         {
           "name": "Enemy",
@@ -46,7 +46,7 @@
           "y": 0,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "Drone"}
+          "values": {"Kind": "Drone", "Algorithm": "Predictive"}
         },
         {
           "name": "Enemy",
@@ -56,7 +56,7 @@
           "y": 0,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "Drone"}
+          "values": {"Kind": "Drone", "Algorithm": "Predictive"}
         },
         {
           "name": "Enemy",
@@ -66,7 +66,7 @@
           "y": 0,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "Drone"}
+          "values": {"Kind": "Drone", "Algorithm": "Predictive"}
         },
         {
           "name": "Enemy",
@@ -76,7 +76,7 @@
           "y": 0,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "Drone"}
+          "values": {"Kind": "Drone", "Algorithm": "Predictive"}
         },
         {
           "name": "Enemy",
@@ -86,7 +86,7 @@
           "y": 208,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "FlameRight"}
+          "values": {"Kind": "FlameRight", "Algorithm": "Predictive"}
         },
         {
           "name": "Floor",
@@ -108,7 +108,7 @@
           "y": 208,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "FlameLeft"}
+          "values": {"Kind": "FlameLeft", "Algorithm": "Predictive"}
         },
         {
           "name": "Floor",
@@ -219,7 +219,7 @@
           "y": 64,
           "originX": 0,
           "originY": 0,
-          "values": {"Kind": "Drone"}
+          "values": {"Kind": "Drone", "Algorithm": "Predictive"}
         },
         {
           "name": "Door",
