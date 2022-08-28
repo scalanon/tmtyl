@@ -139,12 +139,11 @@ final case class Player(game: Game) {
             Random.shuffle(toDoors).headOption foreach { to =>
               warpLoc = Some(
                 Vec2(
-                  loc.x + to.x - from.x,
-                  loc.y + to.y - from.y
+                  to.x + (16 - size.x) / 2,
+                  to.y
                 )
               )
             }
-            vel = Vec2(0, 0)
           }
 
         }
