@@ -14,12 +14,10 @@ class EndScreenControl(end: EndScreen) extends InputAdapter {
   }
 
   override def keyDown(keycode: Int): Boolean = {
-    if (keycode == Keys.ESCAPE || keycode == Keys.BACK) {
+    if (keycode == Keys.ESCAPE || keycode == Keys.BACK || keycode == Keys.SPACE) {
       end.quit = true
     }
-
     true
-
   }
 
   override def keyUp(keycode: Int): Boolean = {

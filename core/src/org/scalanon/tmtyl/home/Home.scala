@@ -45,19 +45,10 @@ class Home(paused: Option[Game] = None) extends Scene {
       Prefs.MuteAudio,
       soundOff,
       soundOn
-    ),
-    new BasicIcon(
-      Geometry.ScreenWidth - IconSize,
-      Geometry.ScreenHeight - IconSize,
-      IconSize,
-      settings,
-      () => {
-        state = SettingsState
-      }
     )
   )
 
-  private val iconsWithDiscard = new BasicIcon(
+  private val iconsWithDiscard = /*new BasicIcon(
     Geometry.ScreenWidth / 2 - Dimension * 9 / 4, // failure to get real dimensions
     HighScorePos - Text.smallFont.getAscent,
     IconSize / 2,
@@ -66,7 +57,7 @@ class Home(paused: Option[Game] = None) extends Scene {
       discard = true
     },
     HighScoreColor
-  ) :: baseIcons
+  ) ::*/ baseIcons
 
   def icons: List[Icon] =
     (paused.isDefined && !discard).fold(iconsWithDiscard, baseIcons)
@@ -106,14 +97,8 @@ class Home(paused: Option[Game] = None) extends Scene {
     } else {
       logoAlpha = logoAlpha.alphaDown(delta, LogoFadeOutSeconds)
       playAlpha = playAlpha.alphaDown(delta, PlayFadeOutSeconds)
-      if (state == SettingsState) {
-        (logoAlpha + playAlpha == 0f)
-          .option(new Settings(this))
-      } else /*if (state == PlayState)*/
-        {
-          (logoAlpha + playAlpha == 0f)
-            .option(nextGame)
-        }
+      (logoAlpha + playAlpha == 0f)
+        .option(nextGame)
     }
   }
 
@@ -214,8 +199,6 @@ class Home(paused: Option[Game] = None) extends Scene {
 
   private def soundOff = AssetLoader.image("sound-off.png")
   private def soundOn  = AssetLoader.image("sound-on.png")
-  private def settings = AssetLoader.image("settings.png")
-
 }
 
 object Home {
@@ -237,6 +220,5 @@ object Home {
   sealed trait State
 
   case object HomeState     extends State
-  case object SettingsState extends State
   case object PlayState     extends State
 }
