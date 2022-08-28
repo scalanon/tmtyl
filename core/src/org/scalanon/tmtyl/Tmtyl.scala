@@ -70,7 +70,7 @@ object Tmtyl {
   var key: String     = _
 
   val screenPixel =
-    ((Geometry.ScreenWidth min Geometry.ScreenHeight) / 320).floor
+    ((Geometry.ScreenWidth) / 320).floor
 
   var walkPlayer: TextureWrapper = _
 

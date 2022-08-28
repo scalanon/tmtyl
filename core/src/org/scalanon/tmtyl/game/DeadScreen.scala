@@ -30,9 +30,9 @@ case class DeadScreen(game: Game) extends Scene {
     batch.setColor(Color.WHITE)
     batch.draw(
       doofus,
+      (Geometry.ScreenWidth - Geometry.ScreenHeight) / 2,
       0,
-      0,
-      Geometry.ScreenWidth,
+      Geometry.ScreenHeight,
       Geometry.ScreenHeight
     )
   }

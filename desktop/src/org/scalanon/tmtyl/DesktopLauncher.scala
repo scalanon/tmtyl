@@ -10,7 +10,7 @@ object DesktopLauncher extends App {
   StartOnFirstThreadHelper.executeIfJVMValid(() => {
     val config = new Lwjgl3ApplicationConfiguration
     config.setForegroundFPS(60)
-    config.setWindowedMode(1024, 1024)
+    config.setWindowedMode(960, 540)
     new Lwjgl3Application(new Tmtyl, config)
   })
 }

@@ -217,11 +217,13 @@ final case class Player(game: Game) {
     Rect(x + XMargin, y, size.x - 2 * XMargin, size.y)
 
   def centerX: Float = loc.x + size.x * .5f
-  def headY: Float   = loc.y + size.y * .75f
-  def left: Float    = loc.x
-  def right: Float   = loc.x + size.x
-  def bottom: Float  = loc.y
-  def top: Float     = loc.y + size.y
+  def centerY: Float = loc.y + size.y * .5f
+
+  def headY: Float  = loc.y + size.y * .75f
+  def left: Float   = loc.x
+  def right: Float  = loc.x + size.x
+  def bottom: Float = loc.y
+  def top: Float    = loc.y + size.y
 }
 
 object Player {

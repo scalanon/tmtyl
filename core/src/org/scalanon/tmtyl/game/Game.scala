@@ -41,6 +41,7 @@ class Game(startLevel: Int = 0) extends Scene {
   var alien: Alien   = Alien(this)
   var actors         = List.empty[Actor]
   var translateX     = Geometry.ScreenWidth / screenPixel / 2 - player.centerX
+  var translateY     = Geometry.ScreenHeight / screenPixel / 2 - player.centerY
 
   val keysPressed    = mutable.Set.empty[Int]
   val newKeysPressed = mutable.Set.empty[Int]
@@ -70,6 +71,8 @@ class Game(startLevel: Int = 0) extends Scene {
       keysPressed.clear()
       alien.loc = player.loc + Vec2(-80, 80)
       translateX = Geometry.ScreenWidth / screenPixel / 2 - player.centerX
+      translateY =
+        (Geometry.ScreenHeight / screenPixel / 2 - player.centerY) min 0
 
       state = MapState
     }
@@ -93,6 +96,8 @@ class Game(startLevel: Int = 0) extends Scene {
       if (targetX > translateX)
         (translateX + TranslateSpeed * delta) min targetX
       else (translateX - TranslateSpeed * delta) max targetX
+    translateY =
+      (Geometry.ScreenHeight / screenPixel / 2 - player.centerY) min 0
     PartialFunction.condOpt(state) {
       case QuitState  => new Home
       case LostState  =>
@@ -107,8 +112,13 @@ class Game(startLevel: Int = 0) extends Scene {
   }
 
   override def render(batch: PolygonSpriteBatch): Unit = {
+    println(translateY)
     batch.setTransformMatrix(
-      matrix.setToTranslation((translateX * screenPixel).floor, 0, 0)
+      matrix.setToTranslation(
+        (translateX * screenPixel).floor,
+        translateY * screenPixel,
+        0
+      )
     )
 
     drawLevel(batch)

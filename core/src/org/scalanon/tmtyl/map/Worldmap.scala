@@ -48,13 +48,19 @@ case class Worldmap(game: Game) extends Scene {
 
   def render(batch: PolygonSpriteBatch): Unit = {
     batch.setColor(Color.WHITE)
-    batch.draw(worldMap, 0, 0, Geometry.ScreenWidth, Geometry.ScreenHeight)
+    batch.draw(
+      worldMap,
+      0,
+      -(Geometry.ScreenWidth - Geometry.ScreenHeight) / 2,
+      Geometry.ScreenWidth,
+      Geometry.ScreenWidth
+    )
     batch.draw(
       worldmapPlayer,
       (playerLoc.x * Geometry.ScreenWidth / 100) - (Geometry.ScreenWidth / 20),
       (playerLoc.y * Geometry.ScreenHeight / 100) - (Geometry.ScreenHeight / 20),
       Geometry.ScreenWidth / 10,
-      Geometry.ScreenHeight / 10
+      Geometry.ScreenWidth / 10
     )
   }
 }
