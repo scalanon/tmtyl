@@ -151,7 +151,7 @@ object Mortar {
     private val launchVelocity =
       (Mortar.LaunchVelocity._1 + Mortar.LaunchVelocity._2) / 2
 
-    override val firingRate = (.5f, .5f)
+    override val firingRate = (2f, 3f)
 
     override def update(delta: Float): Unit = {
       time = time + delta
