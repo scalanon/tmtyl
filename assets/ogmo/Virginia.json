@@ -164,7 +164,7 @@
           "height": 144,
           "originX": 0,
           "originY": 0,
-          "values": {"Solid": false}
+          "values": {"Solid": true}
         },
         {
           "name": "Enemy",
