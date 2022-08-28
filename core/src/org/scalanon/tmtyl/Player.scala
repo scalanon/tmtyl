@@ -50,6 +50,10 @@ final case class Player(game: Game) {
   var wTick     = 0f
   var deadTimer = 0f
 
+  var mLeft  = false
+  var mRight = false
+  var mUp    = false
+  var mDown  = false
   def update(delta: Float): Unit = {
 
     if (dead) {
@@ -76,12 +80,12 @@ final case class Player(game: Game) {
       )
       .toFloat
 
-    if (game.keyPressed(Keys.A, Keys.LEFT) && !dead) {
+    if ((game.keyPressed(Keys.A, Keys.LEFT) || mLeft) && !dead) {
       if (vel.x >= 0) stage = 0
       vel.x = -SpeedX
       facingLeft = true
       behavior = 2
-    } else if (game.keyPressed(Keys.D, Keys.RIGHT) && !dead) {
+    } else if ((game.keyPressed(Keys.D, Keys.RIGHT) || mRight) && !dead) {
       if (vel.x < 0) stage = 0
       behavior = 2
       vel.x = SpeedX
@@ -108,7 +112,7 @@ final case class Player(game: Game) {
     } else {
       vel.y -= Gravity * delta
     }
-    if (game.keyPressed(Keys.W, Keys.UP) && !dead) {
+    if ((game.keyPressed(Keys.W, Keys.UP) || mUp) && !dead) {
       if (onLadder.isDefined) {
         vel.y = ClimbSpeed
         behavior = 7
@@ -118,12 +122,12 @@ final case class Player(game: Game) {
         behavior = 3
         stage = 0
       }
-    } else if (game.keyPressed(Keys.S, Keys.DOWN) && !dead) {
+    } else if ((game.keyPressed(Keys.S, Keys.DOWN) || (mDown)) && !dead) {
       if (onLadder.isDefined) {
         vel.y = -ClimbSpeed
         behavior = 7
         climbing = true
-      } else if (game.newKeyPressed(Keys.S, Keys.DOWN)) {
+      } else if (game.newKeyPressed(Keys.S, Keys.DOWN) || (mDown)) {
         val onDoor = game.entities.doors.find(oldRect.isOnBottom)
         onDoor foreach { from =>
           if (from.doorway == "exit") {
@@ -197,6 +201,10 @@ final case class Player(game: Game) {
       die(wilhelm)
 
     }
+    mUp = false
+    mLeft = false
+    mDown = false
+    mRight = false
   }
 
   def die(sound: SoundWrapper = scream): Unit = {

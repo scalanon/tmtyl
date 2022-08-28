@@ -2,6 +2,7 @@ package org.scalanon.tmtyl.game
 
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.InputAdapter
+import org.scalanon.tmtyl.Player.SpeedX
 import org.scalanon.tmtyl.{Geometry, Vec2}
 
 import scala.collection.mutable
@@ -17,6 +18,21 @@ class GameControl(game: Game) extends InputAdapter {
       button: Int
   ): Boolean = {
     down.put(pointer, (screenX, screenY))
+    true
+  }
+
+  override def touchDragged(
+      screenX: Int,
+      screenY: Int,
+      pointer: Int
+  ): Boolean = {
+
+    if (screenY <= Geometry.ScreenHeight / 2) { game.player.mUp = true }
+    if (screenX >= (Geometry.ScreenWidth / 3) * 2) { game.player.mRight = true }
+    else if (screenX <= (Geometry.ScreenWidth / 3)) {
+      game.player.mLeft = true
+    } else { game.player.mDown = true }
+
     true
   }
 
