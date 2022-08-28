@@ -33,17 +33,11 @@ case class DeadScreen(game: Game) extends Scene {
       0,
       0,
       Geometry.ScreenWidth,
-      Geometry.ScreenHeight,
-      1 * 22,
-      6 * 17,
-      22,
-      17,
-      false,
-      false
+      Geometry.ScreenHeight
     )
   }
 }
 
 object DeadScreen {
-  def doofus = AssetLoader.image("tiny_adventurer_sheet.png")
+  def doofus = AssetLoader.image("Rip.png")
 }
