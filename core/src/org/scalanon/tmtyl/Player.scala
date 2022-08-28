@@ -203,6 +203,7 @@ final case class Player(game: Game) {
     if (!dead && behavior != DeadBehaviour) {
       dead = true
       behavior = DeadBehaviour
+      game.score.score = 0
       stage = 0
       vel.x = 0
       sound.play()
