@@ -96,7 +96,7 @@ final case class Player(game: Game) {
     val oldRect = hitRect()
 
     aboveFloor =
-      game.entities.floors.filter(oldRect.isOnOrAbove).maxByOption(_.y)
+      game.entities.floors.filter(oldRect.isOnOrAbove).maxByOption(_.top)
 
     val onLadder = game.entities.ladders.find(oldRect.isOnTopOrIn)
     val onFloor  = aboveFloor.filter(oldRect.isOnTop)
