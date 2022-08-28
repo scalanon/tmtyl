@@ -95,9 +95,14 @@ class Game extends Scene {
       else (translateX - TranslateSpeed * delta) max targetX
     PartialFunction.condOpt(state) {
       case QuitState  => new Home
+      case LostState  =>
+        ScoreIO.saveScore(score)
+        new Home
       case PauseState => Home(this)
       case MapState   => Worldmap(this)
-      case EndState   => EndScreen(this)
+      case EndState   =>
+        ScoreIO.saveScore(score)
+        EndScreen(this)
     }
   }
 
@@ -114,7 +119,6 @@ class Game extends Scene {
 
     batch.setTransformMatrix(matrix.idt())
     score.draw(batch)
-
   }
 
   private def drawLevel(

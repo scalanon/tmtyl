@@ -54,7 +54,7 @@ final case class Player(game: Game) {
 
     if (dead) {
       deadTimer += delta
-      if (deadTimer >= 1f) game.state = Game.QuitState
+      if (deadTimer >= 1f) game.state = Game.LostState
     }
 
     wTick += delta

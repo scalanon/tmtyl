@@ -486,7 +486,7 @@
           "height": 128,
           "originX": 0,
           "originY": 0,
-          "values": {"Solid": false}
+          "values": {"Solid": true}
         },
         {
           "name": "Floor",
