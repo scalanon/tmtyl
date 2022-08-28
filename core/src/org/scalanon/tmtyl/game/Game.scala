@@ -32,7 +32,7 @@ class Game extends Scene {
       Levels.dc
     )
   var currentLevel = 0
-  var level        = levelList(currentLevel)
+  var level        = levelList(0)
   var entities     = Entities.fromLevel(level)
   var activated    = mutable.Set.empty[Int]
   var timer        = 0f
@@ -54,7 +54,7 @@ class Game extends Scene {
   }
 
   def switchToLevel(nlev: Int): Unit = {
-    score.score += ((100 / timer) + (50 / timer) + (10 / timer)).toInt
+    score.score += 1
     timer = 0f
     currentLevel = nlev
     if (currentLevel == 7) {
