@@ -112,7 +112,6 @@ class Game(startLevel: Int = 0) extends Scene {
   }
 
   override def render(batch: PolygonSpriteBatch): Unit = {
-    println(translateY)
     batch.setTransformMatrix(
       matrix.setToTranslation(
         (translateX * screenPixel).floor,
