@@ -37,23 +37,7 @@ class GameControl(game: Game) extends InputAdapter {
         game.state = Game.QuitState
       case Keys.BACK   =>
         game.state = Game.PauseState
-      case Keys.NUM_1  =>
-        game.switchToLevel(0)
-      case Keys.NUM_2  =>
-        game.switchToLevel(1)
-      case Keys.NUM_3  =>
-        game.switchToLevel(2)
-      case Keys.NUM_4  =>
-        game.switchToLevel(3)
-      case Keys.NUM_5  =>
-        game.switchToLevel(4)
-      case Keys.NUM_6  =>
-        game.switchToLevel(5)
-      case Keys.NUM_7  =>
-        game.switchToLevel(6)
-      case Keys.NUM_8  =>
-        game.switchToLevel(7)
-      case o =>
+      case o           =>
         game.keysPressed.add(o)
         game.newKeysPressed.add(o)
     }
