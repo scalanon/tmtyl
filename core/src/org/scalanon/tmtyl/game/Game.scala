@@ -12,7 +12,7 @@ import org.scalanon.tmtyl.map.Worldmap
 
 import scala.collection.mutable
 
-class Game extends Scene {
+class Game(startLevel: Int = 0) extends Scene {
   import Game._
 
   var state: State   = PlayingState
@@ -31,7 +31,7 @@ class Game extends Scene {
       Levels.virginia,
       Levels.dc
     )
-  var currentLevel = 0
+  var currentLevel = startLevel
   var level        = levelList(0)
   var entities     = Entities.fromLevel(level)
   var activated    = mutable.Set.empty[Int]
@@ -97,7 +97,7 @@ class Game extends Scene {
       case QuitState  => new Home
       case LostState  =>
         ScoreIO.saveScore(score)
-        new Home
+        new DeadScreen(this)
       case PauseState => Home(this)
       case MapState   => Worldmap(this)
       case EndState   =>
