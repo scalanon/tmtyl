@@ -32,7 +32,7 @@ class Game(startLevel: Int = 0) extends Scene {
       Levels.dc
     )
   var currentLevel = startLevel
-  var level        = levelList(0)
+  var level        = levelList(currentLevel)
   var entities     = Entities.fromLevel(level)
   var activated    = mutable.Set.empty[Int]
   var timer        = 0f
