@@ -51,9 +51,7 @@ final case class Player(game: Game) {
   var deadTimer = 0f
 
   def update(delta: Float): Unit = {
-    if (game.keysPressed.contains(Keys.I)) {
-      Player.Immortal = !Player.Immortal
-    }
+
     if (dead) {
       deadTimer += delta
       if (deadTimer >= 1f) game.state = Game.QuitState
@@ -146,6 +144,7 @@ final case class Player(game: Game) {
                 )
               )
             }
+            vel = Vec2(0, 0)
           }
 
         }
@@ -197,16 +196,13 @@ final case class Player(game: Game) {
 
     if (loc.y + size.y < 0) {
       die(wilhelm)
-      if (Immortal) {
-        loc.y = Geometry.ScreenHeight / screenPixel
-        vel.y = 0
-      }
+
     }
   }
 
   def die(sound: SoundWrapper = scream): Unit = {
     if (!dead && behavior != DeadBehaviour) {
-      if (!Immortal) dead = true
+      dead = true
       behavior = DeadBehaviour
       stage = 0
       vel.x = 0
@@ -229,7 +225,6 @@ final case class Player(game: Game) {
 }
 
 object Player {
-  var Immortal = true
 
   private val XMargin = 8
 
