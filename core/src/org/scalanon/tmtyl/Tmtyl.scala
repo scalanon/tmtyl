@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input}
 import org.scalanon.tmtyl.game.{Game, Tilesets}
+import org.scalanon.tmtyl.home.Home
 import org.scalanon.tmtyl.util.{GarbageCan, TextureWrapper}
 
 import java.util.Properties
@@ -32,17 +33,13 @@ class Tmtyl extends ApplicationAdapter {
     Tmtyl.version = properties.getProperty("version", "Unknown")
     Tmtyl.key = properties.getProperty("key", "unset")
 
-    Tmtyl.close = TextureWrapper.load("close.png")
-    Tmtyl.checkOn = TextureWrapper.load("check-on.png")
-    Tmtyl.checkOff = TextureWrapper.load("check-off.png")
-    Tmtyl.trash = TextureWrapper.load("trash.png")
     Tmtyl.walkPlayer = TextureWrapper.load("tiny_adventurer_sheet.png")
 
     Tmtyl.tilesets = Tilesets.load()
 
     Text.loadFonts()
 
-    setScene(new Game) //setScene(new Home)
+    setScene(new Home)
   }
 
   override def render(): Unit = {
@@ -75,10 +72,6 @@ object Tmtyl {
   val screenPixel =
     ((Geometry.ScreenWidth min Geometry.ScreenHeight) / 320).floor
 
-  var close: TextureWrapper      = _
-  var checkOn: TextureWrapper    = _
-  var checkOff: TextureWrapper   = _
-  var trash: TextureWrapper      = _
   var walkPlayer: TextureWrapper = _
 
   var tilesets: Tilesets = _

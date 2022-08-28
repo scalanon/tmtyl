@@ -12,7 +12,6 @@ class Entities(val entities: List[Entity]) {
   val switches: List[Switch]             = entities.collectType[Switch]
   val switchMap: Map[(Int, Int), Switch] =
     switches.map(s => (s.x, s.y) -> s).toMap
-  println(switches)
 }
 
 object Entities {
