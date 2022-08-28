@@ -17,11 +17,7 @@ class EndScreenControl(end: EndScreen) extends InputAdapter {
     if (keycode == Keys.ESCAPE || keycode == Keys.BACK) {
       end.quit = true
     }
-    if (keycode == Keys.SPACE || keycode == Keys.ENTER) {
-      EndScreen.stage = (EndScreen.stage + 1) min 3
-      if (EndScreen.stage == 3) end.quit = true
 
-    }
     true
 
   }
