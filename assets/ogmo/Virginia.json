@@ -348,7 +348,7 @@
           "height": 96,
           "originX": 0,
           "originY": 0,
-          "values": {"Solid": false}
+          "values": {"Solid": true}
         },
         {
           "name": "Floor",
@@ -1057,36 +1057,6 @@
           "originX": 0,
           "originY": 0,
           "values": {"Solid": true}
-        },
-        {
-          "name": "Enemy",
-          "id": 109,
-          "_eid": "30419055",
-          "x": 960,
-          "y": 64,
-          "originX": 0,
-          "originY": 0,
-          "values": {"Kind": "CannonLeft", "Algorithm": ""}
-        },
-        {
-          "name": "Enemy",
-          "id": 110,
-          "_eid": "30419055",
-          "x": 960,
-          "y": 128,
-          "originX": 0,
-          "originY": 0,
-          "values": {"Kind": "CannonLeft", "Algorithm": ""}
-        },
-        {
-          "name": "Enemy",
-          "id": 111,
-          "_eid": "30419055",
-          "x": 960,
-          "y": 192,
-          "originX": 0,
-          "originY": 0,
-          "values": {"Kind": "CannonLeft", "Algorithm": ""}
         },
         {
           "name": "Enemy",
