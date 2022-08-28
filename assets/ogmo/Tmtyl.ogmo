@@ -276,7 +276,7 @@
           "name": "Algorithm",
           "definition": "Enum",
           "display": 0,
-          "choices": ["", "Predictive", "Spread"],
+          "choices": ["", "Predictive", "Spread", "Vertical"],
           "defaults": 0
         }
       ]
