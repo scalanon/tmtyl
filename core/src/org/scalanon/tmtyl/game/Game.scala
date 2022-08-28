@@ -54,7 +54,7 @@ class Game extends Scene {
   }
 
   def switchToLevel(nlev: Int): Unit = {
-    score.score += ((100 / timer) + (50 / timer) + (10 / timer) - (timer / 100)).toInt
+    score.score += ((100 / timer) + (50 / timer) + (10 / timer)).toInt
     timer = 0f
     currentLevel = nlev
     if (currentLevel == 7) {

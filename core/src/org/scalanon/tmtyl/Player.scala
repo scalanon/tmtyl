@@ -146,6 +146,7 @@ final case class Player(game: Game) {
                 )
               )
             }
+            vel = Vec2(0, 0)
           }
 
         }
