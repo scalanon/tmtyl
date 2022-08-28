@@ -19,8 +19,10 @@ class Shot(x: Float, y: Float, vX: Float, vY: Float, game: Game) extends Actor {
     loc.mulAdd(vel, delta)
     val screenX = (loc.x + game.translateX) * screenPixel
     val screenY = loc.y * screenPixel
+    val hitRect = Rect(loc.x, loc.y, width, height)
     val gone    =
-      screenX < 0 || screenX > Geometry.ScreenWidth || screenY < 0 || screenY > Geometry.ScreenHeight
+      screenX < 0 || screenX > Geometry.ScreenWidth || screenY < 0 || screenY > Geometry.ScreenHeight || game.entities.floors
+        .exists(floor => floor.solid && hitRect.intersects(floor))
     if (gone) {
       Nil
     } else if (shotRect.within(game.player.hitRect())) {

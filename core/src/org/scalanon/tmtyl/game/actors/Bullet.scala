@@ -17,9 +17,11 @@ class Bullet(x: Float, y: Float, left: Boolean, game: Game) extends Actor {
 
   override def update(delta: Float): List[Actor] = {
     loc.mulAdd(vel, delta)
-    val scale = left.fold(-screenPixel, screenPixel)
-    val gone  =
-      (loc.x + width / 2 - game.player.centerX) * scale > Geometry.ScreenWidth / 2
+    val scale  = left.fold(-screenPixel, screenPixel)
+    val hitBox = Rect(loc.x, loc.y, width, height)
+    val gone   =
+      (loc.x + width / 2 - game.player.centerX) * scale > Geometry.ScreenWidth / 2 || game.entities.floors
+        .exists(floor => floor.solid && hitBox.intersects(floor))
     if (gone) {
       Nil
     } else if (bulletRect.within(game.player.hitRect())) {
