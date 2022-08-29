@@ -17,7 +17,7 @@ to meet the president in Washington, DC.
 
 `./gradlew desktop:dist` → `desktop/build/libs/[appname]-[version].jar`
 
-`./gradlew desktop:jpackage` → `desktop/build/dist/[appname]-[version].dmg` (OS X)
+`./gradlew desktop:jpackage` → `desktop/build/dist/[appname]-[version]-[arch].dmg` (OS X)
 
 ## License
 

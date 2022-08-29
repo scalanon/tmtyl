@@ -101,6 +101,10 @@ tasks.jpackage {
     windows {
         icon = "../icons/icons.ico"
     }
+
+    doLast {
+        file("$destination/${appName}-${appVersion}.dmg").renameTo("$destination/${appName}-${appVersion}-${osArch}.dmg")
+    }
 }
 
 eclipse.project.name = appName + "-desktop"
