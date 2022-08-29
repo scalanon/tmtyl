@@ -45,7 +45,7 @@ case class EndScreen(game: Game) extends Scene {
       0,
       0,
       Geometry.ScreenWidth,
-      Geometry.ScreenHeight
+      Geometry.ScreenWidth * endScreen.height / endScreen.width
     )
 
     val frame = (time * 10).toInt % 5

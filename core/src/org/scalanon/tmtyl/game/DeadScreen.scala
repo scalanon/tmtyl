@@ -29,15 +29,16 @@ case class DeadScreen(game: Game) extends Scene {
   def render(batch: PolygonSpriteBatch): Unit = {
     batch.setColor(Color.WHITE)
     batch.draw(
-      doofus,
+      rip,
       (Geometry.ScreenWidth - Geometry.ScreenHeight) / 2,
       0,
       Geometry.ScreenHeight,
       Geometry.ScreenHeight
     )
+    game.score.draw(batch)
   }
 }
 
 object DeadScreen {
-  def doofus = AssetLoader.image("Rip.png")
+  def rip = AssetLoader.image("Rip.png")
 }

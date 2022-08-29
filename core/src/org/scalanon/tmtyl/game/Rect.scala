@@ -22,8 +22,8 @@ final case class Rect(x: Float, y: Float, width: Float, height: Float) {
   def isOnTop(ent: Entity): Boolean =
     right > ent.left && left < ent.right && bottom == ent.top
 
-  def isOnTopOrIn(ent: Entity): Boolean =
-    right > ent.left && left < ent.right && bottom >= ent.bottom && bottom <= ent.top
+  def isOnTopOrWithin(ent: Entity): Boolean =
+    left >= ent.left && right <= ent.right && bottom >= ent.bottom && bottom <= ent.top
 
   def isOnBottom(ent: Entity): Boolean =
     right > ent.left && left < ent.right && bottom == ent.bottom

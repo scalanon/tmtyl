@@ -15,7 +15,7 @@ trait Icon {
   def x: Float
   def y: Float
   def size: Float
-  def onPress(): Unit = ()
+  def onPress(): Unit                  = ()
   def onRelease(inside: Boolean): Unit = ()
 
   protected def draw(
@@ -31,7 +31,7 @@ trait Icon {
 
 object Icon {
   val White = new Color(1f, 1f, 1f, 1f)
-  val Grey = new Color(.4f, .4f, .4f, 1f)
+  val Grey  = new Color(.4f, .4f, .4f, 1f)
 }
 
 abstract class BaseIcon(disabled: Boolean = false) extends Icon {
@@ -89,17 +89,28 @@ class BasicIcon(
   }
 }
 
-class PlayIcon(val x: Float, val y: Float, pixel: Float, val size: Float, home: Home)
-    extends BaseIcon {
+trait Playable {
+  def play(): Unit
+}
+
+class PlayIcon(
+    val x: Float,
+    val y: Float,
+    pixel: Float,
+    val size: Float,
+    home: Playable
+) extends BaseIcon {
+  import PlayIcon._
+
   override def draw(batch: PolygonSpriteBatch, alpha: Float): Unit = {
-    val playScale = alpha * alpha * (if (pressed) .95f else 1f)
-    val playWidth = playScale * icon.width * pixel
+    val playScale  = alpha * alpha * (if (pressed) .95f else 1f)
+    val playWidth  = playScale * icon.width * pixel
     val playHeight = playScale * icon.height * pixel
     batch.setColor(1, 1, 1, alpha * alpha)
-    val (dX, dY) = if (compassAvailable) compassShift else (0f, 0f)
+    val (dX, dY)   = if (compassAvailable) compassShift else (0f, 0f)
     batch.draw(
       icon,
-      x - playWidth / 3 + dX,
+      x - playWidth / 2 + dX,
       y - playHeight / 2 + dY,
       playWidth,
       playHeight
@@ -108,9 +119,9 @@ class PlayIcon(val x: Float, val y: Float, pixel: Float, val size: Float, home: 
 
   // TODO: temporally smooth this?
   private def compassShift: (Float, Float) = {
-    val roll = Gdx.input.getRoll // -180 to 180
-    val pitch = Gdx.input.getPitch // -90 to 90
-    val scale = Dimension / 4f / 90f
+    val roll       = Gdx.input.getRoll  // -180 to 180
+    val pitch      = Gdx.input.getPitch // -90 to 90
+    val scale      = Dimension / 4f / 90f
     // as pitch approaches 90, roll becomes indeterminate so ramp to 0 from 75 to 85
     val pitchLimit =
       if (pitch.abs > 85f) 0f
@@ -123,6 +134,8 @@ class PlayIcon(val x: Float, val y: Float, pixel: Float, val size: Float, home: 
   }
 
   override def clicked(): Unit = home.play()
+}
 
-  private def icon = AssetLoader.image("play.png")
+  object PlayIcon {
+  def icon = AssetLoader.image("play.png")
 }

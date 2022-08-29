@@ -895,10 +895,10 @@
           "x": 1648,
           "y": 272,
           "width": 16,
-          "height": 16,
+          "height": 48,
           "originX": 0,
           "originY": 0,
-          "values": {"Solid": false}
+          "values": {"Solid": true}
         },
         {
           "name": "Floor",
@@ -907,10 +907,10 @@
           "x": 1680,
           "y": 272,
           "width": 16,
-          "height": 16,
+          "height": 48,
           "originX": 0,
           "originY": 0,
-          "values": {"Solid": false}
+          "values": {"Solid": true}
         },
         {
           "name": "Floor",
@@ -919,10 +919,10 @@
           "x": 1712,
           "y": 272,
           "width": 16,
-          "height": 16,
+          "height": 48,
           "originX": 0,
           "originY": 0,
-          "values": {"Solid": false}
+          "values": {"Solid": true}
         },
         {
           "name": "Floor",
@@ -931,10 +931,10 @@
           "x": 1744,
           "y": 272,
           "width": 16,
-          "height": 16,
+          "height": 48,
           "originX": 0,
           "originY": 0,
-          "values": {"Solid": false}
+          "values": {"Solid": true}
         },
         {
           "name": "Floor",

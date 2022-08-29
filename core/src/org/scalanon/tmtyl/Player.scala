@@ -100,7 +100,7 @@ final case class Player(game: Game) {
     aboveFloor =
       game.entities.floors.filter(oldRect.isOnOrAbove).maxByOption(_.top)
 
-    val onLadder = game.entities.ladders.find(oldRect.isOnTopOrIn)
+    val onLadder = game.entities.ladders.find(oldRect.isOnTopOrWithin)
     val onFloor  = aboveFloor.filter(oldRect.isOnTop)
 
     var warpLoc  = Option.empty[Vec2]

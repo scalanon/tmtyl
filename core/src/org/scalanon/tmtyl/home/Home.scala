@@ -3,11 +3,10 @@ package home
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
-import org.scalanon.tmtyl.Geometry._
 import org.scalanon.tmtyl.game.Game
 import org.scalanon.tmtyl.{Scene, Tmtyl}
 
-class Home(paused: Option[Game] = None) extends Scene {
+class Home(paused: Option[Game] = None) extends Scene with Playable {
 
   import Home._
 
@@ -20,7 +19,7 @@ class Home(paused: Option[Game] = None) extends Scene {
   var alien        = new Alien(new AlienAnimation.Dead)
   var ready        = false
 
-  private val LogoPixel   = (Geometry.ScreenWidth * 2 / 3 / ufo.width).floor
+  private val LogoPixel   = (Geometry.ScreenHeight * 2 / 3 / ufo.height).floor
   private val UfoWidth    = LogoPixel * ufo.width
   private val UfoHeight   = LogoPixel * ufo.height
   private val AlienWidth  = LogoPixel * alien.width
@@ -32,15 +31,15 @@ class Home(paused: Option[Game] = None) extends Scene {
 
   private val baseIcons: List[Icon] = List(
     new PlayIcon(
-      LogoPixel * 8,
-      LogoPixel * 12,
+      (Geometry.ScreenWidth * 2 - (ufo.width - 6) * LogoPixel) / 2,
+      Geometry.ScreenHeight / 2,
       LogoPixel,
       LogoPixel * 9,
       this
     ),
     new PrefIcon(
-      IconSize,
-      Geometry.ScreenHeight - IconSize,
+      IconSize * 3 / 2,
+      Geometry.ScreenHeight - IconSize * 3 / 2,
       IconSize,
       Prefs.MuteAudio,
       soundOff,
@@ -103,7 +102,7 @@ class Home(paused: Option[Game] = None) extends Scene {
   }
 
   private def nextGame: Game =
-    paused.filterNot(_ => discard).getOrElse(new Game)
+    paused.filterNot(_ => discard).getOrElse(new Game(0))
 
   override def render(batch: PolygonSpriteBatch): Unit = {
     drawLogo(batch)
@@ -219,6 +218,6 @@ object Home {
 
   sealed trait State
 
-  case object HomeState     extends State
-  case object PlayState     extends State
+  case object HomeState extends State
+  case object PlayState extends State
 }

@@ -3,7 +3,7 @@ package game
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
-import com.badlogic.gdx.math.Matrix4
+import com.badlogic.gdx.math.{MathUtils, Matrix4}
 import org.scalanon.tmtyl.Scene
 import org.scalanon.tmtyl.Tmtyl._
 import org.scalanon.tmtyl.game.actors.Enemies
@@ -12,7 +12,7 @@ import org.scalanon.tmtyl.map.Worldmap
 
 import scala.collection.mutable
 
-class Game(startLevel: Int = 0) extends Scene {
+class Game(startLevel: Int) extends Scene {
   import Game._
 
   var state: State   = PlayingState
@@ -40,8 +40,8 @@ class Game(startLevel: Int = 0) extends Scene {
   var player: Player = Player(this)
   var alien: Alien   = Alien(this)
   var actors         = List.empty[Actor]
-  var translateX     = Geometry.ScreenWidth / screenPixel / 2 - player.centerX
-  var translateY     = Geometry.ScreenHeight / screenPixel / 2 - player.centerY
+  var translateX     = computeTranslateX
+  var translateY     = computeTranslateY
 
   val keysPressed    = mutable.Set.empty[Int]
   val newKeysPressed = mutable.Set.empty[Int]
@@ -70,9 +70,8 @@ class Game(startLevel: Int = 0) extends Scene {
       player.vel = Vec2(0, 0)
       keysPressed.clear()
       alien.loc = player.loc + Vec2(-80, 80)
-      translateX = Geometry.ScreenWidth / screenPixel / 2 - player.centerX
-      translateY =
-        (Geometry.ScreenHeight / screenPixel / 2 - player.centerY) min 0
+      translateX = computeTranslateX
+      translateY = computeTranslateY
 
       state = MapState
     }
@@ -90,14 +89,22 @@ class Game(startLevel: Int = 0) extends Scene {
       .map(enemy => Enemies.spawn(enemy, this))
     actors = enemies ::: actors.flatMap(_.update(delta))
     newKeysPressed.clear()
-    val targetX =
-      Geometry.ScreenWidth / screenPixel / 2 - player.centerX
-    translateX =
-      if (targetX > translateX)
-        (translateX + TranslateSpeed * delta) min targetX
-      else (translateX - TranslateSpeed * delta) max targetX
-    translateY =
-      (Geometry.ScreenHeight / screenPixel / 2 - player.centerY) min 0
+    val targetX = computeTranslateX
+    val targetY = computeTranslateY
+    if (targetX != translateX || targetY != translateY) {
+      val translateA =
+        MathUtils.atan2(targetY - translateY, targetX - translateX)
+      val dX         = delta * TranslateSpeed * MathUtils.cos(translateA)
+      val dY         = delta * TranslateSpeed * MathUtils.sin(translateA)
+      translateX =
+        if (targetX > translateX)
+          (translateX + dX) min targetX
+        else (translateX + dX) max targetX
+      translateY =
+        if (targetY > translateY)
+          (translateY + dY) min targetY
+        else (translateY + dY) max targetY
+    }
     PartialFunction.condOpt(state) {
       case QuitState  => new Home
       case LostState  =>
@@ -110,6 +117,13 @@ class Game(startLevel: Int = 0) extends Scene {
         EndScreen(this)
     }
   }
+
+  def computeTranslateX: Float =
+    Geometry.ScreenWidth / screenPixel / 2 - player.centerX
+
+  def computeTranslateY: Float =
+    (Geometry.ScreenHeight / screenPixel / 2 - player.centerY)
+      .clamp((Geometry.ScreenHeight / screenPixel - level.height) min 0, 0f)
 
   override def render(batch: PolygonSpriteBatch): Unit = {
     batch.setTransformMatrix(
@@ -127,7 +141,7 @@ class Game(startLevel: Int = 0) extends Scene {
     actors.foreach(_.draw(batch))
 
     batch.setTransformMatrix(matrix.idt())
-    score.draw(batch)
+    // score.draw(batch)
   }
 
   private def drawLevel(

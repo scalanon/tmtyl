@@ -27,8 +27,8 @@ class Score {
     val scoreLabel = new GlyphLayout(Text.smallFont, f"SCORE:")
     val scoreValue =
       new GlyphLayout(Text.mediumFont, f" $score%,d")
-    val xOffset = OffsetX + Dimension / 4
-    val baseline = OffsetY + Dimension * Rows + Dimension / 2
+    val xOffset = Dimension + Dimension / 4
+    val baseline = Geometry.ScreenHeight - Dimension * 2 + Dimension / 2
     Text.smallFont.draw(
       batch,
       scoreLabel,

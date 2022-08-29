@@ -18,10 +18,9 @@ class Shot(x: Float, y: Float, vX: Float, vY: Float, game: Game) extends Actor {
   override def update(delta: Float): List[Actor] = {
     loc.mulAdd(vel, delta)
     val screenX = (loc.x + game.translateX) * screenPixel
-    val screenY = loc.y * screenPixel
-    val hitRect = Rect(loc.x, loc.y, width, height)
+    val hitRect = Rect(loc.x + 1, loc.y + 1, width - 2, height - 2)
     val gone    =
-      screenX < 0 || screenX > Geometry.ScreenWidth || screenY < 0 || screenY > Geometry.ScreenHeight || game.entities.floors
+      (vel.x < 0 && screenX < 0) || (vel.x > 0 && screenX > Geometry.ScreenWidth) || loc.y < 0 || loc.y > game.level.height || game.entities.floors
         .exists(floor => floor.solid && hitRect.intersects(floor))
     if (gone) {
       Nil
@@ -48,5 +47,6 @@ class Shot(x: Float, y: Float, vX: Float, vY: Float, game: Game) extends Actor {
 }
 
 object Shot {
+  val Xtra          = 16f
   private def image = AssetLoader.image("shot.png")
 }

@@ -69,8 +69,7 @@ object Tmtyl {
   var version: String = _
   var key: String     = _
 
-  val screenPixel =
-    ((Geometry.ScreenWidth) / 320).floor
+  val screenPixel = (Geometry.ScreenWidth / 320).floor
 
   var walkPlayer: TextureWrapper = _
 
