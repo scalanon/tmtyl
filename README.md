@@ -2,7 +2,7 @@
   <img src="icons/tmtyl512.png" alt="Alien with a sign" width="256" />
 </p>
 
-# Take Me To Your Leader
+<!-- # Take Me To Your Leader -->
 
 A [libgdx](https://libgdx.com/) platformer written in a week in
 [Scala](https://www.scala-lang.org/) for
