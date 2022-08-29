@@ -1,8 +1,8 @@
-package org.scalanon.tmtyl.game.actors
+package org.scalanon.tmtyl
+package game.actors
 
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import org.scalanon.tmtyl.Actor
-import org.scalanon.tmtyl.Tmtyl.screenPixel
 import org.scalanon.tmtyl.util.TextureWrapper
 
 // TODO: a SpriteSheet TextureWrapper with frames and frameRate and...
@@ -29,10 +29,10 @@ abstract class Animation(
     val fr = (age / frameRate).toInt min frames - 1
     batch.draw(
       image,
-      (x - width * originX) * screenPixel,
-      (y - height * originY) * screenPixel,
-      width * screenPixel,
-      height * screenPixel,
+      (x - width * originX) * Geometry.ScreenPixel,
+      (y - height * originY) * Geometry.ScreenPixel,
+      width * Geometry.ScreenPixel,
+      height * Geometry.ScreenPixel,
       fr * width,
       0,
       width,

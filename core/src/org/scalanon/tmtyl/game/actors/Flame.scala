@@ -3,7 +3,6 @@ package game.actors
 
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import org.scalanon.tmtyl.Actor
-import org.scalanon.tmtyl.Tmtyl.screenPixel
 import org.scalanon.tmtyl.game.{Game, Rect}
 import org.scalanon.tmtyl.util.Orientation
 
@@ -21,8 +20,9 @@ class Flame(x: Float, y: Float, orientation: Orientation, game: Game)
   private val fireOffset  = (16 - fireWidth) / 2
   private val flameOffset = fireOffset + (fireWidth - flameWidth) / 2
 
-  var age     = 0f
-  var flaming = false
+  var age        = 0f
+  var flaming    = false
+  var flameFrame = 0
 
   override def update(delta: Float): List[Actor] = {
     age = age + delta
@@ -32,13 +32,14 @@ class Flame(x: Float, y: Float, orientation: Orientation, game: Game)
       age = 0
       if (flaming) {
         sound.play(x + game.translateX)
-
       }
     }
-    val bigly    = flaming && age < DeathlyFrames * FrameRate
+    flameFrame = (age / FrameRate).toInt min (FlameFrames - 1)
+    val bigly    = flaming && flameFrame < DeathlyFrames
     val offset   = bigly.fold(fireOffset, flameOffset)
-    val width    = bigly.fold(fireWidth, flameHeight)
-    val height   = bigly.fold(fireHeight, flameHeight)
+    val width    = bigly.fold(fireWidth, flameWidth)
+    val height   =
+      bigly.fold(fireHeight * 7 / 8 * (flameFrame + 1 min 4) / 4, flameHeight)
     val deathBox = orientation match {
       case Orientation.Up    => Rect(x + offset, y, width, height)
       case Orientation.Left  => Rect(x + 16 - height, y + offset, height, width)
@@ -61,15 +62,14 @@ class Flame(x: Float, y: Float, orientation: Orientation, game: Game)
   val rotation                       = (orientation.degrees + 270) % 360
 
   override def draw(batch: PolygonSpriteBatch): Unit = {
-    val flameFrame = (age / FrameRate).toInt % FlameFrames
     batch.draw(
       flame,
-      flameX * screenPixel,
-      flameY * screenPixel,
+      flameX * Geometry.ScreenPixel,
+      flameY * Geometry.ScreenPixel,
       0,
       0,
-      flameWidth * screenPixel,
-      flameHeight * screenPixel,
+      flameWidth * Geometry.ScreenPixel,
+      flameHeight * Geometry.ScreenPixel,
       1,
       1,
       rotation,
@@ -84,12 +84,12 @@ class Flame(x: Float, y: Float, orientation: Orientation, game: Game)
       val fireFrame = (age / FrameRate).toInt min (FireFrames - 1)
       batch.draw(
         fire,
-        fireX * screenPixel,
-        fireY * screenPixel,
+        fireX * Geometry.ScreenPixel,
+        fireY * Geometry.ScreenPixel,
         0,
         0,
-        fireWidth * screenPixel,
-        fireHeight * screenPixel,
+        fireWidth * Geometry.ScreenPixel,
+        fireHeight * Geometry.ScreenPixel,
         1,
         1,
         rotation,

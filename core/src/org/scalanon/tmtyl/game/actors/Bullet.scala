@@ -2,7 +2,7 @@ package org.scalanon.tmtyl
 package game.actors
 
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
-import org.scalanon.tmtyl.Tmtyl.screenPixel
+import org.scalanon.tmtyl.Geometry.ScreenPixel
 import org.scalanon.tmtyl.game.{Game, Rect}
 import org.scalanon.tmtyl.{Actor, AssetLoader, Geometry, Vec2}
 
@@ -17,7 +17,7 @@ class Bullet(x: Float, y: Float, left: Boolean, game: Game) extends Actor {
 
   override def update(delta: Float): List[Actor] = {
     loc.mulAdd(vel, delta)
-    val scale  = left.fold(-screenPixel, screenPixel)
+    val scale  = left.fold(-ScreenPixel, Geometry.ScreenPixel)
     val hitBox = Rect(loc.x, loc.y, width, height)
     val gone   =
       (loc.x + width / 2 - game.player.centerX) * scale > Geometry.ScreenWidth / 2 || game.entities.floors
@@ -38,10 +38,10 @@ class Bullet(x: Float, y: Float, left: Boolean, game: Game) extends Actor {
   override def draw(batch: PolygonSpriteBatch): Unit = {
     batch.draw(
       image,
-      loc.x * screenPixel,
-      loc.y * screenPixel,
-      width * screenPixel,
-      height * screenPixel,
+      loc.x * Geometry.ScreenPixel,
+      loc.y * Geometry.ScreenPixel,
+      width * Geometry.ScreenPixel,
+      height * Geometry.ScreenPixel,
       0,
       0,
       width,

@@ -5,36 +5,37 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import org.scalanon.tmtyl.Tmtyl._
 import org.scalanon.tmtyl.game.{Floor, Game, Rect}
-import org.scalanon.tmtyl.util.SoundWrapper
+import org.scalanon.tmtyl.util.{SoundWrapper, TextureWrapper}
 
 import scala.util.Random
 
 final case class Player(game: Game) {
   import Player._
 
-  var lookRot: Float = 0f
-  var loc: Vec2      =
-    game.entities.start.cata(s => Vec2(s.x.toFloat, s.y.toFloat), Vec2(0, 0))
-  var size: Vec2     = Vec2(22, 17)
-  var vel: Vec2      = Vec2(0, 0)
-  var dead           = false
-  var facingLeft     = false
-  var stage          = 0
-  var behavior       = 2
-  var aboveFloor     = Option.empty[Floor]
+  var loc        = Vec2(0, 0)
+  val size       = Vec2(22, 17)
+  var vel        = Vec2(0, 0)
+  var maxY       = 0f
+  var dead       = false
+  var wTick      = 0f
+  var deadTimer  = 0f
+  var facingLeft = false
+  var stage      = 0
+  var behavior   = 2
+  var aboveFloor = Option.empty[Floor]
 
   def draw(batch: PolygonSpriteBatch): Unit = {
     batch.setColor(Color.WHITE)
     val maxStage = Stages(behavior)
     val st       = if (stage < maxStage) stage else maxStage * 2 - stage - 1
     batch.draw(
-      walkPlayer,
-      loc.x * screenPixel,
-      loc.y * screenPixel,
+      doofus,
+      loc.x * Geometry.ScreenPixel,
+      loc.y * Geometry.ScreenPixel,
       0f,
       0f,
-      size.x * screenPixel,
-      size.y * screenPixel,
+      size.x * Geometry.ScreenPixel,
+      size.y * Geometry.ScreenPixel,
       1f,
       1f,
       0,
@@ -47,13 +48,26 @@ final case class Player(game: Game) {
     )
   }
 
-  var wTick     = 0f
-  var deadTimer = 0f
-
+  // TODO: kill
   var mLeft  = false
   var mRight = false
   var mUp    = false
   var mDown  = false
+
+  def reset(newLoc: Vec2): Unit = {
+    loc = newLoc
+    vel = Vec2(0, 0)
+    maxY = loc.y
+    facingLeft = false
+    stage = 0
+    behavior = 2
+    aboveFloor = None
+    mLeft = false
+    mRight = false
+    mUp = false
+    mDown = false
+  }
+
   def update(delta: Float): Unit = {
 
     if (dead) {
@@ -73,22 +87,15 @@ final case class Player(game: Game) {
       wTick = 0f
     }
 
-    lookRot = Math
-      .atan2(
-        (game.mouseLoc.y / screenPixel) - (loc.y + size.y),
-        (loc.x + size.x / 2) - (game.mouseLoc.x / screenPixel)
-      )
-      .toFloat
-
     if ((game.keyPressed(Keys.A, Keys.LEFT) || mLeft) && !dead) {
       if (vel.x >= 0) stage = 0
-      vel.x = -SpeedX
+      vel.x = (vel.x - delta * AccelX) max -SpeedX
       facingLeft = true
       behavior = 2
     } else if ((game.keyPressed(Keys.D, Keys.RIGHT) || mRight) && !dead) {
       if (vel.x < 0) stage = 0
       behavior = 2
-      vel.x = SpeedX
+      vel.x = (vel.x + delta * AccelX) min SpeedX
       facingLeft = false
     } else if (!dead) {
       vel.x = 0
@@ -103,8 +110,7 @@ final case class Player(game: Game) {
     val onLadder = game.entities.ladders.find(oldRect.isOnTopOrWithin)
     val onFloor  = aboveFloor.filter(oldRect.isOnTop)
 
-    var warpLoc  = Option.empty[Vec2]
-    var climbing = false
+    var warpLoc = Option.empty[Vec2]
 
     if (onLadder.isDefined && !dead) {
       behavior = 7
@@ -115,8 +121,6 @@ final case class Player(game: Game) {
     if ((game.keyPressed(Keys.W, Keys.UP) || mUp) && !dead) {
       if (onLadder.isDefined) {
         vel.y = ClimbSpeed
-        behavior = 7
-        climbing = true
       } else if (onFloor.isDefined) {
         vel.y = JumpSpeed
         behavior = 3
@@ -125,13 +129,11 @@ final case class Player(game: Game) {
     } else if ((game.keyPressed(Keys.S, Keys.DOWN) || (mDown)) && !dead) {
       if (onLadder.isDefined) {
         vel.y = -ClimbSpeed
-        behavior = 7
-        climbing = true
       } else if (game.newKeyPressed(Keys.S, Keys.DOWN) || (mDown)) {
         val onDoor = game.entities.doors.find(oldRect.isOnBottom)
         onDoor foreach { from =>
           if (from.doorway == "exit") {
-            game.switchToLevel(game.currentLevel + 1)
+            game.state = Game.NextState
           } else if (
             !game.entities.switches
               .exists(sw => sw.key == from.key) || game.entities.switches
@@ -143,8 +145,8 @@ final case class Player(game: Game) {
             Random.shuffle(toDoors).headOption foreach { to =>
               warpLoc = Some(
                 Vec2(
-                  to.x + (to.width - size.x) / 2,
-                  to.y
+                  to.x.toFloat + (to.width.toFloat - size.x) / 2f,
+                  to.y.toFloat
                 )
               )
             }
@@ -157,11 +159,19 @@ final case class Player(game: Game) {
       }
     }
 
-    if (!climbing && onLadder.isDefined && !dead) {
-      stage = 0
+    if (!dead) {
+      onLadder foreach { ladder =>
+        if (
+          (vel.y == 0) || (vel.y > 0 && loc.y >= ladder.top) || (vel.y < 0 && loc.y <= ladder.bottom)
+        ) {
+          stage = 0
+        }
+      }
     }
 
     loc = warpLoc getOrElse {
+      maxY =
+        if (onFloor.isDefined || onLadder.isDefined) loc.y else maxY max loc.y
       val newLoc = loc + (vel * delta)
       if (vel.x != 0) {
         val xRect   = hitRect(newLoc.x, loc.y)
@@ -187,11 +197,11 @@ final case class Player(game: Game) {
             !onLadder.exists(ladder => ladder.y < floor.y)
         )
         hitFloor foreach { floor =>
-          if (vel.y < -DeathlySpeed) {
+          newLoc.y = floor.top.toFloat
+          vel.y = 0
+          if (maxY - newLoc.y >= DeathlyFall) {
             die(splat)
           }
-          newLoc.y = (floor.y + floor.height).toFloat
-          vel.y = 0
         }
       }
       newLoc
@@ -199,7 +209,6 @@ final case class Player(game: Game) {
 
     if (loc.y + size.y < 0) {
       die(wilhelm)
-
     }
     mUp = false
     mLeft = false
@@ -238,11 +247,13 @@ object Player {
 
   private val XMargin = 8
 
-  private val SpeedX       = 6 * 16f
-  private val ClimbSpeed   = 6 * 16f
-  private val JumpSpeed    = 14 * 16f
-  private val Gravity      = 60 * 16f
-  private val DeathlySpeed = 300f
+  private val SpeedX      = 6 * 16f
+  private val AccelX      = SpeedX * 60 / 5
+  private val ClimbSpeed  = 6 * 16f
+  private val JumpSpeed   = 14 * 16f
+  private val Gravity     = 60 * 16f
+  // just < 3 blocks so you can jump from one block high but not fall 3
+  private val DeathlyFall = 47f
 
   private val DeadBehaviour = 6
   private val Stages        = Map(
@@ -254,6 +265,7 @@ object Player {
     7             -> 5
   )
 
+  private def doofus  = TextureWrapper.load("tiny_adventurer_sheet.png")
   private def wilhelm = AssetLoader.sound("scream.mp3")
   private def splat   = AssetLoader.sound("splat.mp3")
   private def scream  = AssetLoader.sound("screamQuick.mp3")

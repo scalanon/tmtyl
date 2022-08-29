@@ -4,7 +4,6 @@ package game.actors
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.math.MathUtils
 import org.scalanon.tmtyl.Actor
-import org.scalanon.tmtyl.Tmtyl.screenPixel
 import org.scalanon.tmtyl.game.Game
 import org.scalanon.tmtyl.util.Orientation
 
@@ -69,12 +68,12 @@ class Cannon(x: Float, y: Float, orientation: Orientation, game: Game)
   override def draw(batch: PolygonSpriteBatch): Unit = {
     batch.draw(
       barrel,
-      x * screenPixel,
-      y * screenPixel,
-      width / 2 * screenPixel,
-      height / 2 * screenPixel,
-      width * screenPixel,
-      height * screenPixel,
+      x * Geometry.ScreenPixel,
+      y * Geometry.ScreenPixel,
+      width / 2 * Geometry.ScreenPixel,
+      height / 2 * Geometry.ScreenPixel,
+      width * Geometry.ScreenPixel,
+      height * Geometry.ScreenPixel,
       1f,
       1f,
       angle,
@@ -87,12 +86,12 @@ class Cannon(x: Float, y: Float, orientation: Orientation, game: Game)
     )
     batch.draw(
       base,
-      x * screenPixel,
-      y * screenPixel,
-      width / 2 * screenPixel,
-      height / 2 * screenPixel,
-      width * screenPixel,
-      height * screenPixel,
+      x * Geometry.ScreenPixel,
+      y * Geometry.ScreenPixel,
+      width / 2 * Geometry.ScreenPixel,
+      height / 2 * Geometry.ScreenPixel,
+      width * Geometry.ScreenPixel,
+      height * Geometry.ScreenPixel,
       1f,
       1f,
       orientation.degrees - 90,

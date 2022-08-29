@@ -3,11 +3,7 @@ package org.scalanon.tmtyl
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
-import com.badlogic.gdx.graphics.g2d.{
-  BitmapFont,
-  GlyphLayout,
-  PolygonSpriteBatch
-}
+import com.badlogic.gdx.graphics.g2d.{BitmapFont, GlyphLayout, PolygonSpriteBatch}
 import org.scalanon.tmtyl.Geometry.Dimension
 import org.scalanon.tmtyl.home.Home
 import org.scalanon.tmtyl.util.GarbageCan

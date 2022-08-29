@@ -2,7 +2,6 @@ package org.scalanon.tmtyl
 package game.actors
 
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
-import org.scalanon.tmtyl.Tmtyl.screenPixel
 import org.scalanon.tmtyl.game.Game
 import org.scalanon.tmtyl.{Actor, AssetLoader, Geometry}
 
@@ -27,7 +26,7 @@ class Fighter(x: Float, y: Float, game: Game) extends Actor {
     var shoot = false
     if (firingClock < 0) {
       shoot = game.player.bottom < y + height && game.player.top >= y &&
-        (x + width.toFloat / 2 - game.player.centerX).abs * screenPixel < Geometry.ScreenWidth * .625f
+        (x + width.toFloat / 2 - game.player.centerX).abs * Geometry.ScreenPixel < Geometry.ScreenWidth * .625f
       firingClock = random(FiringRate)
     }
     if (shoot) {
@@ -52,10 +51,10 @@ class Fighter(x: Float, y: Float, game: Game) extends Actor {
     val fr = frame % Frames
     batch.draw(
       idle,
-      x * screenPixel,
-      y * screenPixel,
-      width * screenPixel,
-      height * screenPixel,
+      x * Geometry.ScreenPixel,
+      y * Geometry.ScreenPixel,
+      width * Geometry.ScreenPixel,
+      height * Geometry.ScreenPixel,
       fr * width,
       sheet * height,
       width,

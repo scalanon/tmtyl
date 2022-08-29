@@ -2,7 +2,6 @@ package org.scalanon.tmtyl.game
 
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.InputAdapter
-import org.scalanon.tmtyl.Player.SpeedX
 import org.scalanon.tmtyl.{Geometry, Vec2}
 
 import scala.collection.mutable

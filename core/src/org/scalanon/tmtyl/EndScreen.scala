@@ -1,9 +1,8 @@
 package org.scalanon.tmtyl
 
 import com.badlogic.gdx.InputAdapter
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
-import com.badlogic.gdx.graphics.{Color, Texture}
-import org.scalanon.tmtyl.Tmtyl.{screenPixel, walkPlayer}
 import org.scalanon.tmtyl.game.Game
 import org.scalanon.tmtyl.home.{AlienAnimation, Home}
 
@@ -14,7 +13,7 @@ case class EndScreen(game: Game) extends Scene {
     new EndScreenControl(this)
   }
   
-  val endPixel = screenPixel * 2
+  val endPixel = Geometry.ScreenPixel * 2
 
   var quit = false
   var time = 0f

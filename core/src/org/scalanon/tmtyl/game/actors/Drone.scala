@@ -4,7 +4,6 @@ package game.actors
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.math.MathUtils
 import org.scalanon.tmtyl.Actor
-import org.scalanon.tmtyl.Tmtyl.screenPixel
 import org.scalanon.tmtyl.game.Game
 
 class Drone(x: Float, game: Game) extends Actor {
@@ -12,7 +11,7 @@ class Drone(x: Float, game: Game) extends Actor {
 
   override def update(delta: Float): List[Actor] = {
     val launch =
-      game.player.right >= x && game.player.left < x + Geometry.ScreenWidth / screenPixel && MathUtils
+      game.player.right >= x && game.player.left < x + Geometry.ScreenWidth / Geometry.ScreenPixel && MathUtils
         .randomBoolean(FireChance * delta)
     launch
       .flatOption(Missile.launch(x, game))

@@ -4,14 +4,14 @@ import com.badlogic.gdx.Application.ApplicationType
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input}
-import org.scalanon.tmtyl.game.{Game, Tilesets}
+import org.scalanon.tmtyl.game.Tilesets
 import org.scalanon.tmtyl.home.Home
-import org.scalanon.tmtyl.util.{GarbageCan, TextureWrapper}
+import org.scalanon.tmtyl.util.GarbageCan
 
 import java.util.Properties
 
 class Tmtyl extends ApplicationAdapter {
-  import Tmtyl.garbage
+  import Tmtyl._
 
   private var batch: PolygonSpriteBatch = _
   private var scene: Scene              = _
@@ -33,8 +33,6 @@ class Tmtyl extends ApplicationAdapter {
     Tmtyl.version = properties.getProperty("version", "Unknown")
     Tmtyl.key = properties.getProperty("key", "unset")
 
-    Tmtyl.walkPlayer = TextureWrapper.load("tiny_adventurer_sheet.png")
-
     Tmtyl.tilesets = Tilesets.load()
 
     Text.loadFonts()
@@ -44,7 +42,7 @@ class Tmtyl extends ApplicationAdapter {
 
   override def render(): Unit = {
     val delta = Gdx.graphics.getDeltaTime
-    scene.update(delta) foreach setScene
+    scene.update(delta min MaxDeltaTime) foreach setScene
     ScreenUtils.clear(0, 0, 0, 1)
     batch.begin()
     scene.render(batch)
@@ -66,16 +64,14 @@ class Tmtyl extends ApplicationAdapter {
 object Tmtyl {
   implicit val garbage: GarbageCan = new GarbageCan
 
+  // limit slowest effective frame rate to 20fps
+  private val MaxDeltaTime = .05f
+
   var version: String = _
   var key: String     = _
-
-  val screenPixel = (Geometry.ScreenWidth / 320).floor
-
-  var walkPlayer: TextureWrapper = _
+  var globalHigh: Int = _
 
   var tilesets: Tilesets = _
-
-  var globalHigh: Int = _
 
   def mobile: Boolean = isMobile(Gdx.app.getType)
 

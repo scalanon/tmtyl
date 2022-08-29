@@ -38,6 +38,7 @@ case class Worldmap(game: Game) extends Scene {
     }
     done = done || playerLoc == Locations(game.currentLevel) && eTick >= .2f
     if (done) {
+      game.levelUp()
       Some(game)
     } else if (quit) {
       Some(new Home)

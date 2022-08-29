@@ -15,7 +15,6 @@ final case class Missile(
     game: Game
 ) extends Actor {
   import Missile._
-  import Tmtyl.screenPixel
 
   private val width  = image.width
   private val height = image.height
@@ -76,12 +75,12 @@ final case class Missile(
     val velocityAngle = MathUtils.atan2(vel.y, vel.x).degrees
     batch.draw(
       image,
-      (pos.x - width / 2f) * screenPixel,
-      (pos.y - width / 2f) * screenPixel,
-      width * screenPixel / 2f,
-      height * screenPixel / 2f,
-      width.toFloat * screenPixel,
-      height.toFloat * screenPixel,
+      (pos.x - width / 2f) * Geometry.ScreenPixel,
+      (pos.y - width / 2f) * Geometry.ScreenPixel,
+      width * Geometry.ScreenPixel / 2f,
+      height * Geometry.ScreenPixel / 2f,
+      width.toFloat * Geometry.ScreenPixel,
+      height.toFloat * Geometry.ScreenPixel,
       1f,
       1f,
       velocityAngle,
@@ -94,10 +93,10 @@ final case class Missile(
     )
     batch.draw(
       target,
-      (targetX - target.width / 2f) * screenPixel,
-      (targetY - target.height / 2f) * screenPixel,
-      target.width * screenPixel,
-      target.height * screenPixel
+      (targetX - target.width / 2f) * Geometry.ScreenPixel,
+      (targetY - target.height / 2f) * Geometry.ScreenPixel,
+      target.width * Geometry.ScreenPixel,
+      target.height * Geometry.ScreenPixel
     )
   }
 }

@@ -2,17 +2,16 @@ package org.scalanon.tmtyl
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
-import org.scalanon.tmtyl.Tmtyl._
 import org.scalanon.tmtyl.game.Game
 import org.scalanon.tmtyl.home.AlienAnimation
 
 case class Alien(game: Game) extends Actor {
   var alien = new home.Alien(new AlienAnimation.Idle)
 
-  var loc = game.player.loc + Vec2(-80, 80)
+  var loc  = game.player.loc + Vec2(-80, 80)
   val size = Vec2(16, 16)
 
-  val Speed = 64
+  val Speed   = 64
   val MaxDist = 16
 
   def update(delta: Float): List[Actor] = {
@@ -34,9 +33,9 @@ case class Alien(game: Game) extends Actor {
   def draw(batch: PolygonSpriteBatch): Unit = {
     batch.setColor(Color.WHITE)
     alien.draw(
-      loc.x * screenPixel,
-      loc.y * screenPixel,
-      screenPixel,
+      loc.x * Geometry.ScreenPixel,
+      loc.y * Geometry.ScreenPixel,
+      Geometry.ScreenPixel,
       batch
     )
   }

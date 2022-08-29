@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.math.{MathUtils, Matrix4}
 import org.scalanon.tmtyl.Scene
-import org.scalanon.tmtyl.Tmtyl._
 import org.scalanon.tmtyl.game.actors.Enemies
 import org.scalanon.tmtyl.home.Home
 import org.scalanon.tmtyl.map.Worldmap
@@ -21,69 +20,64 @@ class Game(startLevel: Int) extends Scene {
   val score: Score = new Score
   val matrix       = new Matrix4()
 
-  var levelList    =
-    List(
-      Levels.newMexico,
-      Levels.texas,
-      Levels.oklahoma,
-      Levels.arkansas,
-      Levels.tennessee,
-      Levels.virginia,
-      Levels.dc
-    )
-  var currentLevel = startLevel
-  var level        = levelList(currentLevel)
-  var entities     = Entities.fromLevel(level)
-  var activated    = mutable.Set.empty[Int]
-  var timer        = 0f
+  var currentLevel: Int  = startLevel
+  var level: JsonLevel   = _
+  var entities: Entities = _
+  val activated          = mutable.Set.empty[Int]
+
+  // assets are loaded on frame zero and so the latency delta is
+  // super high, so always ignore time delta on the next frame
+  var frameZero: Boolean = _
 
   var player: Player = Player(this)
   var alien: Alien   = Alien(this)
   var actors         = List.empty[Actor]
-  var translateX     = computeTranslateX
-  var translateY     = computeTranslateY
+  var translateX     = 0f
+  var translateY     = 0f
 
   val keysPressed    = mutable.Set.empty[Int]
   val newKeysPressed = mutable.Set.empty[Int]
+
+  setup()
 
   def keyPressed(as: Int*): Boolean    = as.exists(keysPressed.contains)
   def newKeyPressed(as: Int*): Boolean = as.exists(newKeysPressed.contains)
 
   override def init(): GameControl = {
     state = PlayingState
+    frameZero = true
     new GameControl(this)
   }
 
-  def switchToLevel(nlev: Int): Unit = {
-    score.score += 1
-    timer = 0f
-    currentLevel = nlev
-    if (currentLevel == 7) {
-      state = EndState
-    } else {
-      level = levelList(currentLevel)
-      entities = Entities.fromLevel(level)
-      actors = List.empty[Actor]
-      activated.clear()
-      player.loc =
-        entities.start.cata(s => Vec2(s.x.toFloat, s.y.toFloat), Vec2(0, 0))
-      player.vel = Vec2(0, 0)
-      keysPressed.clear()
-      alien.loc = player.loc + Vec2(-80, 80)
-      translateX = computeTranslateX
-      translateY = computeTranslateY
-
-      state = MapState
-    }
+  private def setup(): Unit = {
+    level = LevelList(currentLevel)
+    entities = Entities.fromLevel(level)
+    actors = List.empty[Actor]
+    activated.clear()
+    keysPressed.clear()
+    newKeysPressed.clear()
+    player.reset(calculateStartLoc)
+    translateX = computeTranslateX
+    translateY = computeTranslateY
+    alien.loc = player.loc + Vec2(-80, 80)
   }
 
-  override def update(delta: Float): Option[Scene] = {
-    timer += delta
+  def levelUp(): Unit = {
+    currentLevel = currentLevel + 1
+    setup()
+  }
+
+  private def calculateStartLoc: Vec2 =
+    entities.start.cata(s => Vec2(s.x.toFloat, s.y.toFloat), Vec2(0, 0))
+
+  override def update(actualDelta: Float): Option[Scene] = {
+    val delta   = frameZero.fold(0f, actualDelta)
+    frameZero = false
     score.update(delta)
     player.update(delta)
     alien.update(delta)
     val minX    =
-      player.loc.x + player.size.x / 2 + Geometry.ScreenWidth / 2 / screenPixel
+      player.loc.x + player.size.x / 2 + Geometry.ScreenWidth / 2 / Geometry.ScreenPixel
     val enemies = entities.enemies
       .filter(enemy => enemy.x <= minX && activated.add(enemy.id))
       .map(enemy => Enemies.spawn(enemy, this))
@@ -111,7 +105,9 @@ class Game(startLevel: Int) extends Scene {
         ScoreIO.saveScore(score)
         new DeadScreen(this)
       case PauseState => Home(this)
-      case MapState   => Worldmap(this)
+      case NextState  =>
+        score.score += 1
+        Worldmap(this)
       case EndState   =>
         ScoreIO.saveScore(score)
         EndScreen(this)
@@ -119,17 +115,20 @@ class Game(startLevel: Int) extends Scene {
   }
 
   def computeTranslateX: Float =
-    Geometry.ScreenWidth / screenPixel / 2 - player.centerX
+    Geometry.ScreenWidth / Geometry.ScreenPixel / 2 - player.centerX min 0f
 
   def computeTranslateY: Float =
-    (Geometry.ScreenHeight / screenPixel / 2 - player.centerY)
-      .clamp((Geometry.ScreenHeight / screenPixel - level.height) min 0, 0f)
+    (Geometry.ScreenHeight / Geometry.ScreenPixel / 2 - player.centerY)
+      .clamp(
+        (Geometry.ScreenHeight / Geometry.ScreenPixel - level.height) min 0f,
+        0f
+      )
 
   override def render(batch: PolygonSpriteBatch): Unit = {
     batch.setTransformMatrix(
       matrix.setToTranslation(
-        (translateX * screenPixel).floor,
-        translateY * screenPixel,
+        (translateX * Geometry.ScreenPixel).floor,
+        translateY * Geometry.ScreenPixel,
         0
       )
     )
@@ -156,7 +155,7 @@ class Game(startLevel: Int) extends Scene {
       cellHeight = layer.gridCellHeight
       minX       = ((0 - translateX) / cellWidth).floor.toInt max 0
       maxX       =
-        ((Geometry.ScreenWidth / screenPixel - translateX) / cellWidth).ceil.toInt min layer.gridCellsX
+        ((Geometry.ScreenWidth / Geometry.ScreenPixel - translateX) / cellWidth).ceil.toInt min layer.gridCellsX
       y         <- 0 until layer.gridCellsY
       yy         = layer.gridCellsY - y - 1
       row        = layer.data2D(y)
@@ -169,10 +168,10 @@ class Game(startLevel: Int) extends Scene {
       else batch.setColor(Color.WHITE)
       batch.draw(
         tileset.texture,
-        x * cellWidth * screenPixel,
-        yy * cellHeight * screenPixel,
-        cellWidth * screenPixel,
-        cellHeight * screenPixel,
+        x * cellWidth * Geometry.ScreenPixel,
+        yy * cellHeight * Geometry.ScreenPixel,
+        cellWidth * Geometry.ScreenPixel,
+        cellHeight * Geometry.ScreenPixel,
         tile.x,
         tile.y,
         tile.width,
@@ -187,12 +186,23 @@ class Game(startLevel: Int) extends Scene {
 object Game {
   val TranslateSpeed = 300f
 
+  val LevelList =
+    List(
+      Levels.newMexico,
+      Levels.texas,
+      Levels.oklahoma,
+      Levels.arkansas,
+      Levels.tennessee,
+      Levels.virginia,
+      Levels.dc
+    )
+
   sealed trait State
   case object PlayingState extends State
   case object LostState    extends State
   case object QuitState    extends State
   case object PauseState   extends State
-  case object MapState     extends State
+  case object NextState    extends State
   case object EndState     extends State
 
 }
