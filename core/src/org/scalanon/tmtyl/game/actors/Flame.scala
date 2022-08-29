@@ -20,9 +20,9 @@ class Flame(x: Float, y: Float, orientation: Orientation, game: Game)
   private val fireOffset  = (16 - fireWidth) / 2
   private val flameOffset = fireOffset + (fireWidth - flameWidth) / 2
 
-  var age        = 0f
-  var flaming    = false
-  var flameFrame = 0
+  var age     = 0f
+  var flaming = false
+  var frameNo = 0
 
   override def update(delta: Float): List[Actor] = {
     age = age + delta
@@ -34,12 +34,12 @@ class Flame(x: Float, y: Float, orientation: Orientation, game: Game)
         sound.play(x + game.translateX)
       }
     }
-    flameFrame = (age / FrameRate).toInt min (FlameFrames - 1)
-    val bigly    = flaming && flameFrame < DeathlyFrames
+    frameNo = (age / FrameRate).toInt
+    val bigly    = flaming && frameNo < DeathlyFrames
     val offset   = bigly.fold(fireOffset, flameOffset)
     val width    = bigly.fold(fireWidth, flameWidth)
     val height   =
-      bigly.fold(fireHeight * 7 / 8 * (flameFrame + 1 min 4) / 4, flameHeight)
+      bigly.fold(fireHeight * 7 / 8 * (frameNo + 1 min 4) / 4, flameHeight)
     val deathBox = orientation match {
       case Orientation.Up    => Rect(x + offset, y, width, height)
       case Orientation.Left  => Rect(x + 16 - height, y + offset, height, width)
@@ -62,6 +62,7 @@ class Flame(x: Float, y: Float, orientation: Orientation, game: Game)
   val rotation                       = (orientation.degrees + 270) % 360
 
   override def draw(batch: PolygonSpriteBatch): Unit = {
+    val flameFrame = frameNo % FlameFrames
     batch.draw(
       flame,
       flameX * Geometry.ScreenPixel,
@@ -81,7 +82,7 @@ class Flame(x: Float, y: Float, orientation: Orientation, game: Game)
       false
     )
     if (flaming) {
-      val fireFrame = (age / FrameRate).toInt min (FireFrames - 1)
+      val fireFrame = frameNo min (FireFrames - 1)
       batch.draw(
         fire,
         fireX * Geometry.ScreenPixel,
