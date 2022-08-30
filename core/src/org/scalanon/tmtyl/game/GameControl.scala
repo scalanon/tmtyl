@@ -2,13 +2,13 @@ package org.scalanon.tmtyl.game
 
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.InputAdapter
-import org.scalanon.tmtyl.{Geometry, Vec2}
+import org.scalanon.tmtyl.{Geometry, Tmtyl, Vec2}
 
 import scala.collection.mutable
 
 class GameControl(game: Game) extends InputAdapter {
 
-  private val down = mutable.Map.empty[Int, (Int, Int)]
+  private val down = mutable.Map.empty[Int, ((Int, Int), (Int, Int))]
 
   override def touchDown(
       screenX: Int,
@@ -16,8 +16,16 @@ class GameControl(game: Game) extends InputAdapter {
       pointer: Int,
       button: Int
   ): Boolean = {
-    down.put(pointer, (screenX, screenY))
+    down.put(pointer, ((screenX, screenY), (screenX, screenY)))
+    if (screenX > (Geometry.ScreenWidth * .8f)) {
+      if (screenY > Geometry.ScreenHeight / 2) {
+        game.player.interact = true
+      } else {
+        game.player.jump = true
+      }
+    }
     true
+
   }
 
   override def touchDragged(
@@ -25,12 +33,27 @@ class GameControl(game: Game) extends InputAdapter {
       screenY: Int,
       pointer: Int
   ): Boolean = {
+    down
+      .get(pointer)
+      .foreach(t => down.put(pointer, (t._1, (screenX, screenY))))
 
-    if (screenY <= Geometry.ScreenHeight / 2) { game.player.mUp = true }
-    if (screenX >= (Geometry.ScreenWidth / 3) * 2) { game.player.mRight = true }
-    else if (screenX <= (Geometry.ScreenWidth / 3)) {
-      game.player.mLeft = true
-    } else { game.player.mDown = true }
+    down.foreach(d => {
+      if (d._2._1._1 <= Geometry.ScreenWidth * .8f) {
+        if (d._2._2._1 - d._2._1._1 >= Geometry.ScreenPixel * 10) {
+          game.player.mRight = true
+        }
+
+        if (d._2._2._1 - d._2._1._1 <= -Geometry.ScreenPixel * 10) {
+          game.player.mLeft = true
+        }
+        if (d._2._2._2 - d._2._1._2 <= -Geometry.ScreenPixel * 10) {
+          game.player.mUp = true
+        }
+        if (d._2._2._2 - d._2._1._2 >= Geometry.ScreenPixel * 10) {
+          game.player.mDown = true
+        }
+      }
+    })
 
     true
   }

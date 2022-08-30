@@ -49,10 +49,12 @@ final case class Player(game: Game) {
   }
 
   // TODO: kill
-  var mLeft  = false
-  var mRight = false
-  var mUp    = false
-  var mDown  = false
+  var mLeft    = false
+  var mRight   = false
+  var mUp      = false
+  var mDown    = false
+  var jump     = false
+  var interact = false
 
   def reset(newLoc: Vec2): Unit = {
     loc = newLoc
@@ -66,6 +68,8 @@ final case class Player(game: Game) {
     mRight = false
     mUp = false
     mDown = false
+    jump = false
+    interact = false
   }
 
   def update(delta: Float): Unit = {
@@ -118,18 +122,24 @@ final case class Player(game: Game) {
     } else {
       vel.y -= Gravity * delta
     }
-    if ((game.keyPressed(Keys.W, Keys.UP) || mUp) && !dead) {
-      if (onLadder.isDefined) {
+    if ((game.keyPressed(Keys.W, Keys.UP) || (mUp || jump)) && !dead) {
+      if (onLadder.isDefined && mUp) {
         vel.y = ClimbSpeed
-      } else if (onFloor.isDefined) {
+      } else if (onFloor.isDefined && jump) {
         vel.y = JumpSpeed
         behavior = 3
         stage = 0
       }
-    } else if ((game.keyPressed(Keys.S, Keys.DOWN) || (mDown)) && !dead) {
-      if (onLadder.isDefined) {
+    } else if (
+      (game.keyPressed(Keys.S, Keys.DOWN) || (mDown || interact)) && !dead
+    ) {
+      if (
+        onLadder.isDefined && (
+          game.newKeyPressed(Keys.S, Keys.DOWN) || mDown
+        )
+      ) {
         vel.y = -ClimbSpeed
-      } else if (game.newKeyPressed(Keys.S, Keys.DOWN) || (mDown)) {
+      } else if (game.newKeyPressed(Keys.S, Keys.DOWN) || interact) {
         val onDoor = game.entities.doors.find(oldRect.isOnBottom)
         onDoor foreach { from =>
           if (from.doorway == "exit") {
@@ -155,7 +165,7 @@ final case class Player(game: Game) {
         }
         game.entities.switches
           .find(oldRect.isOnBottom)
-          .foreach(s => s.used = !s.used)
+          .foreach(s => if (interact) s.used = !s.used)
       }
     }
 
@@ -213,6 +223,8 @@ final case class Player(game: Game) {
     mUp = false
     mLeft = false
     mDown = false
+    jump = false
+    interact = false
     mRight = false
   }
 
