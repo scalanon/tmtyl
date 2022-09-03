@@ -48,12 +48,6 @@ final case class Player(game: Game) {
     )
   }
 
-  // TODO: kill
-  var mLeft  = false
-  var mRight = false
-  var mUp    = false
-  var mDown  = false
-
   def reset(newLoc: Vec2): Unit = {
     loc = newLoc
     vel = Vec2(0, 0)
@@ -62,10 +56,6 @@ final case class Player(game: Game) {
     stage = 0
     behavior = 2
     aboveFloor = None
-    mLeft = false
-    mRight = false
-    mUp = false
-    mDown = false
   }
 
   def update(delta: Float): Unit = {
@@ -87,19 +77,23 @@ final case class Player(game: Game) {
       wTick = 0f
     }
 
-    if ((game.keyPressed(Keys.A, Keys.LEFT) || mLeft) && !dead) {
-      if (vel.x >= 0) stage = 0
-      vel.x = (vel.x - delta * AccelX) max -SpeedX
-      facingLeft = true
-      behavior = 2
-    } else if ((game.keyPressed(Keys.D, Keys.RIGHT) || mRight) && !dead) {
-      if (vel.x < 0) stage = 0
-      behavior = 2
-      vel.x = (vel.x + delta * AccelX) min SpeedX
-      facingLeft = false
-    } else if (!dead) {
-      vel.x = 0
-      if (vel.y == 0) behavior = 0
+    if (dead) {
+      vel.x = 0f
+    } else {
+      if (game.control.keyDown.left || game.control.drag.left) {
+        if (vel.x >= 0) stage = 0
+        vel.x = (vel.x - delta * AccelX) max -SpeedX
+        facingLeft = true
+        behavior = 2
+      } else if (game.control.keyDown.right || game.control.drag.right) {
+        if (vel.x < 0) stage = 0
+        behavior = 2
+        vel.x = (vel.x + delta * AccelX) min SpeedX
+        facingLeft = false
+      } else if (!dead) {
+        vel.x = 0
+        if (vel.y == 0) behavior = 0
+      }
     }
 
     val oldRect = hitRect()
@@ -112,26 +106,29 @@ final case class Player(game: Game) {
 
     var warpLoc = Option.empty[Vec2]
 
-    if (onLadder.isDefined && !dead) {
-      behavior = 7
-      vel.y = 0
-    } else {
+    if (dead) {
       vel.y -= Gravity * delta
-    }
-    if ((game.keyPressed(Keys.W, Keys.UP) || mUp) && !dead) {
-      if (onLadder.isDefined) {
+    } else if (onLadder.isDefined) {
+      behavior = 7
+      if (game.control.keyDown.up || game.control.drag.up) {
         vel.y = ClimbSpeed
-      } else if (onFloor.isDefined) {
+        if (onLadder.exists(loc.y >= _.top)) stage = 0
+      } else if (game.control.keyDown.down || game.control.drag.down) {
+        vel.y = -ClimbSpeed
+        if (onLadder.exists(loc.y >= _.bottom)) stage = 0
+      } else {
+        vel.y = 0
+        stage = 0
+      }
+    } else if (onFloor.isDefined) {
+      if (game.control.keyDown.up || game.control.swipe.up) {
         vel.y = JumpSpeed
         behavior = 3
         stage = 0
-      }
-    } else if ((game.keyPressed(Keys.S, Keys.DOWN) || (mDown)) && !dead) {
-      if (onLadder.isDefined) {
-        vel.y = -ClimbSpeed
-      } else if (game.newKeyPressed(Keys.S, Keys.DOWN) || (mDown)) {
-        val onDoor = game.entities.doors.find(oldRect.isOnBottom)
-        onDoor foreach { from =>
+      } else if (
+        game.control.keyPressed.down || game.control.swipe.down
+      ) {
+        game.entities.doors.find(oldRect.isOnBottom).foreach { from =>
           if (from.doorway == "exit") {
             game.state = Game.NextState
           } else if (
@@ -139,9 +136,8 @@ final case class Player(game: Game) {
               .exists(sw => sw.key == from.key) || game.entities.switches
               .exists(sw => sw.key == from.key && sw.used)
           ) {
-            val toDoors = game.entities.doors.filter(door =>
-              door.doorway == from.doorway && (door ne from)
-            )
+            val toDoors = game.entities.doors
+              .filter(door => door.doorway == from.doorway && (door ne from))
             Random.shuffle(toDoors).headOption foreach { to =>
               warpLoc = Some(
                 Vec2(
@@ -156,17 +152,11 @@ final case class Player(game: Game) {
         game.entities.switches
           .find(oldRect.isOnBottom)
           .foreach(s => s.used = !s.used)
+      } else {
+        vel.y = 0
       }
-    }
-
-    if (!dead) {
-      onLadder foreach { ladder =>
-        if (
-          (vel.y == 0) || (vel.y > 0 && loc.y >= ladder.top) || (vel.y < 0 && loc.y <= ladder.bottom)
-        ) {
-          stage = 0
-        }
-      }
+    } else {
+      vel.y -= Gravity * delta
     }
 
     loc = warpLoc getOrElse {
@@ -210,10 +200,6 @@ final case class Player(game: Game) {
     if (loc.y + size.y < 0) {
       die(wilhelm)
     }
-    mUp = false
-    mLeft = false
-    mDown = false
-    mRight = false
   }
 
   def die(sound: SoundWrapper = scream): Unit = {

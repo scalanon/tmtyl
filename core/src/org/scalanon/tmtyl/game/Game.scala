@@ -35,18 +35,14 @@ class Game(startLevel: Int) extends Scene {
   var translateX     = 0f
   var translateY     = 0f
 
-  val keysPressed    = mutable.Set.empty[Int]
-  val newKeysPressed = mutable.Set.empty[Int]
+  val control = new GameControl(this)
 
   setup()
-
-  def keyPressed(as: Int*): Boolean    = as.exists(keysPressed.contains)
-  def newKeyPressed(as: Int*): Boolean = as.exists(newKeysPressed.contains)
 
   override def init(): GameControl = {
     state = PlayingState
     frameZero = true
-    new GameControl(this)
+    control
   }
 
   private def setup(): Unit = {
@@ -54,8 +50,7 @@ class Game(startLevel: Int) extends Scene {
     entities = Entities.fromLevel(level)
     actors = List.empty[Actor]
     activated.clear()
-    keysPressed.clear()
-    newKeysPressed.clear()
+    control.reset()
     player.reset(calculateStartLoc)
     translateX = computeTranslateX
     translateY = computeTranslateY
@@ -82,7 +77,7 @@ class Game(startLevel: Int) extends Scene {
       .filter(enemy => enemy.x <= minX && activated.add(enemy.id))
       .map(enemy => Enemies.spawn(enemy, this))
     actors = enemies ::: actors.flatMap(_.update(delta))
-    newKeysPressed.clear()
+    control.clean()
     val targetX = computeTranslateX
     val targetY = computeTranslateY
     if (targetX != translateX || targetY != translateY) {
